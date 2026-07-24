@@ -297,7 +297,12 @@ select option { color: #101522; }
   .update-pill { display: none; }
   .header-actions .button { padding: 9px 11px; font-size: .78rem; }
   .hero { margin-top: 18px; min-height: auto; padding: 28px 22px; border-radius: 22px; }
-  .hero-art { display: none; }
+  .hero-art {
+    display: grid;
+    min-height: 270px;
+    margin-top: 8px;
+    overflow: visible;
+  }
   .hero h1 { font-size: clamp(2.45rem, 15vw, 4rem); }
   .status-grid { grid-template-columns: 1fr; margin: 14px 0 16px; gap: 10px; }
   .status-card { min-height: 112px; padding: 18px; }
@@ -378,13 +383,18 @@ body {
   background-clip: text;
 }
 .eyebrow { color: #e7c55a; }
-.hero-art { isolation: isolate; }
+.hero-art {
+  isolation: isolate;
+  overflow: visible;
+}
 .hero-logo {
   position: relative;
   z-index: 2;
+  display: block;
   width: min(100%, 455px);
   max-height: 390px;
   object-fit: contain;
+  background: transparent !important;
   filter: drop-shadow(0 32px 35px rgba(0,0,0,.44));
   animation: logo-float 5.5s ease-in-out infinite;
 }
@@ -869,15 +879,19 @@ body.pdf-open {
   z-index: 3;
   display: grid;
   place-items: center;
+  align-self: center;
+  justify-self: center;
   width: min(100%, 455px);
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: transparent;
+  background: transparent !important;
+  box-shadow: none !important;
   color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  user-select: none;
   transform-origin: 58% 55%;
 }
 
@@ -1093,5 +1107,78 @@ body.pdf-open {
     72%     { opacity: 1; transform: translate3d(8%, -1%, 0) scale(.72) rotate(625deg); }
     78%     { opacity: 0; transform: translate3d(9%, 3%, 0) scale(.48) rotate(690deg); }
     100%    { opacity: 0; transform: translate3d(0, 0, 0) scale(.18) rotate(720deg); }
+  }
+}
+
+
+/* =========================================================
+   Correzioni finali animazione logo
+   - nessuno sfondo bianco dietro il logo
+   - nessun pallone visibile a riposo
+   - hero visibile anche su mobile e tappabile
+   ========================================================= */
+.hero-art {
+  display: grid;
+}
+
+.hero-logo-trigger {
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: visible;
+  isolation: isolate;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.hero-logo,
+.hero-logo-trigger .hero-logo {
+  display: block;
+  background: transparent !important;
+}
+
+.hero-ball {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hero-ball > span {
+  opacity: 0;
+}
+
+.hero-art.is-logo-shooting .hero-ball {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-art {
+    display: grid !important;
+    min-height: 250px;
+    margin-top: 8px;
+  }
+
+  .hero-logo-trigger {
+    width: min(84vw, 330px);
+  }
+}
+
+
+.hero-logo-trigger,
+.hero-logo-trigger:before,
+.hero-logo-trigger:after,
+.hero-logo-trigger .hero-logo {
+  background-color: transparent !important;
+}
+
+@media (max-width: 760px) {
+  .hero-copy {
+    order: 1;
+  }
+  .hero-art {
+    order: 2;
   }
 }
