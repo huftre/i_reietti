@@ -36,10 +36,18 @@
             <a class="button button-secondary" href="#reietto-mese">Vedi il Reietto del Mese</a>
           </div>
         </div>
-        <div class="hero-art">
+        <div class="hero-art" id="hero-logo-scene">
           <div class="orb orb-one" aria-hidden="true"></div>
           <div class="orb orb-two" aria-hidden="true"></div>
-          <img class="hero-logo" src="assets/logo-i-reietti.png" alt="Logo ufficiale della Lega I Reietti">
+          <div class="hero-goal" aria-hidden="true"></div>
+          <button
+            class="hero-logo-trigger"
+            id="hero-logo-trigger"
+            type="button"
+            aria-label="Fai tirare il logo verso la porta">
+            <img class="hero-logo" src="assets/logo-i-reietti.png" alt="Logo ufficiale della Lega I Reietti">
+            <span class="hero-ball" aria-hidden="true"><span>⚽</span></span>
+          </button>
         </div>
       </section>
 
@@ -271,5 +279,6 @@
   <script src="assets/app.js" defer></script>
   <script src="assets/access.js" defer></script>
   <script src="assets/pdf-reader.js" defer></script>
+  <script src="assets/logo-animation.js" defer></script>
 </body>
 </html>

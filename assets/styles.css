@@ -859,3 +859,239 @@ body.pdf-open {
   min-width: 0;
   flex: 1;
 }
+
+/* =========================================================
+   Animazione interattiva del logo: tiro verso la porta
+   Click desktop, tap mobile e attivazione da tastiera.
+   ========================================================= */
+.hero-logo-trigger {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: min(100%, 455px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transform-origin: 58% 55%;
+}
+
+.hero-logo-trigger:focus-visible {
+  outline: 3px solid rgba(242, 189, 44, .92);
+  outline-offset: 8px;
+}
+
+.hero-logo-trigger:disabled {
+  cursor: default;
+}
+
+.hero-logo-trigger .hero-logo {
+  width: 100%;
+  max-height: 390px;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.hero-logo-trigger:hover .hero-logo {
+  filter:
+    drop-shadow(0 34px 38px rgba(0,0,0,.48))
+    drop-shadow(0 0 15px rgba(242,189,44,.18));
+}
+
+.hero-ball {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.hero-ball > span {
+  display: block;
+  font-size: clamp(42px, 8vw, 78px);
+  line-height: 1;
+  opacity: 0;
+  filter: drop-shadow(0 14px 16px rgba(0,0,0,.46));
+  transform: scale(.18) rotate(0deg);
+}
+
+.hero-goal {
+  position: absolute;
+  z-index: 1;
+  right: 1%;
+  top: 50%;
+  width: clamp(92px, 31%, 150px);
+  aspect-ratio: 1.24;
+  border: clamp(3px, .7vw, 6px) solid rgba(255,255,255,.72);
+  border-bottom-width: clamp(5px, 1vw, 8px);
+  border-radius: 5px 5px 8px 8px;
+  opacity: .24;
+  transform: translateY(-48%) perspective(280px) rotateY(-10deg) skewY(-1deg);
+  transform-origin: right center;
+  transition: opacity .22s ease, filter .22s ease;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,.25));
+}
+
+.hero-goal::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 12px, rgba(255,255,255,.23) 12px 14px),
+    repeating-linear-gradient(90deg, transparent 0 12px, rgba(255,255,255,.23) 12px 14px);
+  clip-path: polygon(0 0, 100% 7%, 89% 100%, 8% 100%);
+}
+
+.hero-goal::after {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: -8%;
+  bottom: -14px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0,0,0,.3);
+  filter: blur(5px);
+}
+
+.hero-art.is-logo-shooting .hero-goal {
+  animation: goal-react 3s ease-in-out both;
+}
+
+.hero-art.is-logo-shooting .hero-logo-trigger {
+  animation: logo-to-goal 3s cubic-bezier(.3,.72,.28,1) both;
+}
+
+.hero-art.is-logo-shooting .hero-logo {
+  animation: logo-morph-to-ball 3s ease-in-out both;
+}
+
+.hero-art.is-logo-shooting .hero-ball > span {
+  animation: ball-into-net 3s cubic-bezier(.28,.74,.26,1) both;
+}
+
+@keyframes logo-to-goal {
+  0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  12%  { transform: translate3d(-4%, 2%, 0) scale(1.035) rotate(-2deg); }
+  37%  { transform: translate3d(15%, -3%, 0) scale(.82) rotate(4deg); }
+  57%  { transform: translate3d(42%, -7%, 0) scale(.34) rotate(20deg); }
+  68%  { transform: translate3d(49%, -6%, 0) scale(.23) rotate(28deg); }
+  76%  { transform: translate3d(49%, -6%, 0) scale(.23) rotate(28deg); }
+  88%  { transform: translate3d(7%, -1%, 0) scale(.78) rotate(-3deg); }
+  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+}
+
+@keyframes logo-morph-to-ball {
+  0%, 28% { opacity: 1; transform: scale(1) rotate(0deg); }
+  43%     { opacity: .88; transform: scale(.72) rotate(5deg); }
+  51%     { opacity: 0; transform: scale(.12) rotate(20deg); }
+  82%     { opacity: 0; transform: scale(.12) rotate(-10deg); }
+  92%     { opacity: .56; transform: scale(.72) rotate(-2deg); }
+  100%    { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes ball-into-net {
+  0%, 39% { opacity: 0; transform: translate3d(-9%, 4%, 0) scale(.18) rotate(0deg); }
+  47%     { opacity: 1; transform: translate3d(0, 0, 0) scale(.62) rotate(90deg); }
+  58%     { opacity: 1; transform: translate3d(16%, -2%, 0) scale(1.18) rotate(310deg); }
+  66%     { opacity: 1; transform: translate3d(34%, 4%, 0) scale(.88) rotate(540deg); }
+  72%     { opacity: 1; transform: translate3d(26%, -1%, 0) scale(.76) rotate(625deg); }
+  78%     { opacity: 0; transform: translate3d(28%, 3%, 0) scale(.5) rotate(690deg); }
+  100%    { opacity: 0; transform: translate3d(0, 0, 0) scale(.18) rotate(720deg); }
+}
+
+@keyframes goal-react {
+  0%, 35%, 100% {
+    opacity: .24;
+    filter: drop-shadow(0 10px 14px rgba(0,0,0,.25));
+    transform: translateY(-48%) perspective(280px) rotateY(-10deg) skewY(-1deg) scale(1);
+  }
+  52% {
+    opacity: .72;
+    filter: drop-shadow(0 12px 18px rgba(0,0,0,.34)) drop-shadow(0 0 14px rgba(242,189,44,.3));
+  }
+  66% {
+    opacity: .9;
+    transform: translateY(-48%) perspective(280px) rotateY(-10deg) skewY(-1deg) scaleX(1.07) scaleY(.95);
+  }
+  74% {
+    opacity: .72;
+    transform: translateY(-48%) perspective(280px) rotateY(-10deg) skewY(-1deg) scaleX(.98) scaleY(1.025);
+  }
+}
+
+/* Il movimento normale è leggermente più evidente rispetto a prima. */
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0) rotate(-1.4deg); }
+  50% { transform: translateY(-14px) rotate(1.4deg); }
+}
+
+@media (max-width: 760px) {
+  .hero-logo-trigger {
+    width: min(86vw, 330px);
+  }
+
+  .hero-logo-trigger .hero-logo {
+    max-height: 245px;
+  }
+
+  .hero-goal {
+    right: -1%;
+    width: clamp(78px, 29%, 112px);
+  }
+
+  .hero-ball > span {
+    font-size: clamp(38px, 14vw, 62px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-logo {
+    animation: none;
+  }
+
+  .hero-art.is-logo-shooting .hero-logo-trigger,
+  .hero-art.is-logo-shooting .hero-logo,
+  .hero-art.is-logo-shooting .hero-ball > span,
+  .hero-art.is-logo-shooting .hero-goal {
+    animation-duration: .01ms;
+    animation-iteration-count: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-art.is-logo-shooting .hero-logo-trigger {
+    animation-name: logo-to-goal-mobile;
+  }
+
+  .hero-art.is-logo-shooting .hero-ball > span {
+    animation-name: ball-into-net-mobile;
+  }
+
+  @keyframes logo-to-goal-mobile {
+    0%   { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+    12%  { transform: translate3d(-3%, 2%, 0) scale(1.025) rotate(-2deg); }
+    37%  { transform: translate3d(10%, -3%, 0) scale(.82) rotate(4deg); }
+    57%  { transform: translate3d(27%, -7%, 0) scale(.34) rotate(20deg); }
+    68%  { transform: translate3d(34%, -6%, 0) scale(.23) rotate(28deg); }
+    76%  { transform: translate3d(34%, -6%, 0) scale(.23) rotate(28deg); }
+    88%  { transform: translate3d(5%, -1%, 0) scale(.78) rotate(-3deg); }
+    100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
+  }
+
+  @keyframes ball-into-net-mobile {
+    0%, 39% { opacity: 0; transform: translate3d(-7%, 4%, 0) scale(.18) rotate(0deg); }
+    47%     { opacity: 1; transform: translate3d(0, 0, 0) scale(.62) rotate(90deg); }
+    58%     { opacity: 1; transform: translate3d(5%, -2%, 0) scale(1.08) rotate(310deg); }
+    66%     { opacity: 1; transform: translate3d(12%, 4%, 0) scale(.82) rotate(540deg); }
+    72%     { opacity: 1; transform: translate3d(8%, -1%, 0) scale(.72) rotate(625deg); }
+    78%     { opacity: 0; transform: translate3d(9%, 3%, 0) scale(.48) rotate(690deg); }
+    100%    { opacity: 0; transform: translate3d(0, 0, 0) scale(.18) rotate(720deg); }
+  }
+}
