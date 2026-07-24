@@ -66,7 +66,22 @@
     loadTimer = window.setTimeout(() => setState('ready'), 500);
   }
 
-  async function openPdf() {
+  function useNativeMobileReader() {
+    // I visualizzatori PDF incorporati negli iframe sono limitati su molti
+    // browser mobili (spesso mostrano solo la prima pagina e bloccano il pinch).
+    // In quel caso lasciamo che il link apra il lettore PDF nativo del browser.
+    return window.matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+  }
+
+  async function openPdf(event) {
+    if (useNativeMobileReader()) {
+      // Non blocchiamo il comportamento standard del link: il PDF si apre in
+      // una nuova scheda, dove scorrimento multipagina e zoom sono gestiti dal
+      // visualizzatore nativo del telefono/tablet.
+      return;
+    }
+
+    event.preventDefault();
     showModal();
     setState('loading');
 

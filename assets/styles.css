@@ -606,6 +606,7 @@ body.modal-open { overflow: hidden; }
   width: 100%;
   color: var(--text);
   text-align: left;
+  text-decoration: none;
   font: inherit;
   cursor: pointer;
   border-color: rgba(220, 174, 32, .27);
