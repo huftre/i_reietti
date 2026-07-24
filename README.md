@@ -23,22 +23,28 @@ data/config.json           Nome lega, stagione e parametri
 .nojekyll                  Compatibilità GitHub Pages
 ```
 
-## 1. Personalizzare le squadre
+## 1. Squadre configurate
 
-Apri `data/teams.json` e sostituisci i nomi provvisori.
+Il file `data/teams.json` contiene già le 14 squadre della lega:
 
-Esempio:
+| ID dati | Squadra | Sigla |
+|---|---|---|
+| `squadra-01` | Corazzata2000 | C2000 |
+| `squadra-02` | SS FEL LAZIO | FEL |
+| `squadra-03` | TigerTeam | TIG |
+| `squadra-04` | Annusate Milano | ANM |
+| `squadra-05` | Masterchef United | MCU |
+| `squadra-06` | Mandraketeam | MAN |
+| `squadra-07` | SkibidiBobby | SKB |
+| `squadra-08` | Tetta Pig | TET |
+| `squadra-09` | Suino FC | SFC |
+| `squadra-10` | F.C. Salvezza | SAL |
+| `squadra-11` | Foreign Fighters | FFI |
+| `squadra-12` | BULLDOZER MK | BDM |
+| `squadra-13` | Hogiaperso82 | HOG |
+| `squadra-14` | Divano Kiev | DKV |
 
-```json
-{
-  "id": "squadra-01",
-  "name": "Nome della squadra",
-  "shortName": "NDS",
-  "emoji": "🦁"
-}
-```
-
-**Non modificare gli `id`** dopo aver iniziato a caricare i risultati, altrimenti i dati precedenti non saranno più associati correttamente.
+I nomi, le sigle e le emoji possono essere modificati in `data/teams.json`. **Non modificare gli `id`** dopo aver iniziato a caricare i risultati, altrimenti i dati precedenti non saranno più associati correttamente.
 
 Puoi modificare nome della lega, stagione, premio e giornate in `data/config.json`.
 
