@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#08150e">
   <meta name="description" content="Dashboard ufficiale della Lega Fantacalcio I Reietti: Cintura dei Reietti e Reietto del Mese.">
   <title>I Reietti — Dashboard</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body>
   <div class="page-shell">
     <header class="site-header">
       <a class="brand" href="./" aria-label="Torna alla home">
-        <span class="brand-mark" aria-hidden="true">R</span>
+        <img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti">
         <span>
           <strong id="league-name">I REIETTI</strong>
           <small id="season-label">Stagione 2026/27</small>
@@ -21,7 +21,7 @@
       </a>
       <nav class="header-actions" aria-label="Azioni principali">
         <span class="update-pill" id="last-updated">Dati non ancora caricati</span>
-        <a class="button button-ghost" href="admin.html">Area aggiornamento</a>
+        <button class="button button-ghost js-admin-access" type="button">Area aggiornamento</button>
       </nav>
     </header>
 
@@ -36,17 +36,10 @@
             <a class="button button-secondary" href="#reietto-mese">Vedi il Reietto del Mese</a>
           </div>
         </div>
-        <div class="hero-art" aria-hidden="true">
-          <div class="orb orb-one"></div>
-          <div class="orb orb-two"></div>
-          <div class="belt-illustration">
-            <div class="belt-side"></div>
-            <div class="belt-plate">
-              <span>R</span>
-              <small>CHAMPION</small>
-            </div>
-            <div class="belt-side"></div>
-          </div>
+        <div class="hero-art">
+          <div class="orb orb-one" aria-hidden="true"></div>
+          <div class="orb orb-two" aria-hidden="true"></div>
+          <img class="hero-logo" src="assets/logo-i-reietti.png" alt="Logo ufficiale della Lega I Reietti">
         </div>
       </section>
 
@@ -91,7 +84,7 @@
           <h2>La dashboard è pronta: mancano solo i risultati.</h2>
           <p>Apri l’area aggiornamento, inserisci le sette partite della giornata e genera il file da pubblicare.</p>
         </div>
-        <a class="button button-primary" href="admin.html">Carica la prima giornata</a>
+        <button class="button button-primary js-admin-access" type="button">Carica la prima giornata</button>
       </section>
 
       <section class="content-section" id="cintura">
@@ -219,11 +212,36 @@
         <strong>I Reietti</strong>
         <span>Dashboard fantacalcio — stagione <span id="footer-season">2026/27</span></span>
       </div>
-      <a href="admin.html">Aggiorna i dati</a>
+      <button class="footer-admin-link js-admin-access" type="button">Aggiorna i dati</button>
     </footer>
+  </div>
+
+  <div class="modal-backdrop" id="access-modal" hidden>
+    <section class="access-modal" role="dialog" aria-modal="true" aria-labelledby="access-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="Chiudi">×</button>
+      <div class="modal-icon" aria-hidden="true">🔐</div>
+      <span class="eyebrow">Area riservata</span>
+      <h2 id="access-title">Inserisci il codice di accesso</h2>
+      <p>Il pannello consente di generare il file CSV da pubblicare su GitHub.</p>
+      <form id="access-form">
+        <label class="field-label" for="access-code">Codice</label>
+        <input id="access-code" class="access-code-input" type="password" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••••" required>
+        <button class="button button-primary full-width" type="submit">Entra nel pannello</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="modal-backdrop" id="unauthorized-modal" hidden>
+    <section class="access-modal access-modal-small" role="alertdialog" aria-modal="true" aria-labelledby="unauthorized-title">
+      <div class="modal-icon modal-icon-error" aria-hidden="true">⛔</div>
+      <h2 id="unauthorized-title">Non sei autorizzato</h2>
+      <p>Il codice inserito non è corretto.</p>
+      <button class="button button-secondary full-width" type="button" data-close-unauthorized>Chiudi</button>
+    </section>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="assets/app.js" defer></script>
+  <script src="assets/access.js" defer></script>
 </body>
 </html>

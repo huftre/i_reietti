@@ -8,5 +8,5 @@
   "monthlyPrize": 25,
   "currency": "€",
   "lastUpdated": "",
-  "adminNote": "Aggiorna data/results.csv tramite la pagina admin.html"
+  "adminNote": "Accedi al pannello dalla dashboard e genera data/results.csv"
 }

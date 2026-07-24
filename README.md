@@ -1,167 +1,93 @@
-# I REIETTI — Dashboard Fantacalcio 2026/27
+# I Reietti — Dashboard 2026/27
 
-Sito statico pronto per **GitHub Pages**, dedicato alle competizioni:
+Dashboard statica per GitHub Pages dedicata a:
 
-- **Cintura dei Reietti**: assegnazione iniziale alla 4ª giornata alla squadra con più fantapunti; dalla giornata successiva la cintura passa allo sfidante soltanto in caso di sconfitta del detentore.
-- **Reietto del Mese**: sette blocchi da cinque giornate, dalla 4ª alla 38ª, con premio di **€25** alla squadra con la somma fantapunti più alta in ciascun blocco.
+- **Cintura dei Reietti**, attiva dalla 4ª giornata;
+- **Reietto del Mese**, suddiviso in sette blocchi da cinque giornate con premio di €25;
+- classifica generale dei fantapunti;
+- pannello integrato per generare il file `results.csv` aggiornato.
 
-Il sito non usa database, framework o servizi esterni. Tutto viene letto dai file nella cartella `data`.
-
-## Contenuto del progetto
-
-```text
-index.html                 Dashboard pubblica
-admin.html                 Strumento locale per aggiornare i risultati
-assets/styles.css          Grafica responsive
-assets/app.js              Calcoli e visualizzazione delle competizioni
-assets/admin.js            Generazione guidata del CSV
-assets/favicon.svg         Icona del sito
-data/config.json           Nome lega, stagione e parametri
- data/teams.json           Elenco delle 14 squadre
- data/results.csv          Risultati ufficiali pubblicati
- data/results.demo.csv     Dati dimostrativi
-.nojekyll                  Compatibilità GitHub Pages
-```
-
-## 1. Squadre configurate
-
-Il file `data/teams.json` contiene già le 14 squadre della lega:
-
-| ID dati | Squadra | Sigla |
-|---|---|---|
-| `squadra-01` | Corazzata2000 | C2000 |
-| `squadra-02` | SS FEL LAZIO | FEL |
-| `squadra-03` | TigerTeam | TIG |
-| `squadra-04` | Annusate Milano | ANM |
-| `squadra-05` | Masterchef United | MCU |
-| `squadra-06` | Mandraketeam | MAN |
-| `squadra-07` | SkibidiBobby | SKB |
-| `squadra-08` | Tetta Pig | TET |
-| `squadra-09` | Suino FC | SFC |
-| `squadra-10` | F.C. Salvezza | SAL |
-| `squadra-11` | Foreign Fighters | FFI |
-| `squadra-12` | BULLDOZER MK | BDM |
-| `squadra-13` | Hogiaperso82 | HOG |
-| `squadra-14` | Divano Kiev | DKV |
-
-I nomi, le sigle e le emoji possono essere modificati in `data/teams.json`. **Non modificare gli `id`** dopo aver iniziato a caricare i risultati, altrimenti i dati precedenti non saranno più associati correttamente.
-
-Puoi modificare nome della lega, stagione, premio e giornate in `data/config.json`.
-
-## 2. Pubblicare su GitHub Pages
+## Pubblicazione iniziale su GitHub Pages
 
 1. Crea un nuovo repository GitHub, per esempio `i-reietti`.
-2. Carica **il contenuto di questa cartella** nella radice del repository.
+2. Carica **tutto il contenuto di questa cartella**, mantenendo le sottocartelle `assets` e `data`.
 3. Apri **Settings → Pages**.
-4. In **Build and deployment**, scegli **Deploy from a branch**.
-5. Seleziona il branch `main` e la cartella `/ (root)`.
-6. Salva. GitHub mostrerà l’indirizzo pubblico dopo il primo deploy.
+4. In **Build and deployment** scegli **Deploy from a branch**.
+5. Seleziona il branch `main`, cartella `/ (root)`, quindi salva.
+6. Dopo il primo deploy, GitHub mostrerà l’indirizzo pubblico della dashboard.
 
-Di solito l’indirizzo avrà questa forma:
+## Accesso al pannello aggiornamento
 
-```text
-https://NOME-UTENTE.github.io/i-reietti/
-```
+Nella dashboard sono presenti i pulsanti **Area aggiornamento**, **Carica la prima giornata** e **Aggiorna i dati**.
 
-## 3. Aggiornare una giornata
-
-Apri la pagina:
+Premendo uno di questi pulsanti compare una finestra che richiede il codice. Il codice configurato è:
 
 ```text
-https://NOME-UTENTE.github.io/i-reietti/admin.html
+020523
 ```
 
-La pagina amministrativa:
+Con il codice corretto si apre `admin.html`. Con un codice errato compare il messaggio **Non sei autorizzato**.
 
-1. carica automaticamente il `results.csv` già pubblicato;
-2. permette di scegliere la giornata;
-3. presenta sette righe, una per ogni partita;
-4. controlla che le 14 squadre compaiano una sola volta;
-5. genera il nuovo `results.csv`.
+### Limite importante della protezione
 
-Dopo aver premuto **Aggiungi giornata al file**:
+Il sito non utilizza server, database o servizi esterni. Il controllo del codice avviene quindi nel browser. È utile per evitare accessi casuali, ma **non equivale a un vero sistema di autenticazione**: una persona con competenze tecniche potrebbe analizzare o modificare il codice della pagina.
 
-- usa **Scarica results.csv**, oppure
-- usa **Copia CSV negli appunti**.
+La protezione effettiva della pubblicazione rimane GitHub: soltanto chi ha permessi di scrittura sul repository può sostituire `data/results.csv` e modificare il sito online.
 
-Poi apri `data/results.csv` nel repository GitHub, sostituisci il contenuto e conferma il commit. GitHub Pages aggiornerà automaticamente il sito.
+## Aggiornare una giornata
 
-> La pagina `admin.html` lavora nel browser e non invia dati a server esterni. Non può scrivere direttamente nel repository senza un sistema di autenticazione GitHub, quindi il commit finale resta manuale.
+1. Apri la dashboard pubblicata su GitHub Pages.
+2. Premi **Area aggiornamento**.
+3. Inserisci il codice.
+4. Attendi il caricamento automatico del file `data/results.csv` già online.
+5. Scegli la giornata, dalla 4ª alla 38ª.
+6. Inserisci le sette partite:
+   - squadra A e squadra B;
+   - fantapunti di entrambe;
+   - gol fantacalcistici di entrambe.
+7. Controlla il riepilogo.
+8. Premi **Genera e scarica results.csv**.
 
-## 4. Formato dei dati
+Il file scaricato contiene **tutte le giornate precedenti più quella appena inserita**. Se la giornata era già presente, viene sostituita.
 
-Ogni giornata contiene **14 righe**, una per squadra.
+## Caricare il CSV su GitHub
+
+1. Apri il repository su GitHub.
+2. Entra nella cartella `data`.
+3. Apri `results.csv`.
+4. Scegli la modifica o la sostituzione del file.
+5. Carica il nuovo `results.csv` scaricato dal pannello.
+6. Conferma il commit.
+
+Dopo il nuovo deploy, la dashboard mostrerà i dati aggiornati.
+
+## Formato del file risultati
+
+Il file usa queste colonne:
 
 ```csv
 giornata,squadra,avversario,fantapunti,gol_fatti,gol_subiti
-4,squadra-01,squadra-02,78.5,4,2
-4,squadra-02,squadra-01,71,2,4
 ```
 
-Le righe delle due squadre devono essere speculari. La pagina `admin.html` lo fa automaticamente.
+Le squadre sono salvate tramite gli identificativi presenti in `data/teams.json`. Non è necessario scriverli manualmente: il pannello li genera da solo.
 
-### Significato delle colonne
-
-| Colonna | Descrizione |
-|---|---|
-| `giornata` | Giornata di Serie A, da 4 a 38 |
-| `squadra` | ID presente in `teams.json` |
-| `avversario` | ID della squadra affrontata |
-| `fantapunti` | Punteggio fantacalcio della giornata |
-| `gol_fatti` | Gol ottenuti nello scontro diretto |
-| `gol_subiti` | Gol dell’avversario |
-
-I gol sono necessari per calcolare il passaggio della **Cintura dei Reietti**. I fantapunti sono necessari per il **Reietto del Mese**.
-
-## 5. Regole gestite automaticamente
-
-### Cintura dei Reietti
-
-- Il calcolo parte dalla 4ª giornata.
-- La prima Cintura va all’unica squadra con il punteggio più alto.
-- In caso di vittoria o pareggio, il detentore conserva la Cintura.
-- In caso di sconfitta, la Cintura passa all’avversario.
-- La dashboard mostra detentore, giornata di conquista, difese consecutive e cronologia.
-- Se alla 4ª giornata due squadre hanno lo stesso massimo di fantapunti, il sito segnala una **parità da risolvere**, senza inventare un criterio di spareggio.
-
-### Reietto del Mese
-
-I blocchi sono:
-
-1. giornate 4–8;
-2. giornate 9–13;
-3. giornate 14–18;
-4. giornate 19–23;
-5. giornate 24–28;
-6. giornate 29–33;
-7. giornate 34–38.
-
-La dashboard mostra classifica, fantapunti totali, media e avanzamento del blocco. Il premio configurato è di €25 per ciascun blocco.
-
-## 6. Anteprima locale
-
-Non aprire direttamente `index.html` con un doppio clic, perché alcuni browser bloccano la lettura dei file CSV locali.
-
-Dalla cartella del progetto esegui:
-
-```bash
-python3 -m http.server 8000
-```
-
-Poi visita:
+## File principali
 
 ```text
-http://localhost:8000/
+index.html                  dashboard pubblica
+admin.html                  pannello protetto dal codice
+assets/app.js               calcoli delle competizioni
+assets/access.js            popup e verifica del codice
+assets/admin.js              generazione del CSV
+assets/styles.css            grafica responsive
+data/results.csv             archivio pubblicato
+data/teams.json              nomi delle 14 squadre
+data/config.json             impostazioni della stagione
+assets/logo-i-reietti.png    logo trasparente
 ```
 
-Per vedere i dati dimostrativi senza modificare `results.csv`:
+## Cambiare il codice di accesso
 
-```text
-http://localhost:8000/?demo=1
-```
+Nel file `assets/access.js` è presente l’impronta SHA-256 del codice. Per cambiare codice bisogna calcolare l’impronta del nuovo valore e sostituire la costante `ACCESS_HASH`.
 
-La stessa opzione funziona anche sul sito GitHub Pages aggiungendo `?demo=1` all’indirizzo.
-
-## 7. Backup
-
-Prima di ogni aggiornamento puoi usare **Scarica backup JSON** nella pagina amministrativa. GitHub conserva inoltre la cronologia di tutte le versioni del file tramite i commit.
+Questa operazione è descritta nel codice con appositi commenti. Non inserire password GitHub, token o altre credenziali nel progetto.

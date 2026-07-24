@@ -1,10 +1,14 @@
 (() => {
   'use strict';
 
+  const AUTH_KEY = 'i-reietti-admin-access';
+  const AUTH_VALUE = 'authorized-v1';
+
   const state = {
     teams: [],
     teamMap: new Map(),
-    rows: []
+    rows: [],
+    onlineLoaded: false
   };
 
   const $ = selector => document.querySelector(selector);
@@ -14,15 +18,30 @@
   document.addEventListener('DOMContentLoaded', init);
 
   async function init() {
+    if (!isAuthorized()) {
+      window.location.replace('index.html?auth=required');
+      return;
+    }
+
     try {
       state.teams = await fetchJson('data/teams.json');
       state.teamMap = new Map(state.teams.map(team => [team.id, team]));
       renderMatchEditor();
       bindEvents();
       await loadOnlineData();
+      renderReview();
     } catch (error) {
       console.error(error);
       setStatus($('#base-status'), 'Non riesco a caricare i file di configurazione.', 'error');
+      setConnection(false);
+    }
+  }
+
+  function isAuthorized() {
+    try {
+      return sessionStorage.getItem(AUTH_KEY) === AUTH_VALUE;
+    } catch (error) {
+      return false;
     }
   }
 
@@ -39,79 +58,80 @@
   }
 
   function bindEvents() {
-    $('#csv-file-input').addEventListener('change', importCsvFile);
+    $('#admin-logout').addEventListener('click', logout);
     $('#load-online').addEventListener('click', loadOnlineData);
-    $('#load-demo').addEventListener('click', loadDemoData);
     $('#matchday-minus').addEventListener('click', () => shiftMatchday(-1));
     $('#matchday-plus').addEventListener('click', () => shiftMatchday(1));
     $('#matchday').addEventListener('change', () => {
       clampMatchday();
       fillEditorFromCurrentDay();
+      validateAndRefresh();
     });
-    $('#clear-matches').addEventListener('click', clearEditor);
-    $('#apply-matchday').addEventListener('click', applyMatchday);
-    $('#download-csv').addEventListener('click', downloadCsv);
-    $('#copy-csv').addEventListener('click', copyCsv);
-    $('#download-backup').addEventListener('click', downloadBackup);
-    $('#match-editor').addEventListener('input', validateEditor);
-    $('#match-editor').addEventListener('change', validateEditor);
+    $('#clear-matches').addEventListener('click', () => {
+      clearEditor();
+      validateAndRefresh();
+    });
+    $('#match-editor').addEventListener('input', validateAndRefresh);
+    $('#match-editor').addEventListener('change', validateAndRefresh);
+    $('#generate-csv').addEventListener('click', generateCsv);
+  }
+
+  function logout() {
+    try { sessionStorage.removeItem(AUTH_KEY); } catch (error) { /* nessuna azione */ }
+    window.location.assign('index.html');
   }
 
   async function loadOnlineData() {
     setStatus($('#base-status'), 'Caricamento del file online…');
+    setConnection(false, true);
+    $('#load-online').disabled = true;
+
     try {
       const csvText = await fetchText('data/results.csv');
       state.rows = normalizeRows(parseCsv(csvText));
-      refreshDataViews();
-      setStatus($('#base-status'), state.rows.length ? 'File online caricato correttamente.' : 'File online vuoto: puoi inserire la prima giornata.', 'success');
-      showToast('Base dati online caricata.');
+      state.onlineLoaded = true;
+      setStatus(
+        $('#base-status'),
+        state.rows.length
+          ? `File online caricato: ${state.rows.length} righe disponibili.`
+          : 'Il file online è vuoto: puoi inserire la prima giornata.',
+        'success'
+      );
+      setConnection(true);
+      fillEditorFromCurrentDay();
+      validateAndRefresh();
+      showToast('Archivio online caricato.');
     } catch (error) {
       console.error(error);
-      setStatus($('#base-status'), 'Non è stato possibile caricare results.csv.', 'error');
-    }
-  }
-
-  async function loadDemoData() {
-    try {
-      const csvText = await fetchText('data/results.demo.csv');
-      state.rows = normalizeRows(parseCsv(csvText));
-      refreshDataViews();
-      setStatus($('#base-status'), 'Dati demo caricati. Non pubblicarli per errore.', 'success');
-      showToast('Dati demo caricati.');
-    } catch (error) {
-      setStatus($('#base-status'), 'Impossibile caricare i dati demo.', 'error');
-    }
-  }
-
-  async function importCsvFile(event) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    try {
-      const text = await file.text();
-      const parsed = normalizeRows(parseCsv(text));
-      if (!parsed.length && text.trim().split(/\r?\n/).length > 1) throw new Error('Nessuna riga valida');
-      state.rows = parsed;
-      refreshDataViews();
-      setStatus($('#base-status'), `Importato “${file.name}”.`, 'success');
-      showToast('CSV importato correttamente.');
-    } catch (error) {
-      console.error(error);
-      setStatus($('#base-status'), 'CSV non valido. Controlla intestazioni e formato.', 'error');
+      state.onlineLoaded = false;
+      setStatus($('#base-status'), 'Non è stato possibile caricare data/results.csv. Riprova dalla pagina pubblicata su GitHub Pages.', 'error');
+      setConnection(false);
+      validateAndRefresh();
     } finally {
-      event.target.value = '';
+      $('#load-online').disabled = false;
     }
+  }
+
+  function setConnection(connected, loading = false) {
+    const dot = $('#connection-dot');
+    dot.classList.toggle('connected', connected);
+    dot.classList.toggle('loading', loading);
   }
 
   function renderMatchEditor() {
-    const options = ['<option value="">Seleziona…</option>', ...state.teams.map(team => `<option value="${escapeHtml(team.id)}">${escapeHtml(team.emoji || '⚽')} ${escapeHtml(team.name)}</option>`)].join('');
+    const options = [
+      '<option value="">Seleziona…</option>',
+      ...state.teams.map(team => `<option value="${escapeHtml(team.id)}">${escapeHtml(team.emoji || '⚽')} ${escapeHtml(team.name)}</option>`)
+    ].join('');
+
     $('#match-editor').innerHTML = Array.from({ length: 7 }, (_, index) => `
       <div class="match-row" data-match="${index}">
         <select class="team-a" aria-label="Squadra A, partita ${index + 1}">${options}</select>
-        <input class="fp-a score-input" type="number" min="0" step="0.5" inputmode="decimal" placeholder="FP" aria-label="Fantapunti squadra A, partita ${index + 1}">
-        <input class="goals-a score-input" type="number" min="0" step="1" inputmode="numeric" placeholder="Gol" aria-label="Gol squadra A, partita ${index + 1}">
+        <input class="fp-a score-input" type="text" inputmode="decimal" placeholder="72,5" aria-label="Fantapunti squadra A, partita ${index + 1}">
+        <input class="goals-a score-input" type="number" min="0" step="1" inputmode="numeric" placeholder="2" aria-label="Gol squadra A, partita ${index + 1}">
         <span class="match-divider">VS</span>
-        <input class="goals-b score-input" type="number" min="0" step="1" inputmode="numeric" placeholder="Gol" aria-label="Gol squadra B, partita ${index + 1}">
-        <input class="fp-b score-input" type="number" min="0" step="0.5" inputmode="decimal" placeholder="FP" aria-label="Fantapunti squadra B, partita ${index + 1}">
+        <input class="goals-b score-input" type="number" min="0" step="1" inputmode="numeric" placeholder="1" aria-label="Gol squadra B, partita ${index + 1}">
+        <input class="fp-b score-input" type="text" inputmode="decimal" placeholder="68" aria-label="Fantapunti squadra B, partita ${index + 1}">
         <select class="team-b" aria-label="Squadra B, partita ${index + 1}">${options}</select>
       </div>`).join('');
   }
@@ -120,6 +140,7 @@
     const input = $('#matchday');
     input.value = String(Math.max(4, Math.min(38, Number(input.value || 4) + delta)));
     fillEditorFromCurrentDay();
+    validateAndRefresh();
   }
 
   function clampMatchday() {
@@ -132,29 +153,32 @@
       row.querySelectorAll('select').forEach(select => { select.value = ''; });
       row.querySelectorAll('input').forEach(input => { input.value = ''; });
     });
-    validateEditor();
   }
 
   function fillEditorFromCurrentDay() {
     clearEditor();
-    const day = Number($('#matchday').value);
+    const day = currentDay();
     const dayRows = state.rows.filter(row => row.giornata === day);
     if (!dayRows.length) return;
 
     const visited = new Set();
     const matches = [];
+
     dayRows.forEach(row => {
       const key = [row.squadra, row.avversario].sort().join('|');
       if (!row.avversario || visited.has(key)) return;
       const reverse = dayRows.find(candidate => candidate.squadra === row.avversario && candidate.avversario === row.squadra);
       visited.add(key);
-      matches.push({ a: row, b: reverse || {
-        squadra: row.avversario,
-        avversario: row.squadra,
-        fantapunti: null,
-        golFatti: row.golSubiti,
-        golSubiti: row.golFatti
-      }});
+      matches.push({
+        a: row,
+        b: reverse || {
+          squadra: row.avversario,
+          avversario: row.squadra,
+          fantapunti: null,
+          golFatti: row.golSubiti,
+          golSubiti: row.golFatti
+        }
+      });
     });
 
     matches.slice(0, 7).forEach((match, index) => {
@@ -166,7 +190,18 @@
       editor.querySelector('.fp-b').value = displayNumber(match.b.fantapunti);
       editor.querySelector('.team-b').value = match.b.squadra;
     });
-    validateEditor();
+  }
+
+  function validateAndRefresh() {
+    const validation = validateEditor();
+    renderReview(validation.matches);
+    renderDataSummary(validation.matches, validation.valid);
+    $('#generate-csv').disabled = !validation.valid || !state.onlineLoaded;
+    $('#generate-help').textContent = !state.onlineLoaded
+      ? 'Prima deve essere caricato il file results.csv già online.'
+      : validation.valid
+        ? 'Tutto pronto: il tasto creerà e scaricherà l’archivio completo.'
+        : 'Il tasto si attiva quando tutte le 14 squadre e i punteggi sono corretti.';
   }
 
   function validateEditor() {
@@ -175,13 +210,16 @@
     const selectedTeams = matches.flatMap(match => [match.teamA, match.teamB]).filter(Boolean);
     const duplicates = selectedTeams.filter((id, index) => selectedTeams.indexOf(id) !== index);
 
-    if (selectedTeams.length !== 14) errors.push('Devono essere selezionate tutte le 14 squadre.');
+    if (selectedTeams.length !== 14) errors.push(`Sono state selezionate ${selectedTeams.length} squadre su 14.`);
     if (duplicates.length) errors.push(`Squadre duplicate: ${[...new Set(duplicates)].map(id => teamName(id)).join(', ')}.`);
     if (matches.some(match => match.teamA && match.teamA === match.teamB)) errors.push('Una squadra non può affrontare sé stessa.');
 
     matches.forEach((match, index) => {
-      const numbers = [match.fpA, match.goalsA, match.goalsB, match.fpB];
-      if (numbers.some(value => value === null)) errors.push(`Completa i punteggi della partita ${index + 1}.`);
+      const partiallyFilled = [match.teamA, match.teamB, match.rawFpA, match.rawGoalsA, match.rawGoalsB, match.rawFpB].some(value => String(value ?? '').trim() !== '');
+      if (!partiallyFilled) return;
+
+      if (!match.teamA || !match.teamB) errors.push(`Seleziona entrambe le squadre nella partita ${index + 1}.`);
+      if ([match.fpA, match.goalsA, match.goalsB, match.fpB].some(value => value === null)) errors.push(`Completa correttamente i punteggi della partita ${index + 1}.`);
       if ([match.goalsA, match.goalsB].some(value => value !== null && (!Number.isInteger(value) || value < 0))) errors.push(`I gol della partita ${index + 1} devono essere numeri interi non negativi.`);
       if ([match.fpA, match.fpB].some(value => value !== null && value < 0)) errors.push(`I fantapunti della partita ${index + 1} non possono essere negativi.`);
     });
@@ -190,110 +228,115 @@
     const box = $('#editor-validation');
     if (uniqueErrors.length) {
       setStatus(box, uniqueErrors[0], 'error');
-      $('#apply-matchday').disabled = true;
-      return false;
+      return { valid: false, matches, errors: uniqueErrors };
     }
 
-    setStatus(box, 'Tutto pronto: le 14 squadre sono presenti una sola volta.', 'success');
-    $('#apply-matchday').disabled = false;
-    return true;
+    setStatus(box, 'Tutto corretto: le 14 squadre sono presenti una sola volta.', 'success');
+    return { valid: true, matches, errors: [] };
   }
 
   function readEditor() {
-    return $$('.match-row').map(row => ({
-      teamA: row.querySelector('.team-a').value,
-      fpA: optionalNumber(row.querySelector('.fp-a').value),
-      goalsA: optionalNumber(row.querySelector('.goals-a').value),
-      goalsB: optionalNumber(row.querySelector('.goals-b').value),
-      fpB: optionalNumber(row.querySelector('.fp-b').value),
-      teamB: row.querySelector('.team-b').value
-    }));
+    return $$('.match-row').map(row => {
+      const rawFpA = row.querySelector('.fp-a').value;
+      const rawGoalsA = row.querySelector('.goals-a').value;
+      const rawGoalsB = row.querySelector('.goals-b').value;
+      const rawFpB = row.querySelector('.fp-b').value;
+      return {
+        teamA: row.querySelector('.team-a').value,
+        rawFpA,
+        rawGoalsA,
+        rawGoalsB,
+        rawFpB,
+        fpA: optionalNumber(rawFpA),
+        goalsA: optionalNumber(rawGoalsA),
+        goalsB: optionalNumber(rawGoalsB),
+        fpB: optionalNumber(rawFpB),
+        teamB: row.querySelector('.team-b').value
+      };
+    });
   }
 
-  function applyMatchday() {
-    if (!validateEditor()) return;
-    const day = Number($('#matchday').value);
-    const matches = readEditor();
-    const newRows = [];
+  function renderReview(matches = readEditor()) {
+    const day = currentDay();
+    $('#review-day-label').textContent = `Giornata ${day}`;
 
-    matches.forEach(match => {
-      newRows.push({ giornata: day, squadra: match.teamA, avversario: match.teamB, fantapunti: match.fpA, golFatti: match.goalsA, golSubiti: match.goalsB });
-      newRows.push({ giornata: day, squadra: match.teamB, avversario: match.teamA, fantapunti: match.fpB, golFatti: match.goalsB, golSubiti: match.goalsA });
-    });
+    const hasAnyValue = matches.some(match => match.teamA || match.teamB || match.rawFpA || match.rawFpB || match.rawGoalsA || match.rawGoalsB);
+    if (!hasAnyValue) {
+      $('#review-body').innerHTML = '<tr class="empty-row"><td colspan="6">Compila le partite per visualizzare il riepilogo.</td></tr>';
+      return;
+    }
 
-    state.rows = state.rows
+    $('#review-body').innerHTML = matches.map((match, index) => `
+      <tr>
+        <td><span class="match-number">${index + 1}</span></td>
+        <td>${escapeHtml(teamName(match.teamA))}</td>
+        <td class="numeric">${match.fpA === null ? '—' : formatNumber(match.fpA)}</td>
+        <td class="numeric"><strong>${match.goalsA === null ? '—' : match.goalsA} – ${match.goalsB === null ? '—' : match.goalsB}</strong></td>
+        <td class="numeric">${match.fpB === null ? '—' : formatNumber(match.fpB)}</td>
+        <td>${escapeHtml(teamName(match.teamB))}</td>
+      </tr>`).join('');
+  }
+
+  function renderDataSummary(matches = readEditor(), valid = false) {
+    const days = [...new Set(state.rows.map(row => row.giornata))];
+    const day = currentDay();
+    const rowsWithoutDay = state.rows.filter(row => row.giornata !== day).length;
+    const selectedCount = matches.flatMap(match => [match.teamA, match.teamB]).filter(Boolean).length;
+    const predictedRows = rowsWithoutDay + (valid ? 14 : selectedCount);
+
+    $('#loaded-rows').textContent = `${state.rows.length} righe online`;
+    $('#data-summary').innerHTML = `
+      <div><strong>${days.length}</strong><span>Giornate già online</span></div>
+      <div><strong>${day}ª</strong><span>Giornata selezionata</span></div>
+      <div><strong>${predictedRows}</strong><span>Righe nel CSV finale</span></div>`;
+  }
+
+  function generateCsv() {
+    const validation = validateEditor();
+    if (!validation.valid || !state.onlineLoaded) {
+      validateAndRefresh();
+      return;
+    }
+
+    const day = currentDay();
+    const newRows = rowsFromMatches(day, validation.matches);
+    const mergedRows = state.rows
       .filter(row => row.giornata !== day)
       .concat(newRows)
       .sort((a, b) => a.giornata - b.giornata || teamName(a.squadra).localeCompare(teamName(b.squadra), 'it'));
 
-    refreshDataViews();
-    setStatus($('#base-status'), `Giornata ${day} inserita nel file in memoria. Ora scarica o copia il CSV.`, 'success');
-    showToast(`Giornata ${day} aggiunta.`);
+    state.rows = mergedRows;
+    downloadText('results.csv', serializeCsv(mergedRows), 'text/csv;charset=utf-8');
+    setStatus($('#base-status'), `Giornata ${day} inserita nell’archivio e results.csv scaricato.`, 'success');
+    renderDataSummary(validation.matches, true);
+    showToast(`Giornata ${day}: CSV generato e scaricato.`);
   }
 
-  function refreshDataViews() {
-    $('#loaded-rows').textContent = `${state.rows.length} ${state.rows.length === 1 ? 'riga' : 'righe'}`;
-    const days = [...new Set(state.rows.map(row => row.giornata))].sort((a, b) => a - b);
-    $('#days-count').textContent = `${days.length} ${days.length === 1 ? 'giornata' : 'giornate'}`;
-
-    const latest = days.length ? Math.max(...days) : null;
-    const totalPoints = state.rows.reduce((sum, row) => sum + (row.fantapunti ?? 0), 0);
-    $('#data-summary').innerHTML = `
-      <div><strong>${state.rows.length}</strong><span>Righe totali</span></div>
-      <div><strong>${latest ?? '—'}</strong><span>Ultima giornata</span></div>
-      <div><strong>${formatNumber(totalPoints)}</strong><span>Fantapunti registrati</span></div>`;
-
-    renderPreview();
-    fillEditorFromCurrentDay();
+  function rowsFromMatches(day, matches) {
+    const rows = [];
+    matches.forEach(match => {
+      rows.push({
+        giornata: day,
+        squadra: match.teamA,
+        avversario: match.teamB,
+        fantapunti: match.fpA,
+        golFatti: match.goalsA,
+        golSubiti: match.goalsB
+      });
+      rows.push({
+        giornata: day,
+        squadra: match.teamB,
+        avversario: match.teamA,
+        fantapunti: match.fpB,
+        golFatti: match.goalsB,
+        golSubiti: match.goalsA
+      });
+    });
+    return rows;
   }
 
-  function renderPreview() {
-    const rows = [...state.rows].sort((a, b) => b.giornata - a.giornata || teamName(a.squadra).localeCompare(teamName(b.squadra), 'it')).slice(0, 56);
-    const tbody = $('#preview-body');
-    if (!rows.length) {
-      tbody.innerHTML = '<tr class="empty-row"><td colspan="5">Il file non contiene ancora risultati.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = rows.map(row => `
-      <tr>
-        <td>${row.giornata}</td>
-        <td>${escapeHtml(teamName(row.squadra))}</td>
-        <td>${escapeHtml(teamName(row.avversario))}</td>
-        <td class="numeric">${row.fantapunti === null ? '—' : formatNumber(row.fantapunti)}</td>
-        <td class="numeric">${row.golFatti === null ? '—' : `${row.golFatti}-${row.golSubiti}`}</td>
-      </tr>`).join('');
-  }
-
-  function downloadCsv() {
-    downloadText('results.csv', serializeCsv(state.rows), 'text/csv;charset=utf-8');
-    showToast('results.csv scaricato.');
-  }
-
-  async function copyCsv() {
-    const text = serializeCsv(state.rows);
-    try {
-      await navigator.clipboard.writeText(text);
-      showToast('CSV copiato negli appunti.');
-    } catch (error) {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      textarea.remove();
-      showToast('CSV copiato negli appunti.');
-    }
-  }
-
-  function downloadBackup() {
-    const payload = {
-      generatedAt: new Date().toISOString(),
-      rows: state.rows
-    };
-    downloadText(`i-reietti-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(payload, null, 2), 'application/json;charset=utf-8');
-    showToast('Backup JSON scaricato.');
+  function currentDay() {
+    return Number($('#matchday').value || 4);
   }
 
   function serializeCsv(rows) {
@@ -364,15 +407,19 @@
   }
 
   function teamName(id) {
-    return state.teamMap.get(id)?.name || id || '—';
+    if (!id) return 'Da selezionare';
+    return state.teamMap.get(id)?.name || id;
   }
 
   function displayNumber(value) {
-    return value === null || value === undefined ? '' : String(value);
+    return value === null || value === undefined ? '' : String(value).replace('.', ',');
   }
 
   function formatNumber(value) {
-    return Number(value).toLocaleString('it-IT', { minimumFractionDigits: Number.isInteger(Number(value)) ? 0 : 1, maximumFractionDigits: 2 });
+    return Number(value).toLocaleString('it-IT', {
+      minimumFractionDigits: Number.isInteger(Number(value)) ? 0 : 1,
+      maximumFractionDigits: 2
+    });
   }
 
   function setStatus(element, text, type = '') {
@@ -390,7 +437,7 @@
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();
-    URL.revokeObjectURL(url);
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   function showToast(message) {
@@ -402,6 +449,8 @@
   }
 
   function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]);
+    return String(value ?? '').replace(/[&<>'"]/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    })[char]);
   }
 })();

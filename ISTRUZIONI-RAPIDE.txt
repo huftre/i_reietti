@@ -1,0 +1,15 @@
+I REIETTI — AGGIORNAMENTO RAPIDO
+
+1. Apri la dashboard pubblicata su GitHub Pages.
+2. Premi “Area aggiornamento”.
+3. Inserisci il codice: 020523
+4. Scegli la giornata.
+5. Inserisci le 7 partite con fantapunti e gol.
+6. Controlla il riepilogo.
+7. Premi “Genera e scarica results.csv”.
+8. Su GitHub sostituisci soltanto data/results.csv.
+9. Conferma il commit e attendi il nuovo deploy.
+
+NOTA:
+Il codice blocca gli accessi casuali, ma non è un vero login lato server.
+Solo chi ha accesso in scrittura al repository GitHub può pubblicare modifiche reali.

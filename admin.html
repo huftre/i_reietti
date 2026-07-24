@@ -3,115 +3,133 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111827">
+  <meta name="theme-color" content="#08150e">
   <meta name="description" content="Area aggiornamento dati della dashboard I Reietti.">
   <title>I Reietti — Aggiorna dati</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="assets/styles.css">
+  <script>
+    // Blocca l'apertura diretta della pagina finché non è stato inserito il codice dalla home.
+    try {
+      if (sessionStorage.getItem('i-reietti-admin-access') !== 'authorized-v1') {
+        window.location.replace('index.html?auth=required');
+      }
+    } catch (error) {
+      window.location.replace('index.html?auth=required');
+    }
+  </script>
 </head>
 <body class="admin-body">
   <div class="page-shell">
     <header class="site-header">
       <a class="brand" href="index.html">
-        <span class="brand-mark" aria-hidden="true">R</span>
+        <img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti">
         <span><strong>I REIETTI</strong><small>Area aggiornamento</small></span>
       </a>
-      <nav class="header-actions"><a class="button button-ghost" href="index.html">Torna alla dashboard</a></nav>
+      <nav class="header-actions">
+        <a class="button button-ghost" href="index.html">Dashboard</a>
+        <button class="button button-secondary" id="admin-logout" type="button">Esci</button>
+      </nav>
     </header>
 
     <main class="admin-main">
-      <section class="admin-hero">
+      <section class="admin-hero admin-hero-with-logo">
         <div>
-          <span class="eyebrow">Pannello locale</span>
-          <h1>Aggiorna una giornata<br>senza toccare il codice.</h1>
-          <p>Inserisci le sette partite, controlla i dati e scarica il nuovo <code>results.csv</code>. Il file andrà poi sostituito nella cartella <code>data</code> del repository GitHub.</p>
+          <span class="eyebrow">Generatore CSV</span>
+          <h1>Aggiorna la giornata,<br>controlla e scarica.</h1>
+          <p>La pagina carica automaticamente il file <code>data/results.csv</code> già pubblicato. Tu aggiungi o correggi una giornata e, con un solo tasto, scarichi il nuovo archivio completo.</p>
         </div>
-        <div class="admin-warning">
-          <strong>Nota importante</strong>
-          <p>Questa pagina non salva direttamente su GitHub: una pagina statica non può modificare il repository senza credenziali. Genera però il file già pronto da pubblicare.</p>
+        <div class="admin-logo-panel">
+          <img src="assets/logo-i-reietti.png" alt="Logo ufficiale I Reietti">
         </div>
       </section>
 
-      <section class="admin-grid">
+      <section class="admin-grid admin-grid-top">
         <article class="admin-card">
           <div class="card-heading-row">
-            <div><span class="eyebrow">Passaggio 1</span><h2>Carica la base dati</h2></div>
-            <span class="badge" id="loaded-rows">0 righe</span>
+            <div><span class="eyebrow">Passaggio 1</span><h2>Scegli la giornata</h2></div>
+            <span class="badge" id="loaded-rows">0 righe online</span>
           </div>
-          <p>Il file online viene caricato automaticamente. Puoi anche importare un CSV già esistente o provare i dati demo.</p>
-          <div class="button-row wrap">
-            <label class="button button-secondary file-button">
-              Importa CSV
-              <input id="csv-file-input" type="file" accept=".csv,text/csv" hidden>
-            </label>
-            <button class="button button-ghost" id="load-online" type="button">Ricarica file online</button>
-            <button class="button button-ghost" id="load-demo" type="button">Usa dati demo</button>
-          </div>
-          <div class="validation-box" id="base-status">Caricamento in corso…</div>
-        </article>
-
-        <article class="admin-card">
-          <div class="card-heading-row">
-            <div><span class="eyebrow">Passaggio 2</span><h2>Scegli la giornata</h2></div>
-          </div>
-          <label class="field-label" for="matchday">Giornata da inserire o sostituire</label>
+          <label class="field-label" for="matchday">Giornata da inserire o correggere</label>
           <div class="number-control">
             <button type="button" id="matchday-minus" aria-label="Giornata precedente">−</button>
             <input id="matchday" type="number" min="4" max="38" value="4">
             <button type="button" id="matchday-plus" aria-label="Giornata successiva">+</button>
           </div>
-          <p class="field-help">Se la giornata è già presente, le 14 righe esistenti verranno sostituite.</p>
+          <p class="field-help">Se la giornata è già presente, i suoi dati verranno caricati nei campi e sostituiti nel CSV finale.</p>
+        </article>
+
+        <article class="admin-card data-source-card">
+          <div class="card-heading-row">
+            <div><span class="eyebrow">Archivio di partenza</span><h2>File online</h2></div>
+            <span class="connection-dot" id="connection-dot" aria-hidden="true"></span>
+          </div>
+          <p>Il generatore conserva tutte le giornate già pubblicate e modifica soltanto quella selezionata.</p>
+          <div class="validation-box" id="base-status">Caricamento di results.csv…</div>
+          <button class="button button-ghost compact-button" id="load-online" type="button">Ricarica il file online</button>
         </article>
       </section>
 
       <section class="admin-card match-editor-card">
         <div class="card-heading-row">
-          <div><span class="eyebrow">Passaggio 3</span><h2>Inserisci le sette partite</h2></div>
+          <div><span class="eyebrow">Passaggio 2</span><h2>Inserisci le sette partite</h2></div>
           <button class="button button-ghost" id="clear-matches" type="button">Svuota campi</button>
+        </div>
+        <div class="example-note">
+          <strong>Esempio:</strong> Corazzata2000 — <b>72,5 FP</b> e <b>2 gol</b> contro SS FEL LAZIO — <b>68 FP</b> e <b>1 gol</b>.
+          I fantapunti accettano sia la virgola sia il punto.
         </div>
         <div class="match-editor-head" aria-hidden="true">
           <span>Squadra A</span><span>FP</span><span>Gol</span><span></span><span>Gol</span><span>FP</span><span>Squadra B</span>
         </div>
         <div id="match-editor" class="match-editor"></div>
-        <div class="validation-box" id="editor-validation">Seleziona ogni squadra una sola volta e compila i dati.</div>
-        <div class="button-row end">
-          <button class="button button-primary" id="apply-matchday" type="button">Aggiungi giornata al file</button>
+        <div class="validation-box" id="editor-validation">Seleziona tutte le 14 squadre una sola volta e completa i punteggi.</div>
+      </section>
+
+      <section class="admin-card review-card">
+        <div class="card-heading-row">
+          <div><span class="eyebrow">Passaggio 3</span><h2>Controlla il riepilogo</h2></div>
+          <span class="badge" id="review-day-label">Giornata 4</span>
+        </div>
+        <div class="data-summary" id="data-summary">
+          <div><strong>0</strong><span>Giornate già online</span></div>
+          <div><strong>4ª</strong><span>Giornata selezionata</span></div>
+          <div><strong>0</strong><span>Righe nel CSV finale</span></div>
+        </div>
+        <div class="table-wrap review-table-wrap">
+          <table>
+            <thead>
+              <tr><th>Partita</th><th>Squadra A</th><th class="numeric">FP</th><th class="numeric">Risultato</th><th class="numeric">FP</th><th>Squadra B</th></tr>
+            </thead>
+            <tbody id="review-body">
+              <tr class="empty-row"><td colspan="6">Compila le partite per visualizzare il riepilogo.</td></tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
-      <section class="admin-grid">
-        <article class="admin-card">
-          <div class="card-heading-row">
-            <div><span class="eyebrow">Passaggio 4</span><h2>Controlla il riepilogo</h2></div>
-            <span class="badge" id="days-count">0 giornate</span>
-          </div>
-          <div class="data-summary" id="data-summary"></div>
-          <div class="table-wrap compact-table">
-            <table>
-              <thead><tr><th>G.</th><th>Squadra</th><th>Avversario</th><th class="numeric">FP</th><th class="numeric">Ris.</th></tr></thead>
-              <tbody id="preview-body"></tbody>
-            </table>
-          </div>
-        </article>
+      <section class="admin-card generate-card">
+        <div class="generate-copy">
+          <span class="eyebrow">Passaggio 4</span>
+          <h2>Genera il CSV aggiornato</h2>
+          <p>Il file scaricato contiene sia le giornate già online sia quella appena inserita. Su GitHub dovrai sostituire unicamente <code>data/results.csv</code>.</p>
+        </div>
+        <div class="generate-action">
+          <button class="button button-primary generate-button" id="generate-csv" type="button" disabled>Genera e scarica results.csv</button>
+          <small id="generate-help">Il tasto si attiva quando tutti i dati sono corretti.</small>
+        </div>
+      </section>
 
-        <article class="admin-card publish-card">
-          <div><span class="eyebrow">Passaggio 5</span><h2>Pubblica l’aggiornamento</h2></div>
-          <ol class="publish-steps">
-            <li>Scarica oppure copia il CSV aggiornato.</li>
-            <li>Apri <code>data/results.csv</code> nel repository GitHub.</li>
-            <li>Sostituisci il contenuto e conferma il commit.</li>
-            <li>Dopo pochi secondi la dashboard mostrerà i nuovi dati.</li>
-          </ol>
-          <div class="button-stack">
-            <button class="button button-primary" id="download-csv" type="button">Scarica results.csv</button>
-            <button class="button button-secondary" id="copy-csv" type="button">Copia CSV negli appunti</button>
-            <button class="button button-ghost" id="download-backup" type="button">Scarica backup JSON</button>
-          </div>
-        </article>
+      <section class="publish-help">
+        <strong>Dopo il download:</strong>
+        apri il repository su GitHub, entra nella cartella <code>data</code>, apri <code>results.csv</code>, scegli la modifica del file, incolla o carica il nuovo contenuto e conferma il commit.
       </section>
     </main>
 
-    <footer class="site-footer"><div><strong>I Reietti</strong><span>Strumento di aggiornamento locale</span></div><a href="README.md">Guida pubblicazione</a></footer>
+    <footer class="site-footer">
+      <div><strong>I Reietti</strong><span>Generatore CSV integrato nella dashboard</span></div>
+      <a href="README.md">Guida completa</a>
+    </footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="assets/admin.js" defer></script>
