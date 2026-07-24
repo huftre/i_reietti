@@ -1,0 +1,16 @@
+[
+  {"id":"squadra-01","name":"Squadra 1","shortName":"S1","emoji":"🛡️"},
+  {"id":"squadra-02","name":"Squadra 2","shortName":"S2","emoji":"⚡"},
+  {"id":"squadra-03","name":"Squadra 3","shortName":"S3","emoji":"🔥"},
+  {"id":"squadra-04","name":"Squadra 4","shortName":"S4","emoji":"🦁"},
+  {"id":"squadra-05","name":"Squadra 5","shortName":"S5","emoji":"🐺"},
+  {"id":"squadra-06","name":"Squadra 6","shortName":"S6","emoji":"🦅"},
+  {"id":"squadra-07","name":"Squadra 7","shortName":"S7","emoji":"👑"},
+  {"id":"squadra-08","name":"Squadra 8","shortName":"S8","emoji":"💀"},
+  {"id":"squadra-09","name":"Squadra 9","shortName":"S9","emoji":"🐉"},
+  {"id":"squadra-10","name":"Squadra 10","shortName":"S10","emoji":"🎯"},
+  {"id":"squadra-11","name":"Squadra 11","shortName":"S11","emoji":"🧨"},
+  {"id":"squadra-12","name":"Squadra 12","shortName":"S12","emoji":"🦈"},
+  {"id":"squadra-13","name":"Squadra 13","shortName":"S13","emoji":"🚀"},
+  {"id":"squadra-14","name":"Squadra 14","shortName":"S14","emoji":"🧱"}
+]

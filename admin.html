@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="Area aggiornamento dati della dashboard I Reietti.">
+  <title>I Reietti — Aggiorna dati</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body class="admin-body">
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">R</span>
+        <span><strong>I REIETTI</strong><small>Area aggiornamento</small></span>
+      </a>
+      <nav class="header-actions"><a class="button button-ghost" href="index.html">Torna alla dashboard</a></nav>
+    </header>
+
+    <main class="admin-main">
+      <section class="admin-hero">
+        <div>
+          <span class="eyebrow">Pannello locale</span>
+          <h1>Aggiorna una giornata<br>senza toccare il codice.</h1>
+          <p>Inserisci le sette partite, controlla i dati e scarica il nuovo <code>results.csv</code>. Il file andrà poi sostituito nella cartella <code>data</code> del repository GitHub.</p>
+        </div>
+        <div class="admin-warning">
+          <strong>Nota importante</strong>
+          <p>Questa pagina non salva direttamente su GitHub: una pagina statica non può modificare il repository senza credenziali. Genera però il file già pronto da pubblicare.</p>
+        </div>
+      </section>
+
+      <section class="admin-grid">
+        <article class="admin-card">
+          <div class="card-heading-row">
+            <div><span class="eyebrow">Passaggio 1</span><h2>Carica la base dati</h2></div>
+            <span class="badge" id="loaded-rows">0 righe</span>
+          </div>
+          <p>Il file online viene caricato automaticamente. Puoi anche importare un CSV già esistente o provare i dati demo.</p>
+          <div class="button-row wrap">
+            <label class="button button-secondary file-button">
+              Importa CSV
+              <input id="csv-file-input" type="file" accept=".csv,text/csv" hidden>
+            </label>
+            <button class="button button-ghost" id="load-online" type="button">Ricarica file online</button>
+            <button class="button button-ghost" id="load-demo" type="button">Usa dati demo</button>
+          </div>
+          <div class="validation-box" id="base-status">Caricamento in corso…</div>
+        </article>
+
+        <article class="admin-card">
+          <div class="card-heading-row">
+            <div><span class="eyebrow">Passaggio 2</span><h2>Scegli la giornata</h2></div>
+          </div>
+          <label class="field-label" for="matchday">Giornata da inserire o sostituire</label>
+          <div class="number-control">
+            <button type="button" id="matchday-minus" aria-label="Giornata precedente">−</button>
+            <input id="matchday" type="number" min="4" max="38" value="4">
+            <button type="button" id="matchday-plus" aria-label="Giornata successiva">+</button>
+          </div>
+          <p class="field-help">Se la giornata è già presente, le 14 righe esistenti verranno sostituite.</p>
+        </article>
+      </section>
+
+      <section class="admin-card match-editor-card">
+        <div class="card-heading-row">
+          <div><span class="eyebrow">Passaggio 3</span><h2>Inserisci le sette partite</h2></div>
+          <button class="button button-ghost" id="clear-matches" type="button">Svuota campi</button>
+        </div>
+        <div class="match-editor-head" aria-hidden="true">
+          <span>Squadra A</span><span>FP</span><span>Gol</span><span></span><span>Gol</span><span>FP</span><span>Squadra B</span>
+        </div>
+        <div id="match-editor" class="match-editor"></div>
+        <div class="validation-box" id="editor-validation">Seleziona ogni squadra una sola volta e compila i dati.</div>
+        <div class="button-row end">
+          <button class="button button-primary" id="apply-matchday" type="button">Aggiungi giornata al file</button>
+        </div>
+      </section>
+
+      <section class="admin-grid">
+        <article class="admin-card">
+          <div class="card-heading-row">
+            <div><span class="eyebrow">Passaggio 4</span><h2>Controlla il riepilogo</h2></div>
+            <span class="badge" id="days-count">0 giornate</span>
+          </div>
+          <div class="data-summary" id="data-summary"></div>
+          <div class="table-wrap compact-table">
+            <table>
+              <thead><tr><th>G.</th><th>Squadra</th><th>Avversario</th><th class="numeric">FP</th><th class="numeric">Ris.</th></tr></thead>
+              <tbody id="preview-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="admin-card publish-card">
+          <div><span class="eyebrow">Passaggio 5</span><h2>Pubblica l’aggiornamento</h2></div>
+          <ol class="publish-steps">
+            <li>Scarica oppure copia il CSV aggiornato.</li>
+            <li>Apri <code>data/results.csv</code> nel repository GitHub.</li>
+            <li>Sostituisci il contenuto e conferma il commit.</li>
+            <li>Dopo pochi secondi la dashboard mostrerà i nuovi dati.</li>
+          </ol>
+          <div class="button-stack">
+            <button class="button button-primary" id="download-csv" type="button">Scarica results.csv</button>
+            <button class="button button-secondary" id="copy-csv" type="button">Copia CSV negli appunti</button>
+            <button class="button button-ghost" id="download-backup" type="button">Scarica backup JSON</button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Strumento di aggiornamento locale</span></div><a href="README.md">Guida pubblicazione</a></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/admin.js" defer></script>
+</body>
+</html>

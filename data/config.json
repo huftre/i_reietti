@@ -1,0 +1,12 @@
+{
+  "leagueName": "I REIETTI",
+  "season": "2026/27",
+  "subtitle": "Dashboard competizioni speciali",
+  "startMatchday": 4,
+  "endMatchday": 38,
+  "monthlyBlockSize": 5,
+  "monthlyPrize": 25,
+  "currency": "€",
+  "lastUpdated": "",
+  "adminNote": "Aggiorna data/results.csv tramite la pagina admin.html"
+}
