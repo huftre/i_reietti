@@ -1,18 +1,22 @@
-AGGIORNAMENTO DASHBOARD I REIETTI
+AGGIORNAMENTO — RIQUADRO REGOLAMENTO PDF
 
-Sono stati rimossi:
-- il riquadro "Prossima difesa";
-- il riquadro "Premio per blocco";
-- il banner "La dashboard è pronta: mancano solo i risultati".
+Su GitHub sostituisci/carica questi file mantenendo le cartelle:
 
-I due riquadri rimanenti sono ora più larghi e disposti orizzontalmente:
-- Detentore della Cintura;
-- Leader del blocco attuale.
-
-PER AGGIORNARE UN REPOSITORY GIÀ PUBBLICATO
-Sostituisci soltanto questi tre file:
 - index.html
 - assets/styles.css
-- assets/app.js
+- assets/pdf-reader.js
+- regolamento/LEGGIMI.txt
 
-Non sostituire data/results.csv, così non perdi i risultati già caricati.
+Poi esporta il regolamento in PDF, rinominalo esattamente:
+
+regolamento.pdf
+
+e caricalo dentro la cartella:
+
+regolamento
+
+Il percorso finale deve essere:
+
+regolamento/regolamento.pdf
+
+Non sostituire data/results.csv: i risultati già pubblicati rimangono invariati.

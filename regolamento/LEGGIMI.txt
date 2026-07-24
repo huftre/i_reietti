@@ -1,0 +1,15 @@
+COME PUBBLICARE IL REGOLAMENTO
+
+1. Esporta il regolamento definitivo in formato PDF.
+2. Rinomina il file esattamente:
+
+   regolamento.pdf
+
+3. Caricalo su GitHub dentro questa cartella:
+
+   regolamento/regolamento.pdf
+
+4. Conferma il commit.
+
+Il riquadro “Regolamento della Lega” presente nella dashboard aprirà automaticamente questo file.
+Per pubblicare una nuova versione, sostituisci il PDF mantenendo invariati cartella e nome.

@@ -43,7 +43,7 @@
         </div>
       </section>
 
-      <section class="status-grid" aria-label="Riepilogo competizioni">
+      <section class="status-grid" aria-label="Riepilogo competizioni e documenti">
         <article class="status-card status-card-belt">
           <div class="card-icon" aria-hidden="true">🏆</div>
           <div>
@@ -60,6 +60,15 @@
             <p id="monthly-leader-detail">Il conteggio parte dalla 4ª giornata.</p>
           </div>
         </article>
+        <button class="status-card status-card-rules" id="open-rules" type="button" aria-haspopup="dialog">
+          <div class="card-icon" aria-hidden="true">📘</div>
+          <div>
+            <span class="card-label">Regolamento della Lega</span>
+            <h2>Consulta il regolamento</h2>
+            <p>Apri il PDF ufficiale della stagione.</p>
+          </div>
+          <span class="status-card-arrow" aria-hidden="true">↗</span>
+        </button>
       </section>
 
       <section class="content-section" id="cintura">
@@ -191,6 +200,43 @@
     </footer>
   </div>
 
+  <div class="pdf-backdrop" id="rules-modal" hidden>
+    <section class="pdf-reader" role="dialog" aria-modal="true" aria-labelledby="rules-title">
+      <header class="pdf-reader-header">
+        <div class="pdf-reader-title">
+          <span class="pdf-reader-icon" aria-hidden="true">📘</span>
+          <div>
+            <span class="eyebrow">Documento ufficiale</span>
+            <h2 id="rules-title">Regolamento della Lega</h2>
+          </div>
+        </div>
+        <button class="pdf-reader-close" id="close-rules" type="button" aria-label="Chiudi il regolamento e torna alla dashboard">×</button>
+      </header>
+
+      <div class="pdf-reader-body">
+        <div class="pdf-reader-loading" id="rules-loading">
+          <span class="pdf-spinner" aria-hidden="true"></span>
+          <strong>Apertura del regolamento…</strong>
+        </div>
+
+        <div class="pdf-reader-message" id="rules-unavailable" hidden>
+          <span aria-hidden="true">📂</span>
+          <h3>Regolamento non ancora disponibile</h3>
+          <p>Carica su GitHub il PDF con questo percorso esatto:</p>
+          <code>regolamento/regolamento.pdf</code>
+        </div>
+
+        <iframe
+          id="rules-frame"
+          class="pdf-frame"
+          title="Lettore PDF del regolamento della Lega I Reietti"
+          loading="lazy"
+          hidden>
+        </iframe>
+      </div>
+    </section>
+  </div>
+
   <div class="modal-backdrop" id="access-modal" hidden>
     <section class="access-modal" role="dialog" aria-modal="true" aria-labelledby="access-title">
       <button class="modal-close" type="button" data-close-modal aria-label="Chiudi">×</button>
@@ -218,5 +264,6 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="assets/app.js" defer></script>
   <script src="assets/access.js" defer></script>
+  <script src="assets/pdf-reader.js" defer></script>
 </body>
 </html>
