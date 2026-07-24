@@ -1,0 +1,18 @@
+AGGIORNAMENTO DASHBOARD I REIETTI
+
+Sono stati rimossi:
+- il riquadro "Prossima difesa";
+- il riquadro "Premio per blocco";
+- il banner "La dashboard è pronta: mancano solo i risultati".
+
+I due riquadri rimanenti sono ora più larghi e disposti orizzontalmente:
+- Detentore della Cintura;
+- Leader del blocco attuale.
+
+PER AGGIORNARE UN REPOSITORY GIÀ PUBBLICATO
+Sostituisci soltanto questi tre file:
+- index.html
+- assets/styles.css
+- assets/app.js
+
+Non sostituire data/results.csv, così non perdi i risultati già caricati.

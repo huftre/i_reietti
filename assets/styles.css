@@ -117,29 +117,34 @@ code {
 .belt-plate span { font-size: 4.3rem; line-height: .85; font-weight: 950; }
 .belt-plate small { font-size: .58rem; font-weight: 950; letter-spacing: .2em; }
 
-.status-grid { margin: 22px 0 72px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.status-grid {
+  margin: 18px 0 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
 .status-card {
-  min-height: 155px; padding: 20px; display: flex; gap: 14px;
-  border-radius: var(--radius-lg); border: 1px solid var(--line); background: var(--surface);
-  backdrop-filter: blur(18px); box-shadow: 0 12px 40px rgba(0,0,0,.14);
+  min-height: 128px;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 12px 40px rgba(0,0,0,.14);
 }
+.status-card > div:last-child { min-width: 0; flex: 1; }
 .status-card-belt { border-color: rgba(251,191,36,.28); background: linear-gradient(150deg, rgba(87,58,10,.27), rgba(17,24,39,.88)); }
-.card-icon { width: 42px; height: 42px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 13px; background: rgba(255,255,255,.06); font-size: 1.25rem; }
+.status-card-leader { border-color: rgba(34,211,238,.22); background: linear-gradient(150deg, rgba(15,65,77,.24), rgba(17,24,39,.88)); }
+.card-icon { width: 48px; height: 48px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 15px; background: rgba(255,255,255,.06); font-size: 1.35rem; }
 .card-label { color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 800; }
-.status-card h2 { margin: 5px 0 4px; font-size: 1.05rem; line-height: 1.25; }
-.status-card p { margin: 0; color: var(--muted); font-size: .83rem; }
-
-.empty-state {
-  margin: -42px 0 72px; padding: 24px; align-items: center; gap: 18px;
-  border: 1px dashed rgba(139,92,246,.45); border-radius: var(--radius-lg); background: rgba(139,92,246,.07);
-}
-.empty-state:not([hidden]) { display: flex; }
-.empty-state-icon { font-size: 2rem; }
-.empty-state h2 { margin: 0 0 5px; font-size: 1.05rem; }
-.empty-state p { margin: 0; color: var(--muted); }
-.empty-state .button { margin-left: auto; white-space: nowrap; }
+.status-card h2 { margin: 6px 0 4px; font-size: clamp(1.08rem, 2vw, 1.35rem); line-height: 1.2; }
+.status-card p { margin: 0; color: var(--muted); font-size: .86rem; }
 
 .content-section { padding: 42px 0 68px; scroll-margin-top: 24px; }
+.status-grid + .content-section { padding-top: 20px; }
 .content-section + .content-section { border-top: 1px solid var(--line); }
 .section-heading { margin-bottom: 26px; display: grid; grid-template-columns: minmax(280px, .8fr) minmax(320px, 1.2fr); gap: 30px; align-items: end; }
 .section-heading.compact { align-items: center; }
@@ -275,7 +280,7 @@ select option { color: #101522; }
 @media (max-width: 980px) {
   .hero { grid-template-columns: 1fr; }
   .hero-art { min-height: 240px; }
-  .status-grid { grid-template-columns: repeat(2, 1fr); }
+  .status-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .belt-layout { grid-template-columns: 1fr; }
   .admin-hero { grid-template-columns: 1fr; }
   .match-editor-head { display: none; }
@@ -294,10 +299,9 @@ select option { color: #101522; }
   .hero { margin-top: 18px; min-height: auto; padding: 28px 22px; border-radius: 22px; }
   .hero-art { display: none; }
   .hero h1 { font-size: clamp(2.45rem, 15vw, 4rem); }
-  .status-grid { grid-template-columns: 1fr; margin-bottom: 45px; }
-  .status-card { min-height: 130px; }
-  .empty-state:not([hidden]) { margin-top: -20px; flex-direction: column; align-items: flex-start; }
-  .empty-state .button { margin-left: 0; width: 100%; }
+  .status-grid { grid-template-columns: 1fr; margin: 14px 0 16px; gap: 10px; }
+  .status-card { min-height: 112px; padding: 18px; }
+  .status-grid + .content-section { padding-top: 18px; }
   .content-section { padding: 34px 0 50px; }
   .section-heading { grid-template-columns: 1fr; gap: 14px; }
   .section-heading h2 { font-size: 2.35rem; }

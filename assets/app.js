@@ -41,7 +41,6 @@
     } catch (error) {
       console.error(error);
       showToast('Impossibile caricare i dati. Controlla i file nella cartella data.');
-      $('#empty-state').hidden = false;
     }
   }
 
@@ -131,7 +130,6 @@
     $('#league-name').textContent = leagueName;
     $('#season-label').textContent = `Stagione ${season}`;
     $('#footer-season').textContent = season;
-    $('#monthly-prize').textContent = formatCurrency(monthlyPrize, currency);
     $('#period-prize').textContent = formatCurrency(monthlyPrize, currency);
     const latestDay = state.rows.filter(row => row.fantapunti !== null).reduce((max, row) => Math.max(max, row.giornata), 0);
     $('#last-updated').textContent = lastUpdated ? `Aggiornato: ${lastUpdated}` : (latestDay ? `Dati fino alla ${latestDay}ª giornata` : 'Aggiornamento manuale via CSV');
@@ -139,9 +137,6 @@
   }
 
   function renderAll() {
-    const hasData = state.rows.some(row => row.fantapunti !== null);
-    $('#empty-state').hidden = hasData;
-
     const belt = calculateBelt();
     renderBelt(belt);
 
@@ -252,7 +247,6 @@
       setText('#belt-holder-large', 'Assegnazione sospesa');
       setText('#belt-streak', 'Serve applicare il criterio di spareggio previsto dal regolamento.');
       setText('#belt-avatar', '⚖️');
-      setText('#next-challenger', 'In attesa del detentore');
       return;
     }
 
@@ -266,8 +260,6 @@
       setText('#belt-defenses', '0');
       setText('#belt-holders-count', '0');
       setText('#belt-history-count', '0 eventi');
-      setText('#next-challenger', 'Calendario da caricare');
-      setText('#next-challenger-detail', 'La prossima sfida comparirà appena sarà disponibile.');
       renderBeltTimeline([]);
       return;
     }
@@ -283,15 +275,6 @@
     setText('#belt-defenses', String(belt.currentDefenses));
     setText('#belt-holders-count', String(belt.holders.length));
     setText('#belt-history-count', `${belt.events.length} ${belt.events.length === 1 ? 'evento' : 'eventi'}`);
-
-    if (belt.nextFixture) {
-      const challenger = team(belt.nextFixture.avversario);
-      setText('#next-challenger', challenger.name);
-      setText('#next-challenger-detail', `${holderTeam.name} difenderà la Cintura alla ${belt.nextFixture.giornata}ª giornata.`);
-    } else {
-      setText('#next-challenger', 'Prossimo avversario non disponibile');
-      setText('#next-challenger-detail', 'Puoi mostrare lo sfidante caricando in anticipo il calendario della giornata successiva.');
-    }
 
     renderBeltTimeline(belt.events);
   }
