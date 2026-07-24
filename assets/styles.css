@@ -1182,3 +1182,433 @@ body.pdf-open {
     order: 2;
   }
 }
+
+
+/* =========================================================
+   Animazione goal realistica — revisione 2
+   Porta nascosta a riposo, tiro centrato nella rete e GOOOL.
+   ========================================================= */
+.hero-art {
+  --goal-x-35: 42px;
+  --goal-y-35: 0px;
+  --goal-x-72: 86px;
+  --goal-y-72: 0px;
+  --goal-x-full: 120px;
+  --goal-y-full: 0px;
+}
+
+.hero-goal {
+  position: absolute;
+  z-index: 4;
+  right: -1.5%;
+  top: 51%;
+  width: clamp(172px, 43%, 238px);
+  aspect-ratio: 1.62;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate3d(38px, -50%, 0) scale(.68);
+  transform-origin: 50% 86%;
+  filter: drop-shadow(0 18px 16px rgba(0, 0, 0, .38));
+  transition: none;
+}
+
+.hero-goal::before,
+.hero-goal::after {
+  content: none;
+}
+
+.goal-shadow {
+  position: absolute;
+  z-index: 0;
+  left: 2%;
+  right: -3%;
+  bottom: -5%;
+  height: 18%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0,0,0,.44) 0%, rgba(0,0,0,.2) 46%, transparent 74%);
+  filter: blur(5px);
+  transform: skewX(-8deg);
+}
+
+.goal-depth {
+  position: absolute;
+  z-index: 1;
+  left: 14%;
+  right: 0;
+  top: 8%;
+  bottom: 3%;
+  border-top: 4px solid rgba(245, 248, 246, .92);
+  border-right: 4px solid rgba(245, 248, 246, .9);
+  border-bottom: 4px solid rgba(245, 248, 246, .78);
+  clip-path: polygon(0 0, 86% 8%, 100% 29%, 91% 100%, 5% 87%);
+  background:
+    repeating-linear-gradient(0deg, transparent 0 12px, rgba(236,245,240,.34) 12px 14px),
+    repeating-linear-gradient(90deg, transparent 0 13px, rgba(236,245,240,.34) 13px 15px);
+  transform: perspective(250px) rotateY(-9deg) skewY(-4deg);
+  transform-origin: left center;
+}
+
+.goal-net {
+  position: absolute;
+  z-index: 2;
+  left: 4.5%;
+  top: 6%;
+  width: 78%;
+  height: 82%;
+  border-radius: 2px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 13px, rgba(255,255,255,.43) 13px 15px),
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(255,255,255,.43) 14px 16px);
+  clip-path: polygon(0 0, 100% 3%, 96% 100%, 4% 100%);
+  opacity: .88;
+}
+
+.goal-front {
+  position: absolute;
+  z-index: 5;
+  left: 1%;
+  top: 2%;
+  width: 81%;
+  height: 84%;
+  border: clamp(5px, .9vw, 7px) solid #f8faf8;
+  border-bottom-width: clamp(4px, .75vw, 6px);
+  border-radius: 5px 5px 2px 2px;
+  box-shadow:
+    inset 0 0 0 1px rgba(180, 192, 185, .28),
+    0 2px 0 rgba(255,255,255,.55);
+}
+
+.goal-front::before,
+.goal-front::after {
+  content: "";
+  position: absolute;
+  bottom: -9%;
+  width: 26%;
+  height: clamp(4px, .7vw, 6px);
+  border-radius: 999px;
+  background: #f8faf8;
+}
+
+.goal-front::before {
+  left: -4%;
+  transform: rotate(-10deg);
+  transform-origin: left center;
+}
+
+.goal-front::after {
+  right: -18%;
+  transform: rotate(12deg);
+  transform-origin: right center;
+}
+
+.goal-target {
+  position: absolute;
+  left: 58%;
+  top: 57%;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+}
+
+.goal-celebration {
+  position: absolute;
+  z-index: 7;
+  right: -2%;
+  top: 7%;
+  width: clamp(178px, 43%, 245px);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(14px) scale(.42) rotate(-6deg);
+}
+
+.goal-celebration span {
+  position: relative;
+  display: inline-block;
+  color: #ffd43b;
+  font-size: clamp(1.75rem, 4.7vw, 3.45rem);
+  font-weight: 1000;
+  letter-spacing: .035em;
+  line-height: 1;
+  text-shadow:
+    0 3px 0 #0c4d2b,
+    0 6px 0 rgba(0,0,0,.35),
+    0 0 18px rgba(255,212,59,.42);
+  -webkit-text-stroke: 1px rgba(255,255,255,.72);
+}
+
+.goal-celebration span::before,
+.goal-celebration span::after {
+  position: absolute;
+  top: 50%;
+  color: #fff3a7;
+  font-size: .42em;
+  text-shadow: 0 2px 5px rgba(0,0,0,.4);
+}
+
+.goal-celebration span::before {
+  content: "★";
+  left: -1.15em;
+  transform: translateY(-65%) rotate(-18deg);
+}
+
+.goal-celebration span::after {
+  content: "★";
+  right: -1.15em;
+  transform: translateY(-35%) rotate(18deg);
+}
+
+.hero-art.is-logo-shooting .hero-goal {
+  visibility: visible;
+  animation: goal-enter-and-react 4.2s cubic-bezier(.25,.74,.28,1) both;
+}
+
+.hero-art.is-logo-shooting .goal-net,
+.hero-art.is-logo-shooting .goal-depth {
+  animation: net-impact 4.2s ease-in-out both;
+}
+
+.hero-art.is-logo-shooting .hero-logo-trigger {
+  animation: logo-to-goal-real 4.2s cubic-bezier(.27,.72,.23,1) both;
+}
+
+.hero-art.is-logo-shooting .hero-logo {
+  animation: logo-morph-to-ball-real 4.2s ease-in-out both;
+}
+
+.hero-art.is-logo-shooting .hero-ball {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero-art.is-logo-shooting .hero-ball > span {
+  animation: ball-inside-net 4.2s cubic-bezier(.25,.75,.22,1) both;
+}
+
+.hero-art.is-logo-shooting .goal-celebration {
+  visibility: visible;
+  animation: goal-text-pop 4.2s cubic-bezier(.2,.8,.2,1) both;
+}
+
+@keyframes goal-enter-and-react {
+  0%, 4% {
+    opacity: 0;
+    transform: translate3d(38px, -50%, 0) scale(.68);
+  }
+  14% {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0) scale(1);
+  }
+  61% {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0) scale(1);
+  }
+  66% {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0) scaleX(1.07) scaleY(.94) rotate(.7deg);
+  }
+  71% {
+    transform: translate3d(0, -50%, 0) scaleX(.98) scaleY(1.035) rotate(-.35deg);
+  }
+  77%, 88% {
+    opacity: 1;
+    transform: translate3d(0, -50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(30px, -50%, 0) scale(.76);
+  }
+}
+
+@keyframes net-impact {
+  0%, 60% { transform: translate3d(0,0,0); }
+  65% { transform: translate3d(8px, 3px, 0) scaleX(1.055); }
+  69% { transform: translate3d(-4px, 1px, 0) scaleX(.98); }
+  73% { transform: translate3d(3px, 0, 0) scaleX(1.015); }
+  78%, 100% { transform: translate3d(0,0,0); }
+}
+
+@keyframes logo-to-goal-real {
+  0% {
+    transform: translate3d(0,0,0) scale(1) rotate(0deg);
+  }
+  10% {
+    transform: translate3d(-11px, 6px, 0) scale(1.035) rotate(-2deg);
+  }
+  31% {
+    transform: translate3d(var(--goal-x-35), var(--goal-y-35), 0) scale(.86) rotate(4deg);
+  }
+  47% {
+    transform: translate3d(var(--goal-x-72), var(--goal-y-72), 0) scale(.43) rotate(14deg);
+  }
+  59%, 78% {
+    transform: translate3d(var(--goal-x-full), var(--goal-y-full), 0) scale(.2) rotate(24deg);
+  }
+  88% {
+    transform: translate3d(var(--goal-x-35), var(--goal-y-35), 0) scale(.78) rotate(-3deg);
+  }
+  100% {
+    transform: translate3d(0,0,0) scale(1) rotate(0deg);
+  }
+}
+
+@keyframes logo-morph-to-ball-real {
+  0%, 30% { opacity: 1; transform: scale(1) rotate(0deg); }
+  43% { opacity: .8; transform: scale(.69) rotate(6deg); }
+  50% { opacity: 0; transform: scale(.16) rotate(20deg); }
+  82% { opacity: 0; transform: scale(.16) rotate(-8deg); }
+  92% { opacity: .58; transform: scale(.72) rotate(-2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes ball-inside-net {
+  0%, 44% {
+    opacity: 0;
+    transform: translate3d(-8px, 4px, 0) scale(.18) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(.66) rotate(100deg);
+  }
+  58% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1.08) rotate(350deg);
+  }
+  64% {
+    opacity: 1;
+    transform: translate3d(9px, 9px, 0) scale(.84) rotate(560deg);
+  }
+  69% {
+    opacity: 1;
+    transform: translate3d(-3px, 14px, 0) scale(.76) rotate(690deg);
+  }
+  76% {
+    opacity: 1;
+    transform: translate3d(5px, 16px, 0) scale(.72) rotate(780deg);
+  }
+  82% {
+    opacity: 0;
+    transform: translate3d(5px, 18px, 0) scale(.55) rotate(850deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(.18) rotate(900deg);
+  }
+}
+
+@keyframes goal-text-pop {
+  0%, 62% {
+    opacity: 0;
+    transform: translateY(14px) scale(.42) rotate(-6deg);
+  }
+  67% {
+    opacity: 1;
+    transform: translateY(0) scale(1.28) rotate(-3deg);
+  }
+  72% {
+    opacity: 1;
+    transform: translateY(-3px) scale(.96) rotate(2deg);
+  }
+  77%, 84% {
+    opacity: 1;
+    transform: translateY(-5px) scale(1) rotate(0deg);
+  }
+  91%, 100% {
+    opacity: 0;
+    transform: translateY(-22px) scale(.86) rotate(2deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-goal {
+    right: -4%;
+    top: 53%;
+    width: clamp(140px, 45%, 178px);
+  }
+
+  .goal-celebration {
+    right: -4%;
+    top: 5%;
+    width: clamp(145px, 46%, 188px);
+  }
+
+  .goal-celebration span {
+    font-size: clamp(1.45rem, 9vw, 2.45rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-art.is-logo-shooting .hero-goal,
+  .hero-art.is-logo-shooting .goal-net,
+  .hero-art.is-logo-shooting .goal-depth,
+  .hero-art.is-logo-shooting .hero-logo-trigger,
+  .hero-art.is-logo-shooting .hero-logo,
+  .hero-art.is-logo-shooting .hero-ball > span,
+  .hero-art.is-logo-shooting .goal-celebration {
+    animation-duration: 1.2s;
+  }
+}
+
+
+/* Correzione geometria del tiro: misurazione sulla porta nella posizione finale. */
+.hero-goal.is-measuring {
+  visibility: hidden !important;
+  opacity: 0 !important;
+  transform: translate3d(0, -50%, 0) scale(1) !important;
+  animation: none !important;
+}
+
+/* Il pallone resta leggibile quando arriva dentro la rete. */
+@keyframes logo-to-goal-real {
+  0% {
+    transform: translate3d(0,0,0) scale(1) rotate(0deg);
+  }
+  10% {
+    transform: translate3d(-11px, 6px, 0) scale(1.035) rotate(-2deg);
+  }
+  31% {
+    transform: translate3d(var(--goal-x-35), var(--goal-y-35), 0) scale(.86) rotate(4deg);
+  }
+  47% {
+    transform: translate3d(var(--goal-x-72), var(--goal-y-72), 0) scale(.46) rotate(14deg);
+  }
+  59%, 78% {
+    transform: translate3d(var(--goal-x-full), var(--goal-y-full), 0) scale(.27) rotate(24deg);
+  }
+  88% {
+    transform: translate3d(var(--goal-x-35), var(--goal-y-35), 0) scale(.78) rotate(-3deg);
+  }
+  100% {
+    transform: translate3d(0,0,0) scale(1) rotate(0deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .hero-goal {
+    right: 3%;
+    top: 53%;
+    width: clamp(138px, 42%, 166px);
+  }
+
+  .goal-celebration {
+    right: 3%;
+    top: 7%;
+    width: 46%;
+  }
+
+  .goal-celebration span {
+    font-size: clamp(1.35rem, 8vw, 2.05rem);
+    letter-spacing: .015em;
+  }
+
+  .goal-celebration span::before,
+  .goal-celebration span::after {
+    display: none;
+  }
+}
