@@ -1,6 +1,11 @@
 (() => {
   'use strict';
 
+  // MODIFICA FACILE:
+  // - premio Reietto del Mese: data/config.json -> "monthlyPrize"
+  // - inizio Cintura dei Reietti: data/config.json -> "beltStartMatchday"
+  // "startMatchday" resta invece l'inizio dei blocchi del Reietto del Mese.
+
   const state = {
     config: null,
     teams: [],
@@ -174,7 +179,7 @@
   }
 
   function calculateBelt() {
-    const start = state.config.startMatchday;
+    const start = state.config.beltStartMatchday ?? state.config.startMatchday;
     const initialRows = rowsForDay(start).filter(row => row.fantapunti !== null);
 
     if (new Set(initialRows.map(row => row.squadra)).size < state.teams.length) {
@@ -240,10 +245,12 @@
   }
 
   function renderBelt(belt) {
+    const beltStart = state.config.beltStartMatchday ?? state.config.startMatchday;
+
     if (belt.tie) {
       const names = belt.tiedTeams.map(id => team(id).name).join(' e ');
       setText('#belt-holder', 'Parità da risolvere');
-      setText('#belt-detail', `${names} hanno chiuso la 4ª giornata a ${formatPoints(belt.tiedPoints)} FP.`);
+      setText('#belt-detail', `${names} hanno chiuso la ${beltStart}ª giornata a ${formatPoints(belt.tiedPoints)} FP.`);
       setText('#belt-holder-large', 'Assegnazione sospesa');
       setText('#belt-streak', 'Serve applicare il criterio di spareggio previsto dal regolamento.');
       setText('#belt-avatar', '⚖️');
@@ -251,7 +258,7 @@
     }
 
     if (!belt.holder) {
-      setText('#belt-holder', 'In attesa della 4ª giornata');
+      setText('#belt-holder', `In attesa della ${beltStart}ª giornata`);
       setText('#belt-detail', 'La Cintura sarà assegnata quando saranno presenti i fantapunti di tutte le 14 squadre.');
       setText('#belt-holder-large', 'Da assegnare');
       setText('#belt-streak', 'Nessuna difesa registrata');
@@ -260,7 +267,7 @@
       setText('#belt-defenses', '0');
       setText('#belt-holders-count', '0');
       setText('#belt-history-count', '0 eventi');
-      renderBeltTimeline([]);
+      renderBeltTimeline([], beltStart);
       return;
     }
 
@@ -276,13 +283,13 @@
     setText('#belt-holders-count', String(belt.holders.length));
     setText('#belt-history-count', `${belt.events.length} ${belt.events.length === 1 ? 'evento' : 'eventi'}`);
 
-    renderBeltTimeline(belt.events);
+    renderBeltTimeline(belt.events, beltStart);
   }
 
-  function renderBeltTimeline(events) {
+  function renderBeltTimeline(events, beltStart = state.config.beltStartMatchday ?? state.config.startMatchday) {
     const container = $('#belt-timeline');
     if (!events.length) {
-      container.innerHTML = '<div class="timeline-empty">La cronologia comparirà dopo la 4ª giornata.</div>';
+      container.innerHTML = `<div class="timeline-empty">La cronologia comparirà dopo la ${beltStart}ª giornata.</div>`;
       return;
     }
 

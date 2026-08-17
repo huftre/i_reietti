@@ -4,6 +4,10 @@
   const AUTH_KEY = 'i-reietti-admin-access';
   const AUTH_VALUE = 'authorized-v1';
 
+  // MODIFICA FACILE: la prima giornata inseribile è 3 perché la Cintura parte dalla 3ª.
+  const MIN_MATCHDAY = 3;
+  const MAX_MATCHDAY = 38;
+
   const state = {
     teams: [],
     teamMap: new Map(),
@@ -138,14 +142,14 @@
 
   function shiftMatchday(delta) {
     const input = $('#matchday');
-    input.value = String(Math.max(4, Math.min(38, Number(input.value || 4) + delta)));
+    input.value = String(Math.max(MIN_MATCHDAY, Math.min(MAX_MATCHDAY, Number(input.value || MIN_MATCHDAY) + delta)));
     fillEditorFromCurrentDay();
     validateAndRefresh();
   }
 
   function clampMatchday() {
     const input = $('#matchday');
-    input.value = String(Math.max(4, Math.min(38, Math.round(Number(input.value || 4)))));
+    input.value = String(Math.max(MIN_MATCHDAY, Math.min(MAX_MATCHDAY, Math.round(Number(input.value || MIN_MATCHDAY)))));
   }
 
   function clearEditor() {
@@ -336,7 +340,7 @@
   }
 
   function currentDay() {
-    return Number($('#matchday').value || 4);
+    return Number($('#matchday').value || MIN_MATCHDAY);
   }
 
   function serializeCsv(rows) {
