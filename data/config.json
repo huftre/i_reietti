@@ -3,9 +3,10 @@
   "season": "2026/27",
   "subtitle": "Dashboard competizioni speciali",
   "startMatchday": 4,
+  "beltStartMatchday": 3,
   "endMatchday": 38,
   "monthlyBlockSize": 5,
-  "monthlyPrize": 25,
+  "monthlyPrize": 20,
   "currency": "€",
   "lastUpdated": "",
   "adminNote": "Accedi al pannello dalla dashboard e genera data/results.csv"
