@@ -2,8 +2,8 @@
 
 Dashboard statica per GitHub Pages dedicata a:
 
-- **Cintura dei Reietti**, attiva dalla 4ª giornata;
-- **Reietto del Mese**, suddiviso in sette blocchi da cinque giornate con premio di €25;
+- **Cintura dei Reietti**, attiva dalla 3ª giornata;
+- **Reietto del Mese**, suddiviso in sette blocchi da cinque giornate con premio di €20;
 - classifica generale dei fantapunti;
 - pannello integrato per generare il file `results.csv` aggiornato.
 
@@ -40,7 +40,7 @@ La protezione effettiva della pubblicazione rimane GitHub: soltanto chi ha perme
 2. Premi **Area aggiornamento**.
 3. Inserisci il codice.
 4. Attendi il caricamento automatico del file `data/results.csv` già online.
-5. Scegli la giornata, dalla 4ª alla 38ª.
+5. Scegli la giornata, dalla 3ª alla 38ª.
 6. Inserisci le sette partite:
    - squadra A e squadra B;
    - fantapunti di entrambe;

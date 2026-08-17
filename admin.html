@@ -53,7 +53,8 @@
           <label class="field-label" for="matchday">Giornata da inserire o correggere</label>
           <div class="number-control">
             <button type="button" id="matchday-minus" aria-label="Giornata precedente">−</button>
-            <input id="matchday" type="number" min="4" max="38" value="4">
+            <!-- MODIFICA FACILE: min/value devono includere la giornata iniziale della Cintura. -->
+            <input id="matchday" type="number" min="3" max="38" value="3">
             <button type="button" id="matchday-plus" aria-label="Giornata successiva">+</button>
           </div>
           <p class="field-help">Se la giornata è già presente, i suoi dati verranno caricati nei campi e sostituiti nel CSV finale.</p>
@@ -89,11 +90,11 @@
       <section class="admin-card review-card">
         <div class="card-heading-row">
           <div><span class="eyebrow">Passaggio 3</span><h2>Controlla il riepilogo</h2></div>
-          <span class="badge" id="review-day-label">Giornata 4</span>
+          <span class="badge" id="review-day-label">Giornata 3</span>
         </div>
         <div class="data-summary" id="data-summary">
           <div><strong>0</strong><span>Giornate già online</span></div>
-          <div><strong>4ª</strong><span>Giornata selezionata</span></div>
+          <div><strong>3ª</strong><span>Giornata selezionata</span></div>
           <div><strong>0</strong><span>Righe nel CSV finale</span></div>
         </div>
         <div class="table-wrap review-table-wrap">

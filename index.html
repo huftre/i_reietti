@@ -48,7 +48,7 @@
           <div class="card-icon" aria-hidden="true">🏆</div>
           <div>
             <span class="card-label">Detentore della Cintura</span>
-            <h2 id="belt-holder">In attesa della 4ª giornata</h2>
+            <h2 id="belt-holder">In attesa della 3ª giornata</h2>
             <p id="belt-detail">La prima cintura sarà assegnata alla squadra con più fantapunti.</p>
           </div>
         </article>
@@ -77,13 +77,14 @@
         </a>
       </section>
 
+      <!-- MODIFICA FACILE: la giornata iniziale della Cintura si cambia in data/config.json, voce "beltStartMatchday". -->
       <section class="content-section" id="cintura">
         <div class="section-heading">
           <div>
             <span class="eyebrow">Competizione 01</span>
             <h2>Cintura dei Reietti</h2>
           </div>
-          <p>La squadra con più fantapunti alla 4ª giornata diventa la prima detentrice. In seguito, la cintura passa soltanto se il campione perde lo scontro diretto.</p>
+          <p>La squadra con più fantapunti alla 3ª giornata diventa la prima detentrice. In seguito, la cintura passa soltanto se il campione perde lo scontro diretto.</p>
         </div>
 
         <div class="belt-layout">
@@ -116,19 +117,20 @@
               <span class="badge" id="belt-history-count">0 eventi</span>
             </div>
             <div class="timeline" id="belt-timeline">
-              <div class="timeline-empty">La cronologia comparirà dopo la 4ª giornata.</div>
+              <div class="timeline-empty">La cronologia comparirà dopo la 3ª giornata.</div>
             </div>
           </article>
         </div>
       </section>
 
+      <!-- MODIFICA FACILE: il premio del Reietto del Mese si cambia in data/config.json, voce "monthlyPrize". -->
       <section class="content-section" id="reietto-mese">
         <div class="section-heading">
           <div>
             <span class="eyebrow">Competizione 02</span>
             <h2>Reietto del Mese</h2>
           </div>
-          <p>Sette blocchi da cinque giornate, dalla 4ª alla 38ª. Ogni blocco mette in palio €25 per chi totalizza più fantapunti.</p>
+          <p>Sette blocchi da cinque giornate, dalla 4ª alla 38ª. Ogni blocco mette in palio €20 per chi totalizza più fantapunti.</p>
         </div>
 
         <div class="period-nav" id="period-nav" role="tablist" aria-label="Seleziona il blocco di giornate"></div>
@@ -139,7 +141,7 @@
               <span class="eyebrow" id="period-status">Blocco 1</span>
               <h3 id="period-title">Giornate 4–8</h3>
             </div>
-            <div class="prize-chip"><span>Premio</span><strong id="period-prize">€25</strong></div>
+            <div class="prize-chip"><span>Premio</span><strong id="period-prize">€20</strong></div>
           </div>
           <div class="progress-wrap">
             <div class="progress-meta">
