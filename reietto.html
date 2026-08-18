@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#08150e">
+  <meta name="description" content="Reietto del Mese — competizione a fantapunti della Lega I Reietti.">
+  <title>I Reietti — Reietto del Mese</title><link rel="icon" href="assets/favicon.png" type="image/png"><link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="reietto">
+  <div class="page-shell">
+    <header class="site-header site-header-nav">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti"><span><strong id="league-name">I REIETTI</strong><small id="season-label">Stagione 2026/27</small></span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav"><a class="nav-link" href="index.html">HOME</a><div class="nav-dropdown"><button class="nav-link nav-dropdown-toggle active" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button><div class="nav-submenu"><a href="cintura.html">La Cintura</a><a class="active" href="reietto.html">Reietto del Mese</a></div></div><a class="nav-link" href="pagamenti.html">PAGAMENTI</a><button class="nav-link nav-admin js-admin-access" type="button">ADMIN</button></nav>
+      <span class="update-pill desktop-update" id="last-updated">Caricamento…</span>
+    </header>
+
+    <main>
+      <section class="page-hero competition-hero"><span class="eyebrow">Competizione speciale</span><h1>Reietto del Mese</h1><p>Sette blocchi da cinque giornate di Serie A, dalla 4ª alla 38ª. Ogni blocco assegna <strong>€20</strong> alla squadra che totalizza più fantapunti.</p></section>
+      <section class="content-section compact-top">
+        <div class="period-nav" id="period-nav" role="tablist" aria-label="Seleziona il blocco di giornate"></div>
+        <div class="leaderboard-card"><div class="leaderboard-header"><div><span class="eyebrow" id="period-status">Blocco 1</span><h3 id="period-title">Serie A: giornate 4–8</h3><p class="period-league-label" id="period-league-title">2ª–6ª giornata di Lega</p></div><div class="prize-chip"><span>Premio</span><strong id="period-prize">€20</strong></div></div><div class="progress-wrap"><div class="progress-meta"><span id="period-progress-label">0 di 5 giornate completate</span><span id="period-progress-percent">0%</span></div><div class="progress-track"><div class="progress-bar" id="period-progress-bar"></div></div></div><div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Squadra</th><th class="numeric">Giornate</th><th class="numeric">Fantapunti</th><th class="numeric">Media</th></tr></thead><tbody id="monthly-table-body"><tr class="empty-row"><td colspan="5">Caricamento…</td></tr></tbody></table></div></div>
+        <p class="page-note">La logica resta quella prevista: somma dei fantapunti nel blocco; in caso di parità si considera il miglior punteggio della singola giornata e, se persiste, il premio viene diviso.</p>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Reietto del Mese — <span id="footer-season">2026/27</span></span></div><a href="cintura.html">Vai alla Cintura</a></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/monthly.js" defer></script>
+</body>
+</html>

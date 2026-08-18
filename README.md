@@ -1,93 +1,99 @@
-# I Reietti — Dashboard 2026/27
+# I REIETTI — sito Lega 2026/27
 
-Dashboard statica per GitHub Pages dedicata a:
+Questa versione del sito è organizzata in pagine separate e resta completamente compatibile con GitHub Pages.
 
-- **Cintura dei Reietti**, attiva dalla 3ª giornata;
-- **Reietto del Mese**, suddiviso in sette blocchi da cinque giornate con premio di €20;
-- classifica generale dei fantapunti;
-- pannello integrato per generare il file `results.csv` aggiornato.
+## Pagine
 
-## Pubblicazione iniziale su GitHub Pages
+- `index.html` — **HOME** con classifica del Campionato.
+- `cintura.html` — **Cintura dei Reietti**.
+- `reietto.html` — **Reietto del Mese**.
+- `pagamenti.html` — situazione **quote e premi**.
+- `admin.html` — area riservata con due sezioni separate: **risultati** e **pagamenti**.
 
-1. Crea un nuovo repository GitHub, per esempio `i-reietti`.
-2. Carica **tutto il contenuto di questa cartella**, mantenendo le sottocartelle `assets` e `data`.
-3. Apri **Settings → Pages**.
-4. In **Build and deployment** scegli **Deploy from a branch**.
-5. Seleziona il branch `main`, cartella `/ (root)`, quindi salva.
-6. Dopo il primo deploy, GitHub mostrerà l’indirizzo pubblico della dashboard.
+## Numerazione Campionato
 
-## Accesso al pannello aggiornamento
+Nel file `data/results.csv` continua a essere usata la **giornata reale di Serie A**.
 
-Nella dashboard sono presenti i pulsanti **Area aggiornamento**, **Carica la prima giornata** e **Aggiorna i dati**.
+- Serie A 3 = **1ª giornata di Lega**
+- Serie A 4 = **2ª giornata di Lega**
+- Serie A 5 = **3ª giornata di Lega**
+- e così via fino alla 38ª giornata di Serie A.
 
-Premendo uno di questi pulsanti compare una finestra che richiede il codice. Il codice configurato è:
+La conversione viene fatta automaticamente dal sito.
 
-```text
-020523
-```
+## MODIFICA FACILE — loghi squadre
 
-Con il codice corretto si apre `admin.html`. Con un codice errato compare il messaggio **Non sei autorizzato**.
+Non devi modificare HTML o JavaScript.
 
-### Limite importante della protezione
+Inserisci i PNG nella cartella `assets/teams/`. Il file deve avere **il nome della squadra**, sostituendo ogni spazio con `_`. Esempio: `Suino FC` → `Suino_FC.png`. Maiuscole e minuscole vanno rispettate. La corrispondenza completa è nel file `assets/teams/LEGGIMI.txt` e in `data/teams.json`.
+Se un file non esiste, il sito mostra automaticamente un simbolo temporaneo.
 
-Il sito non utilizza server, database o servizi esterni. Il controllo del codice avviene quindi nel browser. È utile per evitare accessi casuali, ma **non equivale a un vero sistema di autenticazione**: una persona con competenze tecniche potrebbe analizzare o modificare il codice della pagina.
+## MODIFICA FACILE — premi, quote e giornate
 
-La protezione effettiva della pubblicazione rimane GitHub: soltanto chi ha permessi di scrittura sul repository può sostituire `data/results.csv` e modificare il sito online.
+I valori principali si trovano in `data/config.json`:
 
-## Aggiornare una giornata
+- `leagueStartSerieAMatchday`: giornata Serie A da cui parte il Campionato (attualmente `3`).
+- `beltStartMatchday`: giornata Serie A da cui parte la Cintura (attualmente `3`).
+- `startMatchday`: inizio del primo blocco Reietto del Mese (attualmente `4`).
+- `monthlyPrize`: premio per ogni blocco Reietto del Mese (`20`).
+- `teamFee`: quota totale per squadra (`110`).
+- `installmentAmount`: importo di ogni rata (`55`).
+- `prizes`: premi Campionato, Champions, Coppa Italia e Cintura.
 
-1. Apri la dashboard pubblicata su GitHub Pages.
-2. Premi **Area aggiornamento**.
-3. Inserisci il codice.
-4. Attendi il caricamento automatico del file `data/results.csv` già online.
-5. Scegli la giornata, dalla 3ª alla 38ª.
-6. Inserisci le sette partite:
-   - squadra A e squadra B;
-   - fantapunti di entrambe;
-   - gol fantacalcistici di entrambe.
-7. Controlla il riepilogo.
-8. Premi **Genera e scarica results.csv**.
+## Aggiornare i risultati
 
-Il file scaricato contiene **tutte le giornate precedenti più quella appena inserita**. Se la giornata era già presente, viene sostituita.
+1. Apri il sito pubblicato.
+2. Vai su **Admin** e inserisci il codice.
+3. Seleziona **Risultati e fantapunti**.
+4. Scegli la giornata reale di Serie A, inserisci le 7 partite e genera `results.csv`.
+5. Nel repository GitHub sostituisci `data/results.csv` con il file scaricato.
 
-## Caricare il CSV su GitHub
+La Home aggiornerà automaticamente punti, vittorie, pareggi, sconfitte, gol, differenza reti e fantapunti.
 
-1. Apri il repository su GitHub.
-2. Entra nella cartella `data`.
-3. Apri `results.csv`.
-4. Scegli la modifica o la sostituzione del file.
-5. Carica il nuovo `results.csv` scaricato dal pannello.
-6. Conferma il commit.
+### Ordinamento Campionato
 
-Dopo il nuovo deploy, la dashboard mostrerà i dati aggiornati.
+1. Punti
+2. Fantapunti totali
+3. Differenza reti
+4. Gol fatti
+5. Gol subiti (meno è meglio)
+6. Sorteggio tecnico stabile in caso di perfetta parità
 
-## Formato del file risultati
+## Aggiornare i pagamenti
 
-Il file usa queste colonne:
+1. Vai su **Admin → Quote e pagamenti**.
+2. Inserisci la prima e seconda rata per ogni squadra.
+3. Se già assegnate, scegli la vincitrice di Champions League e Coppa Italia.
+4. Inserisci nella colonna **Premi pagati** quanto è stato effettivamente consegnato alla squadra.
+5. Genera `payments.csv`.
+6. Nel repository GitHub sostituisci `data/payments.csv`.
+
+### Premi calcolati automaticamente
+
+La pagina Pagamenti calcola automaticamente:
+
+- **Campionato**: €450 / €320 / €200 / €110 al termine della 38ª giornata Serie A.
+- **Reietto del Mese**: €20 per ogni blocco concluso.
+- **Cintura dei Reietti**: €35 al detentore finale dopo la 38ª giornata.
+
+Champions League e Coppa Italia (€110 ciascuna) vengono invece assegnate manualmente dall'Admin perché non dipendono dal file `results.csv`.
+
+## File dati
+
+### `data/results.csv`
 
 ```csv
 giornata,squadra,avversario,fantapunti,gol_fatti,gol_subiti
 ```
 
-Le squadre sono salvate tramite gli identificativi presenti in `data/teams.json`. Non è necessario scriverli manualmente: il pannello li genera da solo.
+### `data/payments.csv`
 
-## File principali
-
-```text
-index.html                  dashboard pubblica
-admin.html                  pannello protetto dal codice
-assets/app.js               calcoli delle competizioni
-assets/access.js            popup e verifica del codice
-assets/admin.js              generazione del CSV
-assets/styles.css            grafica responsive
-data/results.csv             archivio pubblicato
-data/teams.json              nomi delle 14 squadre
-data/config.json             impostazioni della stagione
-assets/logo-i-reietti.png    logo trasparente
+```csv
+squadra,rata1,rata2,champions,coppa_italia,premi_pagati,note
 ```
 
-## Cambiare il codice di accesso
+`champions` e `coppa_italia` valgono `1` solo per la squadra vincitrice.
 
-Nel file `assets/access.js` è presente l’impronta SHA-256 del codice. Per cambiare codice bisogna calcolare l’impronta del nuovo valore e sostituire la costante `ACCESS_HASH`.
+## Nota sulla protezione Admin
 
-Questa operazione è descritta nel codice con appositi commenti. Non inserire password GitHub, token o altre credenziali nel progetto.
+Il sito è statico e l'accesso Admin usa `sessionStorage` più l'impronta SHA-256 del codice. È una barriera pratica per evitare accessi casuali, non un'autenticazione server.

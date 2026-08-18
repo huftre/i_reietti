@@ -1,15 +1,25 @@
-I REIETTI — AGGIORNAMENTO RAPIDO
+I REIETTI — ISTRUZIONI RAPIDE
 
-1. Apri la dashboard pubblicata su GitHub Pages.
-2. Premi “Area aggiornamento”.
-3. Inserisci il codice: 020523
-4. Scegli la giornata.
-5. Inserisci le 7 partite con fantapunti e gol.
-6. Controlla il riepilogo.
-7. Premi “Genera e scarica results.csv”.
-8. Su GitHub sostituisci soltanto data/results.csv.
-9. Conferma il commit e attendi il nuovo deploy.
+HOME
+- Mostra la classifica Campionato.
+- 1ª giornata di Lega = 3ª giornata Serie A.
 
-NOTA:
-Il codice blocca gli accessi casuali, ma non è un vero login lato server.
-Solo chi ha accesso in scrittura al repository GitHub può pubblicare modifiche reali.
+RISULTATI
+1. Apri ADMIN.
+2. Vai su "Risultati e fantapunti".
+3. Inserisci la giornata Serie A e le 7 partite.
+4. Scarica results.csv.
+5. Sostituisci data/results.csv su GitHub.
+
+PAGAMENTI
+1. Apri ADMIN.
+2. Vai su "Quote e pagamenti".
+3. Aggiorna rate, premi pagati e vincitori di Champions/Coppa Italia.
+4. Scarica payments.csv.
+5. Sostituisci data/payments.csv su GitHub.
+
+LOGHI
+- Metti i PNG dentro assets/teams/.
+- Usa il nome della squadra e sostituisci gli spazi con underscore (_).
+- Esempio: Suino FC -> Suino_FC.png.
+- Vedi assets/teams/LEGGIMI.txt per la lista esatta.

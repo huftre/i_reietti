@@ -1,22 +1,17 @@
-AGGIORNAMENTO — RIQUADRO REGOLAMENTO PDF
+I REIETTI — VERSIONE MULTIPAGINA
 
-Su GitHub sostituisci/carica questi file mantenendo le cartelle:
+Parti sempre da questa cartella completa quando pubblichi il sito.
 
-- index.html
-- assets/styles.css
-- assets/pdf-reader.js
-- regolamento/LEGGIMI.txt
+Pagine principali:
+- index.html = Home / classifica Campionato
+- cintura.html = Cintura dei Reietti
+- reietto.html = Reietto del Mese
+- pagamenti.html = quote e premi
+- admin.html = generatore results.csv + payments.csv
 
-Poi esporta il regolamento in PDF, rinominalo esattamente:
+IMPORTANTE:
+La 3ª giornata di Serie A corrisponde alla 1ª giornata di Lega.
+Nel CSV risultati devi continuare a inserire la giornata reale di Serie A.
 
-regolamento.pdf
-
-e caricalo dentro la cartella:
-
-regolamento
-
-Il percorso finale deve essere:
-
-regolamento/regolamento.pdf
-
-Non sostituire data/results.csv: i risultati già pubblicati rimangono invariati.
+Per i loghi delle squadre leggi assets/teams/LEGGIMI.txt.
+Per i dettagli completi leggi README.md.

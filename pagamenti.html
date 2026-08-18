@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#08150e">
+  <meta name="description" content="Quote e premi della Lega Fantacalcio I Reietti.">
+  <title>I Reietti — Pagamenti</title><link rel="icon" href="assets/favicon.png" type="image/png"><link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="pagamenti">
+  <div class="page-shell">
+    <header class="site-header site-header-nav">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti"><span><strong id="league-name">I REIETTI</strong><small id="season-label">Stagione 2026/27</small></span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav"><a class="nav-link" href="index.html">HOME</a><div class="nav-dropdown"><button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button><div class="nav-submenu"><a href="cintura.html">La Cintura</a><a href="reietto.html">Reietto del Mese</a></div></div><a class="nav-link active" href="pagamenti.html">PAGAMENTI</a><button class="nav-link nav-admin js-admin-access" type="button">ADMIN</button></nav>
+      <span class="update-pill desktop-update" id="last-updated">Contabilità stagione</span>
+    </header>
+
+    <main>
+      <section class="page-hero payments-hero"><span class="eyebrow">Contabilità Lega</span><h1>Quote e premi</h1><p>Situazione aggiornata delle quote versate, degli importi ancora dovuti e dei premi maturati o già pagati a ogni squadra.</p></section>
+      <section class="metrics-grid payment-metrics"><article class="metric-box"><span>Quote incassate</span><strong id="fees-collected">€0</strong><small id="fees-collected-detail">Su €1540 previsti</small></article><article class="metric-box"><span>Quote da incassare</span><strong id="fees-outstanding">€1540</strong><small>Residuo complessivo</small></article><article class="metric-box"><span>Premi maturati</span><strong id="prizes-earned">€0</strong><small>Competizioni concluse</small></article><article class="metric-box"><span>Premi già pagati</span><strong id="prizes-paid">€0</strong><small>Registrati dall'Admin</small></article></section>
+      <section class="content-section compact-top">
+        <div class="section-heading payments-heading"><div><span class="eyebrow">Squadra per squadra</span><h2>Situazione economica</h2></div><p>Le quote sono divise in due rate da €55. Reietto del Mese, Campionato e Cintura vengono riconosciuti automaticamente dai risultati; Champions e Coppa Italia vengono assegnate dall’Admin.</p></div>
+        <div class="leaderboard-card"><div class="table-wrap payments-table-wrap"><table class="payments-table"><thead><tr><th>Squadra</th><th class="numeric">1ª rata</th><th class="numeric">2ª rata</th><th class="numeric">Versato</th><th class="numeric">Da versare</th><th class="numeric">Premi maturati</th><th class="numeric">Premi pagati</th><th class="numeric">Premi da pagare</th></tr></thead><tbody id="payments-table-body"><tr class="empty-row"><td colspan="8">Caricamento contabilità…</td></tr></tbody></table></div></div>
+        <p class="page-note">I “premi maturati” compaiono quando la relativa competizione è conclusa. I premi effettivamente consegnati vengono registrati separatamente dall’Admin.</p>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Pagamenti — stagione <span id="footer-season">2026/27</span></span></div><button class="footer-admin-link js-admin-access" type="button">Aggiorna contabilità</button></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/payments.js" defer></script>
+</body>
+</html>
