@@ -77,7 +77,6 @@
     const form = C.calculateRecentForm(context.rows || [], team.id, context.config, 5);
     const trophies = context.trophies?.get(team.id) || {};
     const prize = context.prizeLedger?.get(team.id) || { earned: 0, details: [] };
-    const averageFp = item.played ? item.fantasyPoints / item.played : 0;
     const content = modal.querySelector('#team-profile-content');
 
     content.innerHTML = `
@@ -90,17 +89,11 @@
         </div>
       </div>
 
+      <!-- MODIFICA FACILE: nel riepilogo del popup mostriamo solo le 3 statistiche principali. -->
       <div class="team-profile-metrics">
         ${metric('Posizione', position)}
         ${metric('Punti', item.points)}
         ${metric('Fantapunti', C.formatPoints(item.fantasyPoints))}
-        ${metric('Media FP', C.formatPoints(averageFp))}
-        ${metric('Partite', item.played)}
-        ${metric('V · P · S', `${item.wins} · ${item.draws} · ${item.losses}`)}
-        ${metric('Gol fatti', item.goalsFor)}
-        ${metric('Gol subiti', item.goalsAgainst)}
-        ${metric('Diff. reti', `${item.goalDifference > 0 ? '+' : ''}${item.goalDifference}`)}
-        ${metric('Premi maturati', C.formatCurrency(prize.earned || 0, context.config.currency || '€'))}
       </div>
 
       <div class="team-profile-section">
