@@ -1,0 +1,31 @@
+LOGHI DELLE SQUADRE
+
+Questa cartella e' gia' collegata al sito.
+Per aggiungere un logo NON devi modificare il codice:
+1. salva il logo in formato PNG;
+2. usa esattamente il nome della squadra;
+3. sostituisci ogni spazio con un underscore (_);
+4. copia il file dentro assets/teams/.
+
+ATTENZIONE: su GitHub maiuscole e minuscole contano. Usa esattamente i nomi qui sotto.
+
+Corazzata2000.png  ->  Corazzata2000
+SS_FEL_LAZIO.png  ->  SS FEL LAZIO
+TigerTeam.png  ->  TigerTeam
+Annusate_Milano.png  ->  Annusate Milano
+Masterchef_United.png  ->  Masterchef United
+Mandraketeam.png  ->  Mandraketeam
+SkibidiBobby.png  ->  SkibidiBobby
+Tetta_Pig.png  ->  Tetta Pig
+Suino_FC.png  ->  Suino FC
+F.C._Salvezza.png  ->  F.C. Salvezza
+Foreign_Fighters.png  ->  Foreign Fighters
+BULLDOZER_MK.png  ->  BULLDOZER MK
+Hogiaperso82.png  ->  Hogiaperso82
+Divano_Kiev.png  ->  Divano Kiev
+
+Consiglio: PNG quadrati con sfondo trasparente, almeno 500x500 px.
+Se un logo manca, il sito mostra automaticamente l'emoji/segnaposto della squadra.
+
+MODIFICA FUTURA:
+Se cambi il nome di una squadra in data/teams.json, rinomina anche il PNG seguendo la stessa regola.
