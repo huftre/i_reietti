@@ -65,17 +65,30 @@
 
   function renderStandings(config, standings, map) {
     const tbody = $('#league-table-body');
-    if (!standings.some(item => item.played > 0)) {
-      tbody.innerHTML = `<tr class="empty-row"><td colspan="11">La classifica si aggiornerà dopo la 1ª giornata di Lega (3ª giornata Serie A).</td></tr>`;
-      return;
-    }
+    const competitionStarted = standings.some(item => item.played > 0);
 
-    tbody.innerHTML = standings.map((item, index) => {
+    /*
+     * CLASSIFICA PRIMA DELL'INIZIO:
+     * Mostriamo comunque tutte le squadre con logo, nome e valori a zero.
+     * Finché non viene caricata la prima giornata non evidenziamo un leader,
+     * perché a parità totale l'ordine non rappresenta ancora una classifica reale.
+     * Se in futuro vuoi cambiare questo comportamento, modifica questo blocco.
+     */
+    const displayStandings = competitionStarted
+      ? standings
+      : [...standings].sort((a, b) => {
+          const teamA = C.getTeam(map, a.teamId);
+          const teamB = C.getTeam(map, b.teamId);
+          return String(teamA.name).localeCompare(String(teamB.name), 'it', { sensitivity: 'base' });
+        });
+
+    tbody.innerHTML = displayStandings.map((item, index) => {
       const team = C.getTeam(map, item.teamId);
-      const rankClass = index < 4 ? 'rank top' : 'rank';
+      const rankClass = competitionStarted && index < 4 ? 'rank top' : 'rank';
+      const position = competitionStarted ? index + 1 : '—';
       return `
-        <tr class="${index === 0 ? 'leader-row' : ''}">
-          <td><span class="${rankClass}">${index + 1}</span></td>
+        <tr class="${competitionStarted && index === 0 ? 'leader-row' : ''}">
+          <td><span class="${rankClass}">${position}</span></td>
           <td>
             <div class="team-cell team-cell-with-logo">
               ${C.teamLogoHtml(team)}
