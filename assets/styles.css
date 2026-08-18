@@ -859,3 +859,344 @@ body.pdf-open {
   min-width: 0;
   flex: 1;
 }
+
+/* =========================================================
+   SITO MULTIPAGINA 2026/27
+   Menu, classifica Campionato, pagamenti e Admin separato.
+   MODIFICA FACILE: colori principali restano nelle variabili :root.
+   ========================================================= */
+
+.site-header-nav {
+  position: relative;
+  min-height: 88px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+}
+
+.main-nav {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.nav-link {
+  min-height: 42px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: #c6d4cb;
+  text-decoration: none;
+  font: inherit;
+  font-size: .79rem;
+  font-weight: 850;
+  letter-spacing: .035em;
+  cursor: pointer;
+  transition: color .18s ease, background .18s ease, transform .18s ease;
+}
+.nav-link:hover { color: #fff; background: rgba(255,255,255,.05); }
+.nav-link.active { color: #f5d66e; background: rgba(220,174,32,.1); }
+.nav-admin { color: #f4d267; }
+.nav-logout { color: #ff9baa; }
+.admin-static-link { cursor: default; }
+
+.nav-dropdown { position: relative; }
+.nav-submenu {
+  position: absolute;
+  z-index: 80;
+  left: 50%;
+  top: calc(100% + 8px);
+  width: 205px;
+  padding: 8px;
+  display: grid;
+  gap: 3px;
+  border: 1px solid rgba(220,174,32,.2);
+  border-radius: 14px;
+  background: rgba(8, 25, 17, .98);
+  box-shadow: 0 22px 55px rgba(0,0,0,.4);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -5px);
+  transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
+}
+.nav-dropdown:hover .nav-submenu,
+.nav-dropdown.is-open .nav-submenu {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+.nav-submenu a {
+  padding: 10px 11px;
+  border-radius: 9px;
+  color: #c5d3ca;
+  text-decoration: none;
+  font-size: .82rem;
+  font-weight: 750;
+}
+.nav-submenu a:hover,
+.nav-submenu a.active { color: #f4d46b; background: rgba(220,174,32,.09); }
+
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,.035);
+  cursor: pointer;
+}
+.menu-toggle span {
+  display: block;
+  height: 2px;
+  margin: 4px 0;
+  border-radius: 2px;
+  background: #fff;
+}
+.desktop-update { white-space: nowrap; }
+
+.home-hero { margin-bottom: 18px; }
+.home-hero strong { color: #f2d36c; }
+.home-status-grid { margin-top: 0; }
+
+.page-hero {
+  margin-top: 34px;
+  padding: clamp(35px, 6vw, 68px);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 88% 20%, rgba(220,174,32,.13), transparent 30%),
+    linear-gradient(135deg, rgba(15,50,34,.98), rgba(6,23,15,.96));
+  box-shadow: var(--shadow);
+}
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .4;
+  background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(90deg, black, transparent 90%);
+}
+.page-hero > * { position: relative; z-index: 1; }
+.page-hero h1 {
+  margin: 10px 0 14px;
+  max-width: 820px;
+  font-size: clamp(2.6rem, 6vw, 5.4rem);
+  line-height: .98;
+  letter-spacing: -.055em;
+}
+.page-hero p { max-width: 790px; margin: 0; color: #b7c8bd; font-size: clamp(1rem, 2vw, 1.14rem); }
+.page-hero strong { color: #f2d36c; }
+.belt-page-hero { background: radial-gradient(circle at 82% 24%, rgba(242,189,44,.2), transparent 31%), linear-gradient(135deg, rgba(70,48,10,.72), rgba(6,23,15,.97)); }
+.payments-hero { background: radial-gradient(circle at 82% 20%, rgba(52,211,153,.16), transparent 30%), linear-gradient(135deg, rgba(12,58,39,.95), rgba(6,23,15,.97)); }
+
+.two-cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.two-cards a.status-card { text-decoration: none; color: inherit; transition: transform .18s ease, border-color .18s ease; }
+.two-cards a.status-card:hover { transform: translateY(-2px); border-color: rgba(220,174,32,.35); }
+.compact-top { padding-top: 24px; }
+
+.standings-heading { align-items: center; }
+.standings-card { overflow: hidden; }
+.standings-table-wrap { overflow-x: auto; }
+.standings-table { min-width: 880px; }
+.standings-table th:first-child, .standings-table td:first-child { width: 58px; }
+.standings-table th:nth-child(2), .standings-table td:nth-child(2) { min-width: 235px; }
+.standings-table .leader-row { background: linear-gradient(90deg, rgba(220,174,32,.105), transparent 75%); }
+.standings-table tbody tr:hover { background-color: rgba(255,255,255,.025); }
+
+.team-cell-with-logo { gap: 12px; }
+.team-logo {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgba(220,174,32,.2);
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(22,105,68,.7), rgba(220,174,32,.18));
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.025);
+}
+.team-logo img {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: rgba(5,20,13,.76);
+}
+.team-logo img.is-missing { display: none; }
+.team-logo-fallback { font-size: 1.15rem; font-weight: 900; }
+.team-logo.large { width: 86px; height: 86px; }
+.team-logo.large .team-logo-fallback { font-size: 2rem; }
+.team-logo-hero { width: 90px; height: 90px; border-radius: 26px; }
+
+.page-note {
+  margin: 18px 0 0;
+  padding: 13px 16px;
+  border-left: 3px solid rgba(220,174,32,.75);
+  border-radius: 0 12px 12px 0;
+  background: rgba(220,174,32,.045);
+  color: var(--muted);
+  font-size: .85rem;
+}
+.page-note strong { color: #f1d67d; }
+.period-league-label { margin: 5px 0 0; color: var(--muted); font-size: .82rem; }
+
+.metrics-grid {
+  margin: 18px 0 22px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 12px;
+}
+.metric-box {
+  min-height: 118px;
+  padding: 19px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(10,30,21,.86);
+}
+.metric-box span { color: var(--muted); font-size: .73rem; text-transform: uppercase; letter-spacing: .075em; font-weight: 800; }
+.metric-box strong { margin: 5px 0 2px; color: #f5d878; font-size: clamp(1.6rem, 3vw, 2.25rem); line-height: 1; }
+.metric-box small { color: var(--muted); font-size: .75rem; }
+.payments-heading { align-items: center; }
+.payments-table { min-width: 1120px; }
+.payments-table th:first-child, .payments-table td:first-child { min-width: 230px; }
+.payment-installment.is-paid { color: var(--green); font-weight: 800; }
+.amount-due { color: #ff9cab; }
+.amount-ok { color: #70e2a5; }
+.prize-cell { min-width: 180px; }
+.prize-cell small { display: block; margin-top: 4px; color: var(--muted); font-size: .68rem; line-height: 1.35; font-weight: 500; }
+
+/* Admin: due aree distinte */
+.admin-tabs {
+  margin: 20px 0 18px;
+  padding: 6px;
+  display: inline-flex;
+  gap: 5px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(255,255,255,.025);
+}
+.admin-tab {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 800;
+}
+.admin-tab.active { background: rgba(220,174,32,.13); color: #f4d773; }
+[data-admin-panel][hidden] { display: none !important; }
+.league-day-callout {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(52,211,153,.18);
+  border-radius: 11px;
+  background: rgba(52,211,153,.055);
+  color: #a5ebc6;
+  font-size: .82rem;
+  font-weight: 800;
+  text-align: center;
+}
+.card-icon.mini { width: 42px; height: 42px; }
+.admin-payment-summary { margin-top: 20px; display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.admin-payment-summary div { padding: 14px; border: 1px solid var(--line); border-radius: 13px; background: rgba(255,255,255,.025); }
+.admin-payment-summary span, .admin-payment-summary strong { display: block; }
+.admin-payment-summary span { color: var(--muted); font-size: .72rem; }
+.admin-payment-summary strong { margin-top: 4px; color: #f3d474; font-size: 1.45rem; }
+.prize-winners-card, .payments-editor-card { margin-top: 18px; }
+.winner-select-grid { margin-top: 18px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.winner-select-grid select { width: 100%; min-height: 48px; margin-top: 6px; }
+.admin-payments-table { min-width: 980px; }
+.admin-payments-table th:first-child, .admin-payments-table td:first-child { min-width: 190px; }
+.admin-payments-table th:last-child, .admin-payments-table td:last-child { min-width: 220px; }
+.admin-payments-table input, .admin-payments-table select { width: 100%; }
+.payment-input { min-width: 92px; }
+.payment-note { min-width: 200px; }
+.admin-team-code { display: block; margin-top: 2px; color: var(--muted); font-size: .7rem; }
+
+@media (max-width: 1120px) {
+  .site-header-nav { grid-template-columns: auto 1fr; }
+  .desktop-update { display: none; }
+  .main-nav { justify-content: flex-end; }
+}
+
+@media (max-width: 820px) {
+  .site-header-nav { min-height: 74px; grid-template-columns: 1fr auto; gap: 12px; }
+  .menu-toggle { display: block; }
+  .main-nav {
+    position: absolute;
+    z-index: 90;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    padding: 9px;
+    display: none;
+    align-items: stretch;
+    flex-direction: column;
+    border: 1px solid rgba(220,174,32,.22);
+    border-radius: 16px;
+    background: rgba(6,22,15,.985);
+    box-shadow: 0 24px 60px rgba(0,0,0,.5);
+  }
+  .main-nav.is-open { display: flex; }
+  .nav-link { width: 100%; min-height: 46px; justify-content: space-between; padding: 0 13px; }
+  .nav-dropdown { width: 100%; }
+  .nav-submenu {
+    position: static;
+    width: 100%;
+    display: none;
+    margin: 3px 0 5px;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    box-shadow: none;
+    background: rgba(255,255,255,.02);
+  }
+  .nav-dropdown:hover .nav-submenu { display: none; }
+  .nav-dropdown.is-open .nav-submenu { display: grid; transform: none; }
+  .nav-submenu a { padding-left: 22px; }
+  .metrics-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .two-cards { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .page-hero { margin-top: 18px; padding: 30px 22px; border-radius: 22px; }
+  .page-hero h1 { font-size: clamp(2.45rem, 14vw, 4rem); }
+  .home-hero { padding-bottom: 24px; }
+  .standings-heading, .payments-heading { display: grid; grid-template-columns: 1fr; }
+  .team-logo { width: 42px; height: 42px; }
+  .metrics-grid { gap: 9px; }
+  .metric-box { min-height: 105px; padding: 15px; }
+  .metric-box strong { font-size: 1.55rem; }
+  .admin-tabs { width: 100%; display: grid; grid-template-columns: 1fr 1fr; }
+  .admin-tab { padding: 0 8px; font-size: .78rem; }
+  .winner-select-grid { grid-template-columns: 1fr; }
+  .admin-payment-summary { grid-template-columns: 1fr 1fr; }
+  .payments-admin-top { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .metrics-grid { grid-template-columns: 1fr; }
+  .admin-tabs { grid-template-columns: 1fr; }
+}
