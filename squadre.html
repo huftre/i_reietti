@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#08150e">
+  <meta name="description" content="Le 14 squadre partecipanti alla Lega Fantacalcio I Reietti.">
+  <title>I Reietti — Squadre</title><link rel="icon" href="assets/favicon.png" type="image/png"><link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="squadre">
+  <div class="page-shell">
+    <header class="site-header site-header-nav">
+      <a class="brand" href="index.html" aria-label="Home I Reietti">
+        <img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti">
+        <span><strong id="league-name">I REIETTI</strong><small id="season-label">Stagione 2026/27</small></span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav" aria-label="Navigazione principale">
+        <a class="nav-link" href="index.html">HOME</a>
+        <a class="nav-link active" href="squadre.html">SQUADRE</a>
+        <div class="nav-dropdown">
+          <button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button>
+          <div class="nav-submenu">
+            <a href="campionato.html">Campionato</a>
+            <a href="cintura.html">La Cintura</a>
+            <a href="reietto.html">Reietto del Mese</a>
+          </div>
+        </div>
+        <a class="nav-link" href="pagamenti.html">PAGAMENTI</a>
+        <a class="nav-link" href="regolamento.html">REGOLAMENTO</a>
+        <button class="nav-link nav-admin js-admin-access" type="button">ADMIN</button>
+      </nav>
+      <span class="update-pill desktop-update" id="last-updated">14 squadre</span>
+    </header>
+    <main>
+      <section class="page-hero teams-page-hero"><span class="eyebrow">I protagonisti</span><h1>Le 14 squadre</h1><p>Quattordici presidenti, quattordici strategie e almeno quattordici ottime scuse ogni lunedì mattina.</p></section>
+      <section class="content-section compact-top">
+        <!-- SQUADRE: i motti si modificano nel campo "motto" di data/teams.json. -->
+        <div class="teams-showcase-grid" id="teams-showcase"><div class="teams-loading">Caricamento squadre…</div></div>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Le squadre — <span id="footer-season">2026/27</span></span></div><a href="index.html">Torna alla Home</a></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/squadre.js" defer></script>
+</body>
+</html>

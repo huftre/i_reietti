@@ -1,0 +1,40 @@
+I REIETTI - MODIFICHE NUOVA STRUTTURA
+
+1) HOME
+- Rimossa la classifica completa.
+- Rimosso il pulsante "Vai alla classifica".
+- I tre riquadri mostrano:
+  a) 1° in classifica Campionato;
+  b) detentore della Cintura;
+  c) vincitore dell'ultimo blocco concluso del Reietto del Mese.
+
+2) MENU
+- HOME
+- SQUADRE
+- COMPETIZIONI > Campionato / La Cintura / Reietto del Mese
+- PAGAMENTI
+- REGOLAMENTO
+- ADMIN
+
+3) SQUADRE
+- Nuova pagina squadre.html.
+- Mostra le 14 squadre con logo grande e motto.
+- Per cambiare un motto modifica il campo "motto" in data/teams.json.
+
+4) CAMPIONATO
+- La classifica completa è stata spostata in campionato.html.
+- La logica del calcolo non è stata modificata.
+
+5) PAGAMENTI
+- Accesso protetto con codice 2023.
+- Per cambiare il codice modifica PAYMENT_ACCESS_CODE in assets/payments-access.js.
+- La logica contabile esistente non è stata modificata.
+
+6) REGOLAMENTO
+- Nuova pagina regolamento.html integrata nel design.
+- Le 9 pagine sono mostrate come immagini verticali, adatte anche a smartphone/tablet.
+- Se il PDF viene sostituito, bisogna rigenerare assets/regolamento-pages/page-*.png.
+
+7) LOGHI
+- La regola esistente resta invariata: file PNG in assets/teams/ con il nome squadra
+  e gli spazi sostituiti da underscore.

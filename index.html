@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08150e">
-  <meta name="description" content="Classifica ufficiale del Campionato della Lega Fantacalcio I Reietti.">
+  <meta name="description" content="Home ufficiale della Lega Fantacalcio I Reietti.">
   <title>I Reietti — Home</title>
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="assets/styles.css">
 </head>
 <body data-page="home">
   <div class="page-shell">
-    <!-- MENU PRINCIPALE: per cambiare le voci modifica questo blocco, identico nelle pagine pubbliche. -->
+    <!-- MENU PRINCIPALE: per aggiungere o spostare una voce, modifica lo stesso blocco anche nelle altre pagine. -->
     <header class="site-header site-header-nav">
       <a class="brand" href="index.html" aria-label="Home I Reietti">
         <img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti">
@@ -20,29 +20,29 @@
       <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
       <nav class="main-nav" id="main-nav" aria-label="Navigazione principale">
         <a class="nav-link active" href="index.html">HOME</a>
+        <a class="nav-link" href="squadre.html">SQUADRE</a>
         <div class="nav-dropdown">
           <button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button>
           <div class="nav-submenu">
+            <a href="campionato.html">Campionato</a>
             <a href="cintura.html">La Cintura</a>
             <a href="reietto.html">Reietto del Mese</a>
           </div>
         </div>
         <a class="nav-link" href="pagamenti.html">PAGAMENTI</a>
+        <a class="nav-link" href="regolamento.html">REGOLAMENTO</a>
         <button class="nav-link nav-admin js-admin-access" type="button">ADMIN</button>
       </nav>
       <span class="update-pill desktop-update" id="last-updated">Caricamento…</span>
     </header>
 
     <main>
-      <section class="hero home-hero">
+      <section class="hero home-hero home-hero-summary">
         <div class="hero-copy">
-          <span class="eyebrow">Campionato 2026/27</span>
-          <h1>La lega<br><span>dei Reietti.</span></h1>
-          <!-- HOME HERO: se in futuro vuoi reinserire un testo descrittivo sotto al titolo, aggiungilo qui. -->
-          <div class="hero-links">
-            <a class="button button-primary" href="#classifica">Vai alla classifica</a>
-            <!-- HOME CTA: eventuali altri pulsanti della Home possono essere aggiunti qui. -->
-          </div>
+          <span class="eyebrow">Lega Fantacalcio · 2026/27</span>
+          <h1>La stagione<br><span>dei Reietti.</span></h1>
+          <p>Campionato, Cintura e Reietto del Mese: la situazione della Lega in un colpo d’occhio.</p>
+          <!-- HOME: non c'è più il pulsante "Vai alla classifica". Il Campionato è nel menu Competizioni. -->
         </div>
         <div class="hero-art">
           <div class="orb orb-one" aria-hidden="true"></div>
@@ -51,48 +51,28 @@
         </div>
       </section>
 
-      <section class="status-grid home-status-grid" aria-label="Riepilogo Campionato">
-        <article class="status-card">
-          <div class="card-icon" aria-hidden="true">📅</div>
-          <div><span class="card-label">Aggiornamento classifica</span><h2 id="current-matchday">Campionato non iniziato</h2><p id="current-matchday-detail">In attesa dei risultati.</p></div>
-        </article>
-        <article class="status-card status-card-leader">
+      <!-- HOME - 3 RIEPILOGHI DINAMICI:
+           1) leader Campionato, 2) detentore Cintura, 3) ultimo Reietto del Mese concluso. -->
+      <section class="status-grid home-status-grid home-summary-grid" aria-label="Riepilogo stagione">
+        <a class="status-card status-card-leader home-summary-card" href="campionato.html">
           <div class="card-icon" aria-hidden="true">🥇</div>
-          <div><span class="card-label">Leader del Campionato</span><h2 id="league-leader">Da assegnare</h2><p id="league-leader-detail">Tutte le squadre partono da zero.</p></div>
-        </article>
-        <a class="status-card status-card-rules" id="open-rules" href="regolamento/regolamento.pdf" target="_blank" rel="noopener">
-          <div class="card-icon" aria-hidden="true">📘</div>
-          <div><span class="card-label">Documento ufficiale</span><h2>Regolamento</h2><p>Consulta il PDF della stagione.</p></div>
-          <span class="status-card-arrow" aria-hidden="true">↗</span>
+          <div><span class="card-label">1° in classifica</span><h2 id="home-league-leader">Da assegnare</h2><p id="home-league-detail">Campionato non iniziato.</p></div>
+          <span class="status-card-arrow" aria-hidden="true">→</span>
         </a>
-      </section>
-
-      <section class="content-section" id="classifica">
-        <div class="section-heading standings-heading single-column-heading">
-          <div><span class="eyebrow">Campionato</span><h2>Classifica generale</h2></div>
-          <!-- CLASSIFICA: se vuoi mostrare di nuovo una nota sull'ordinamento, inseriscila qui. -->
-        </div>
-        <div class="leaderboard-card standings-card">
-          <div class="table-wrap standings-table-wrap">
-            <table class="standings-table">
-              <thead><tr><th>Pos.</th><th>Squadra</th><th class="numeric">Pt</th><th class="numeric">PG</th><th class="numeric">V</th><th class="numeric">N</th><th class="numeric">P</th><th class="numeric">GF</th><th class="numeric">GS</th><th class="numeric">DR</th><th class="numeric">FP</th></tr></thead>
-              <tbody id="league-table-body"><tr class="empty-row"><td colspan="11">Caricamento classifica…</td></tr></tbody>
-            </table>
-          </div>
-        </div>
-        <p class="page-note"><strong>Numerazione:</strong> 1ª giornata di Lega = 3ª giornata Serie A · 2ª giornata di Lega = 4ª giornata Serie A · 3ª giornata di Lega = 5ª giornata Serie A · e così via.</p>
+        <a class="status-card status-card-belt home-summary-card" href="cintura.html">
+          <div class="card-icon" aria-hidden="true">🏆</div>
+          <div><span class="card-label">Detentore della Cintura</span><h2 id="home-belt-holder">Da assegnare</h2><p id="home-belt-detail">In attesa della prima assegnazione.</p></div>
+          <span class="status-card-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="status-card status-card-monthly home-summary-card" href="reietto.html">
+          <div class="card-icon" aria-hidden="true">📈</div>
+          <div><span class="card-label">Ultimo Reietto del Mese</span><h2 id="home-monthly-winner">Nessun periodo concluso</h2><p id="home-monthly-detail">Il primo blocco non è ancora completo.</p></div>
+          <span class="status-card-arrow" aria-hidden="true">→</span>
+        </a>
       </section>
     </main>
 
-    <footer class="site-footer"><div><strong>I Reietti</strong><span>Campionato — stagione <span id="footer-season">2026/27</span></span></div><button class="footer-admin-link js-admin-access" type="button">Area Admin</button></footer>
-  </div>
-
-  <!-- Lettore PDF desktop; sui browser mobile pdf-reader.js usa il visualizzatore nativo. -->
-  <div class="pdf-backdrop" id="rules-modal" hidden>
-    <section class="pdf-reader" role="dialog" aria-modal="true" aria-labelledby="rules-title">
-      <header class="pdf-reader-header"><div class="pdf-reader-title"><span class="pdf-reader-icon" aria-hidden="true">📘</span><div><span class="eyebrow">Documento ufficiale</span><h2 id="rules-title">Regolamento della Lega</h2></div></div><button class="pdf-reader-close" id="close-rules" type="button" aria-label="Chiudi">×</button></header>
-      <div class="pdf-reader-body"><div class="pdf-reader-loading" id="rules-loading"><span class="pdf-spinner" aria-hidden="true"></span><strong>Apertura del regolamento…</strong></div><div class="pdf-reader-message" id="rules-unavailable" hidden><span>📂</span><h3>Regolamento non disponibile</h3><p>Controlla il file <code>regolamento/regolamento.pdf</code>.</p></div><iframe id="rules-frame" class="pdf-frame" title="Regolamento I Reietti" loading="lazy" hidden></iframe></div>
-    </section>
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Stagione <span id="footer-season">2026/27</span></span></div><button class="footer-admin-link js-admin-access" type="button">Area Admin</button></footer>
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -100,6 +80,5 @@
   <script src="assets/access.js" defer></script>
   <script src="assets/league-core.js" defer></script>
   <script src="assets/home.js" defer></script>
-  <script src="assets/pdf-reader.js" defer></script>
 </body>
 </html>

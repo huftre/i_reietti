@@ -4,97 +4,111 @@
     "name": "Corazzata2000",
     "shortName": "C2000",
     "emoji": "🛡️",
-    "logo": "assets/teams/Corazzata2000.png"
+    "logo": "assets/teams/Corazzata2000.png",
+    "motto": "Una corazzata, almeno sulla carta."
   },
   {
     "id": "squadra-02",
     "name": "SS FEL LAZIO",
     "shortName": "FEL",
     "emoji": "⚡",
-    "logo": "assets/teams/SS_FEL_LAZIO.png"
+    "logo": "assets/teams/SS_FEL_LAZIO.png",
+    "motto": "Prima in classifica, modestia rigorosamente ultima."
   },
   {
     "id": "squadra-03",
     "name": "TigerTeam",
     "shortName": "TIG",
     "emoji": "🐯",
-    "logo": "assets/teams/TigerTeam.png"
+    "logo": "assets/teams/TigerTeam.png",
+    "motto": "Quando sbaglia formazione, controllate il calendario."
   },
   {
     "id": "squadra-04",
     "name": "Annusate Milano",
     "shortName": "ANM",
     "emoji": "👃",
-    "logo": "assets/teams/Annusate_Milano.png"
+    "logo": "assets/teams/Annusate_Milano.png",
+    "motto": "Se ci siete dietro, sapete già dove guardare."
   },
   {
     "id": "squadra-05",
     "name": "Masterchef United",
     "shortName": "MCU",
     "emoji": "👨‍🍳",
-    "logo": "assets/teams/Masterchef_United.png"
+    "logo": "assets/teams/Masterchef_United.png",
+    "motto": "Formazioni cotte a puntino, bonus spesso bruciati."
   },
   {
     "id": "squadra-06",
     "name": "Mandraketeam",
     "shortName": "MAN",
     "emoji": "🎩",
-    "logo": "assets/teams/Mandraketeam.png"
+    "logo": "assets/teams/Mandraketeam.png",
+    "motto": "Il pronostico è giusto. La domenica quasi mai."
   },
   {
     "id": "squadra-07",
     "name": "SkibidiBobby",
     "shortName": "SKB",
     "emoji": "👑",
-    "logo": "assets/teams/SkibidiBobby.png"
+    "logo": "assets/teams/SkibidiBobby.png",
+    "motto": "Calcio, caos e scelte che nessuno sa spiegare."
   },
   {
     "id": "squadra-08",
     "name": "Tetta Pig",
     "shortName": "TET",
     "emoji": "🐷",
-    "logo": "assets/teams/Tetta_Pig.png"
+    "logo": "assets/teams/Tetta_Pig.png",
+    "motto": "Ultima è una posizione. A volte anche una vocazione."
   },
   {
     "id": "squadra-09",
     "name": "Suino FC",
     "shortName": "SFC",
     "emoji": "🐗",
-    "logo": "assets/teams/Suino_FC.png"
+    "logo": "assets/teams/Suino_FC.png",
+    "motto": "Mago Otelma vede tutto. Tranne il malus al 94°."
   },
   {
     "id": "squadra-10",
     "name": "F.C. Salvezza",
     "shortName": "SAL",
     "emoji": "🛟",
-    "logo": "assets/teams/F.C._Salvezza.png"
+    "logo": "assets/teams/F.C._Salvezza.png",
+    "motto": "Obiettivo minimo: salvare almeno l’autostima."
   },
   {
     "id": "squadra-11",
     "name": "Foreign Fighters",
     "shortName": "FFI",
     "emoji": "🥊",
-    "logo": "assets/teams/Foreign_Fighters.png"
+    "logo": "assets/teams/Foreign_Fighters.png",
+    "motto": "Vichinghi in trasferta, bonus senza passaporto."
   },
   {
     "id": "squadra-12",
     "name": "BULLDOZER MK",
     "shortName": "BDM",
     "emoji": "🚜",
-    "logo": "assets/teams/BULLDOZER_MK.png"
+    "logo": "assets/teams/BULLDOZER_MK.png",
+    "motto": "Spiana tutti. Ogni tanto anche la propria formazione."
   },
   {
     "id": "squadra-13",
     "name": "Hogiaperso82",
     "shortName": "HOG",
     "emoji": "😵",
-    "logo": "assets/teams/Hogiaperso82.png"
+    "logo": "assets/teams/Hogiaperso82.png",
+    "motto": "La speranza dura fino alle 14:59."
   },
   {
     "id": "squadra-14",
     "name": "Divano Kiev",
     "shortName": "DKV",
     "emoji": "🛋️",
-    "logo": "assets/teams/Divano_Kiev.png"
+    "logo": "assets/teams/Divano_Kiev.png",
+    "motto": "Formazione dal divano, pressing solo sul telecomando."
   }
 ]

@@ -1,0 +1,12 @@
+PAGINE DEL REGOLAMENTO PER LA VISUALIZZAZIONE MOBILE
+
+Queste immagini corrispondono alle 9 pagine di:
+regolamento/regolamento.pdf
+
+La pagina regolamento.html usa queste immagini invece di un iframe PDF.
+Questo permette di scorrere tutte le pagine e usare lo zoom del browser
+anche su smartphone e tablet.
+
+IMPORTANTE:
+se in futuro sostituisci regolamento/regolamento.pdf con una nuova versione,
+le immagini page-1.png, page-2.png, ecc. dovranno essere rigenerate.

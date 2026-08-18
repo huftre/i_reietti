@@ -1203,3 +1203,198 @@ body.pdf-open {
   .metrics-grid { grid-template-columns: 1fr; }
   .admin-tabs { grid-template-columns: 1fr; }
 }
+
+
+/* =========================================================
+   NUOVA HOME + SQUADRE + REGOLAMENTO + ACCESSO PAGAMENTI
+   MODIFICA FACILE: questa sezione contiene solo i nuovi layout.
+   ========================================================= */
+.home-summary-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.home-summary-card {
+  position: relative;
+  min-height: 138px;
+  color: inherit;
+  text-decoration: none;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.home-summary-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(220,174,32,.35);
+}
+.home-summary-card .status-card-arrow {
+  margin-left: auto;
+  color: #e7c55a;
+  font-size: 1.2rem;
+}
+.status-card-monthly {
+  border-color: rgba(89,217,149,.22);
+  background: linear-gradient(150deg, rgba(16,66,44,.26), rgba(17,24,39,.88));
+}
+.championship-page-hero {
+  background: radial-gradient(circle at 82% 20%, rgba(89,217,149,.16), transparent 30%), linear-gradient(135deg, rgba(12,58,39,.95), rgba(6,23,15,.97));
+}
+
+/* SQUADRE - i loghi sono volutamente grandi e centrali. */
+.teams-page-hero {
+  background: radial-gradient(circle at 82% 18%, rgba(220,174,32,.17), transparent 30%), linear-gradient(135deg, rgba(19,56,39,.97), rgba(6,23,15,.97));
+}
+.teams-showcase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.team-showcase-card {
+  min-height: 340px;
+  padding: 26px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: center;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(160deg, rgba(15,48,33,.94), rgba(7,24,16,.92));
+  box-shadow: 0 16px 46px rgba(0,0,0,.16);
+}
+.team-logo-roster {
+  width: 176px;
+  height: 176px;
+  border-width: 2px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.25), inset 0 0 0 3px rgba(255,255,255,.025);
+}
+.team-logo-roster .team-logo-fallback { font-size: 4rem; }
+.team-showcase-copy { margin-top: 18px; }
+.team-showcase-code {
+  display: inline-block;
+  margin-bottom: 4px;
+  color: #e5c65f;
+  font-size: .69rem;
+  font-weight: 850;
+  letter-spacing: .16em;
+}
+.team-showcase-card h2 {
+  margin: 2px 0 8px;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  line-height: 1.1;
+}
+.team-showcase-card p {
+  margin: 0 auto;
+  max-width: 290px;
+  color: var(--muted);
+  font-size: .9rem;
+}
+.teams-loading { grid-column: 1 / -1; padding: 40px; text-align: center; color: var(--muted); }
+
+/* REGOLAMENTO - immagini delle pagine al posto dell'iframe PDF.
+   Questo rende lo scorrimento affidabile anche su iPhone/Android. */
+.regulation-page-hero {
+  background: radial-gradient(circle at 82% 18%, rgba(220,174,32,.16), transparent 31%), linear-gradient(135deg, rgba(54,43,13,.72), rgba(6,23,15,.97));
+}
+.regulation-section { max-width: 980px; margin-left: auto; margin-right: auto; }
+.regulation-toolbar {
+  position: sticky;
+  top: 10px;
+  z-index: 20;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(7,24,16,.94);
+  backdrop-filter: blur(16px);
+}
+.regulation-toolbar strong, .regulation-toolbar span { display: block; }
+.regulation-toolbar span { margin-top: 2px; color: var(--muted); font-size: .75rem; }
+.regulation-pages { display: grid; gap: 20px; scroll-margin-top: 90px; }
+.regulation-page {
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(220,174,32,.18);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 18px 50px rgba(0,0,0,.28);
+}
+.regulation-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+}
+.regulation-page figcaption {
+  padding: 8px 12px;
+  border-top: 1px solid rgba(0,0,0,.08);
+  background: #f6f6f3;
+  color: #4b4b45;
+  font-size: .72rem;
+  text-align: center;
+}
+
+/* PAGAMENTI - codice 2023 gestito in assets/payments-access.js. */
+.payments-access-gate {
+  width: min(560px, 100%);
+  margin: clamp(42px, 8vw, 90px) auto;
+  padding: clamp(28px, 6vw, 46px);
+  text-align: center;
+  border: 1px solid rgba(220,174,32,.24);
+  border-radius: 26px;
+  background: linear-gradient(150deg, rgba(18,55,38,.96), rgba(7,24,16,.97));
+  box-shadow: var(--shadow);
+}
+.payments-lock-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 16px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: rgba(220,174,32,.1);
+  font-size: 2rem;
+}
+.payments-access-gate h1 { margin: 8px 0 10px; font-size: clamp(2.4rem, 7vw, 4rem); }
+.payments-access-gate > p { margin: 0 auto 24px; color: var(--muted); }
+.payments-access-form { max-width: 330px; margin: 0 auto; text-align: left; }
+.payments-access-form input {
+  width: 100%;
+  min-height: 52px;
+  margin: 7px 0 12px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255,255,255,.045);
+  color: #fff;
+  text-align: center;
+  font-size: 1.35rem;
+  letter-spacing: .3em;
+}
+.payments-access-form .button { width: 100%; }
+.payments-access-error { margin: 12px 0 0; color: #ff9baa; text-align: center; font-size: .85rem; }
+#payments-private-content[hidden], .payments-access-gate[hidden] { display: none !important; }
+
+@media (max-width: 980px) {
+  .home-summary-grid { grid-template-columns: 1fr; }
+  .teams-showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  .home-summary-card { min-height: 116px; }
+  .teams-showcase-grid { grid-template-columns: 1fr; gap: 12px; }
+  .team-showcase-card { min-height: 0; padding: 22px 18px; }
+  .team-logo-roster { width: min(58vw, 190px); height: min(58vw, 190px); }
+  .regulation-section { padding-top: 18px; }
+  .regulation-toolbar { top: 6px; border-radius: 13px; }
+  .regulation-toolbar .button { padding: 9px 11px; font-size: .75rem; }
+  .regulation-pages { gap: 14px; }
+  .regulation-page { border-radius: 8px; }
+  .payments-access-gate { margin-top: 24px; border-radius: 22px; }
+}
+
+@media (max-width: 420px) {
+  .regulation-toolbar { align-items: flex-start; flex-direction: column; }
+  .regulation-toolbar .button { width: 100%; }
+}

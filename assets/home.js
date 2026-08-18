@@ -15,16 +15,21 @@
         C.fetchJson('data/teams.json'),
         C.fetchText(demoMode ? 'data/results.demo.csv' : 'data/results.csv', '')
       ]);
+
       const rows = C.normalizeResults(C.parseCsv(csvText));
       const map = C.teamMap(teams);
       const standings = C.calculateLeagueStandings(rows, teams, config);
+      const belt = C.calculateBelt(rows, teams, config);
+      const periods = C.calculateMonthlyRankings(rows, teams, config);
+
       renderBranding(config, rows, teams, demoMode);
-      renderStatus(config, rows, teams, standings, map);
-      renderStandings(config, standings, map);
+      renderLeagueSummary(standings, map);
+      renderBeltSummary(belt, config, map);
+      renderMonthlySummary(periods, config, map);
       C.activateLogoFallbacks();
     } catch (error) {
       console.error(error);
-      showToast('Impossibile caricare la classifica. Controlla i file nella cartella data.');
+      showToast('Impossibile caricare il riepilogo della Lega. Controlla i file nella cartella data.');
     }
   }
 
@@ -32,80 +37,69 @@
     $('#league-name').textContent = config.leagueName;
     $('#season-label').textContent = `Stagione ${config.season}`;
     $('#footer-season').textContent = config.season;
-    document.title = `${config.leagueName} — Campionato ${config.season}`;
+    document.title = `${config.leagueName} — Home`;
 
     const latest = C.latestCompleteDay(rows, teams, config, true);
     const pill = $('#last-updated');
     if (demoMode) pill.textContent = 'Modalità demo';
     else if (latest !== null) pill.textContent = C.matchdayLabel(latest, config, true);
-    else pill.textContent = 'In attesa della 1ª giornata di Lega';
+    else pill.textContent = 'Stagione da iniziare';
   }
 
-  function renderStatus(config, rows, teams, standings, map) {
-    const latest = C.latestCompleteDay(rows, teams, config, true);
-    const anyPlayed = standings.some(item => item.played > 0);
-    const leader = anyPlayed ? standings[0] : null;
-
-    $('#current-matchday').textContent = latest === null
-      ? 'Campionato non iniziato'
-      : C.matchdayLabel(latest, config, false);
-    $('#current-matchday-detail').textContent = latest === null
-      ? 'La classifica partirà con la 3ª giornata di Serie A.'
-      : `Risultati completi caricati fino alla ${latest}ª giornata di Serie A.`;
-
-    if (leader) {
-      const leaderTeam = C.getTeam(map, leader.teamId);
-      $('#league-leader').textContent = leaderTeam.name;
-      $('#league-leader-detail').textContent = `${leader.points} punti · ${C.formatPoints(leader.fantasyPoints)} fantapunti`;
-    } else {
-      $('#league-leader').textContent = 'Da assegnare';
-      $('#league-leader-detail').textContent = 'Tutte le squadre partono da zero.';
+  // HOME - PRIMO RIQUADRO: mostra il leader del Campionato solo quando esiste almeno una partita giocata.
+  function renderLeagueSummary(standings, map) {
+    const leader = standings.some(item => item.played > 0) ? standings[0] : null;
+    if (!leader) {
+      $('#home-league-leader').textContent = 'Da assegnare';
+      $('#home-league-detail').textContent = 'Campionato non iniziato.';
+      return;
     }
+    const team = C.getTeam(map, leader.teamId);
+    $('#home-league-leader').textContent = team.name;
+    $('#home-league-detail').textContent = `${leader.points} punti · ${C.formatPoints(leader.fantasyPoints)} fantapunti`;
   }
 
-  function renderStandings(config, standings, map) {
-    const tbody = $('#league-table-body');
-    const competitionStarted = standings.some(item => item.played > 0);
+  // HOME - SECONDO RIQUADRO: stessa logica della pagina Cintura, senza modificarne il calcolo.
+  function renderBeltSummary(belt, config, map) {
+    if (belt.tie) {
+      const names = (belt.tiedTeams || []).map(id => C.getTeam(map, id).name).join(' · ');
+      $('#home-belt-holder').textContent = 'Assegnazione in parità';
+      $('#home-belt-detail').textContent = names || 'La prima assegnazione è ancora da risolvere.';
+      return;
+    }
+    if (!belt.holder) {
+      $('#home-belt-holder').textContent = 'Da assegnare';
+      $('#home-belt-detail').textContent = `Prima assegnazione alla ${Number(config.beltStartMatchday || 3)}ª giornata di Serie A.`;
+      return;
+    }
+    const team = C.getTeam(map, belt.holder);
+    $('#home-belt-holder').textContent = team.name;
+    $('#home-belt-detail').textContent = `${belt.currentDefenses} difese · conquistata alla ${belt.acquiredDay}ª giornata Serie A`;
+  }
 
-    /*
-     * CLASSIFICA PRIMA DELL'INIZIO:
-     * Mostriamo comunque tutte le squadre con logo, nome e valori a zero.
-     * Finché non viene caricata la prima giornata non evidenziamo un leader,
-     * perché a parità totale l'ordine non rappresenta ancora una classifica reale.
-     * Se in futuro vuoi cambiare questo comportamento, modifica questo blocco.
-     */
-    const displayStandings = competitionStarted
-      ? standings
-      : [...standings].sort((a, b) => {
-          const teamA = C.getTeam(map, a.teamId);
-          const teamB = C.getTeam(map, b.teamId);
-          return String(teamA.name).localeCompare(String(teamB.name), 'it', { sensitivity: 'base' });
-        });
+  // HOME - TERZO RIQUADRO: prende l'ULTIMO blocco del Reietto del Mese completamente concluso.
+  function renderMonthlySummary(periods, config, map) {
+    const completedPeriods = periods.filter(period => period.complete);
+    const latestPeriod = completedPeriods.length ? completedPeriods[completedPeriods.length - 1] : null;
 
-    tbody.innerHTML = displayStandings.map((item, index) => {
-      const team = C.getTeam(map, item.teamId);
-      const rankClass = competitionStarted && index < 4 ? 'rank top' : 'rank';
-      const position = competitionStarted ? index + 1 : '—';
-      return `
-        <tr class="${competitionStarted && index === 0 ? 'leader-row' : ''}">
-          <td><span class="${rankClass}">${position}</span></td>
-          <td>
-            <div class="team-cell team-cell-with-logo">
-              ${C.teamLogoHtml(team)}
-              <div><strong>${C.escapeHtml(team.name)}</strong><small>${C.escapeHtml(team.shortName || '')}</small></div>
-            </div>
-          </td>
-          <td class="numeric"><strong>${item.points}</strong></td>
-          <td class="numeric">${item.played}</td>
-          <td class="numeric">${item.wins}</td>
-          <td class="numeric">${item.draws}</td>
-          <td class="numeric">${item.losses}</td>
-          <td class="numeric">${item.goalsFor}</td>
-          <td class="numeric">${item.goalsAgainst}</td>
-          <td class="numeric">${item.goalDifference > 0 ? '+' : ''}${item.goalDifference}</td>
-          <td class="numeric">${C.formatPoints(item.fantasyPoints)}</td>
-        </tr>`;
-    }).join('');
+    if (!latestPeriod) {
+      $('#home-monthly-winner').textContent = 'Nessun periodo concluso';
+      $('#home-monthly-detail').textContent = 'Il primo blocco non è ancora completo.';
+      return;
+    }
+
+    const winners = C.monthlyPrizeWinners(latestPeriod);
+    if (!winners.length) {
+      $('#home-monthly-winner').textContent = 'Nessun vincitore disponibile';
+      $('#home-monthly-detail').textContent = `Blocco ${latestPeriod.index} concluso, dati da verificare.`;
+      return;
+    }
+
+    const names = winners.map(item => C.getTeam(map, item.teamId).name);
+    $('#home-monthly-winner').textContent = names.length === 1 ? names[0] : 'Premio condiviso';
+    $('#home-monthly-detail').textContent = names.length === 1
+      ? `Blocco ${latestPeriod.index} · ${latestPeriod.start}ª-${latestPeriod.end}ª Serie A · ${C.formatPoints(winners[0].total)} FP`
+      : `Blocco ${latestPeriod.index} · ${names.join(' / ')} · premio diviso`;
   }
 
   function showToast(message) {

@@ -97,3 +97,13 @@ squadra,rata1,rata2,champions,coppa_italia,premi_pagati,note
 ## Nota sulla protezione Admin
 
 Il sito è statico e l'accesso Admin usa `sessionStorage` più l'impronta SHA-256 del codice. È una barriera pratica per evitare accessi casuali, non un'autenticazione server.
+
+
+## Struttura pubblica aggiornata
+- `index.html`: Home con i tre riepiloghi dinamici.
+- `squadre.html`: 14 squadre con logo e motto.
+- `campionato.html`: classifica del Campionato.
+- `cintura.html`: Cintura dei Reietti.
+- `reietto.html`: Reietto del Mese.
+- `pagamenti.html`: sezione protetta dal codice 2023 (modificabile in `assets/payments-access.js`).
+- `regolamento.html`: regolamento integrato, anche mobile, tramite immagini in `assets/regolamento-pages/`.
