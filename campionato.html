@@ -38,10 +38,48 @@
         <article class="status-card status-card-leader"><div class="card-icon" aria-hidden="true">🥇</div><div><span class="card-label">Leader del Campionato</span><h2 id="league-leader">Da assegnare</h2><p id="league-leader-detail">Tutte le squadre partono da zero.</p></div></article>
       </section>
 
+      <!--
+        CLASSIFICA CAMPIONATO
+        Per modificare colonne o intestazioni della classifica intervieni qui.
+        I valori delle squadre vengono compilati automaticamente da assets/campionato.js.
+      -->
+      <section class="content-section compact-top" id="classifica">
+        <div class="section-heading standings-heading single-column-heading">
+          <div><span class="eyebrow">Campionato</span><h2>Classifica generale</h2></div>
+        </div>
+        <div class="leaderboard-card standings-card">
+          <div class="table-wrap standings-table-wrap">
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th>Pos.</th>
+                  <th>Squadra</th>
+                  <th class="numeric">Pt</th>
+                  <th class="numeric">PG</th>
+                  <th class="numeric">V</th>
+                  <th class="numeric">N</th>
+                  <th class="numeric">P</th>
+                  <th class="numeric">GF</th>
+                  <th class="numeric">GS</th>
+                  <th class="numeric">DR</th>
+                  <th class="numeric">FP</th>
+                  <th>Forma</th>
+                </tr>
+              </thead>
+              <tbody id="league-table-body">
+                <tr class="empty-row"><td colspan="12">Caricamento classifica…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="page-note"><strong>Numerazione:</strong> 1ª giornata di Lega = 3ª giornata Serie A · 2ª giornata di Lega = 4ª giornata Serie A · 3ª giornata di Lega = 5ª giornata Serie A · e così via.</p>
+      </section>
+
     </main>
     <footer class="site-footer"><div><strong>I Reietti</strong><span>Campionato — stagione <span id="footer-season">2026/27</span></span></div><a href="index.html">Torna alla Home</a></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/team-profile.js" defer></script><script src="assets/campionato.js" defer></script>
 </body>
+</html>
 </html>
