@@ -18,10 +18,13 @@
       const rows = C.normalizeResults(C.parseCsv(csvText));
       const map = C.teamMap(teams);
       const standings = C.calculateLeagueStandings(rows, teams, config);
+      const trophies = C.calculateTrophyCabinet(rows, teams, config);
+      const prizeLedger = C.calculatePrizeLedger(rows, [], teams, config);
       renderBranding(config, rows, teams, demoMode);
       renderStatus(config, rows, teams, standings, map);
-      renderStandings(config, standings, map);
+      renderStandings(config, rows, standings, map);
       C.activateLogoFallbacks();
+      window.ReiettiTeamProfile?.init({ config, teams, rows, standings, trophies, prizeLedger });
     } catch (error) {
       console.error(error);
       showToast('Impossibile caricare la classifica. Controlla i file nella cartella data.');
@@ -63,16 +66,14 @@
     }
   }
 
-  function renderStandings(config, standings, map) {
+  function renderStandings(config, rows, standings, map) {
     const tbody = $('#league-table-body');
     const competitionStarted = standings.some(item => item.played > 0);
 
     /*
      * CLASSIFICA PRIMA DELL'INIZIO:
      * Mostriamo comunque tutte le squadre con logo, nome e valori a zero.
-     * Finché non viene caricata la prima giornata non evidenziamo un leader,
-     * perché a parità totale l'ordine non rappresenta ancora una classifica reale.
-     * Se in futuro vuoi cambiare questo comportamento, modifica questo blocco.
+     * Finché non viene caricata la prima giornata non evidenziamo un leader.
      */
     const displayStandings = competitionStarted
       ? standings
@@ -86,12 +87,15 @@
       const team = C.getTeam(map, item.teamId);
       const rankClass = competitionStarted && index < 4 ? 'rank top' : 'rank';
       const position = competitionStarted ? index + 1 : '—';
+      const form = C.calculateRecentForm(rows, item.teamId, config, 5);
       return `
         <tr class="${competitionStarted && index === 0 ? 'leader-row' : ''}">
           <td><span class="${rankClass}">${position}</span></td>
           <td>
             <div class="team-cell team-cell-with-logo">
-              ${C.teamLogoHtml(team)}
+              <button class="team-profile-trigger team-profile-trigger-table" type="button" data-team-profile="${C.escapeHtml(team.id)}" aria-label="Apri scheda di ${C.escapeHtml(team.name)}">
+                ${C.teamLogoHtml(team)}
+              </button>
               <div><strong>${C.escapeHtml(team.name)}</strong><small>${C.escapeHtml(team.shortName || '')}</small></div>
             </div>
           </td>
@@ -104,8 +108,18 @@
           <td class="numeric">${item.goalsAgainst}</td>
           <td class="numeric">${item.goalDifference > 0 ? '+' : ''}${item.goalDifference}</td>
           <td class="numeric">${C.formatPoints(item.fantasyPoints)}</td>
+          <td class="form-cell">${renderForm(form)}</td>
         </tr>`;
     }).join('');
+  }
+
+  // FORMA RECENTE: V = vittoria, P = pareggio, S = sconfitta.
+  function renderForm(form) {
+    if (!form.length) return '<span class="form-empty">—</span>';
+    return `<div class="form-strip">${form.map(match => {
+      const title = `${match.day}ª Serie A · ${match.goalsFor}-${match.goalsAgainst}${match.opponent ? ` · ${match.opponent}` : ''}`;
+      return `<span class="form-result form-${match.result.toLowerCase()}" title="${C.escapeHtml(title)}">${match.result}</span>`;
+    }).join('')}</div>`;
   }
 
   function showToast(message) {

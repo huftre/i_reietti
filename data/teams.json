@@ -5,7 +5,12 @@
     "shortName": "C2000",
     "emoji": "🛡️",
     "logo": "assets/teams/Corazzata2000.png",
-    "motto": "Una corazzata, almeno sulla carta."
+    "motto": "Una corazzata, almeno sulla carta.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-02",
@@ -13,7 +18,12 @@
     "shortName": "FEL",
     "emoji": "⚡",
     "logo": "assets/teams/SS_FEL_LAZIO.png",
-    "motto": "Prima in classifica, modestia rigorosamente ultima."
+    "motto": "Prima in classifica, modestia rigorosamente ultima.",
+    "trophies": {
+      "campionato": 1,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-03",
@@ -21,7 +31,12 @@
     "shortName": "TIG",
     "emoji": "🐯",
     "logo": "assets/teams/TigerTeam.png",
-    "motto": "Quando sbaglia formazione, controllate il calendario."
+    "motto": "Quando sbaglia formazione, controllate il calendario.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-04",
@@ -29,7 +44,12 @@
     "shortName": "ANM",
     "emoji": "👃",
     "logo": "assets/teams/Annusate_Milano.png",
-    "motto": "Se ci siete dietro, sapete già dove guardare."
+    "motto": "Se ci siete dietro, sapete già dove guardare.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-05",
@@ -37,7 +57,12 @@
     "shortName": "MCU",
     "emoji": "👨‍🍳",
     "logo": "assets/teams/Masterchef_United.png",
-    "motto": "Formazioni cotte a puntino, bonus spesso bruciati."
+    "motto": "Formazioni cotte a puntino, bonus spesso bruciati.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-06",
@@ -45,7 +70,12 @@
     "shortName": "MAN",
     "emoji": "🎩",
     "logo": "assets/teams/Mandraketeam.png",
-    "motto": "Il pronostico è giusto. La domenica quasi mai."
+    "motto": "Il pronostico è giusto. La domenica quasi mai.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-07",
@@ -53,7 +83,12 @@
     "shortName": "SKB",
     "emoji": "👑",
     "logo": "assets/teams/SkibidiBobby.png",
-    "motto": "Calcio, caos e scelte che nessuno sa spiegare."
+    "motto": "Calcio, caos e scelte che nessuno sa spiegare.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-08",
@@ -61,7 +96,12 @@
     "shortName": "TET",
     "emoji": "🐷",
     "logo": "assets/teams/Tetta_Pig.png",
-    "motto": "Ultima è una posizione. A volte anche una vocazione."
+    "motto": "Ultima è una posizione. A volte anche una vocazione.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-09",
@@ -69,7 +109,12 @@
     "shortName": "SFC",
     "emoji": "🐗",
     "logo": "assets/teams/Suino_FC.png",
-    "motto": "Mago Otelma vede tutto. Tranne il malus al 94°."
+    "motto": "Mago Otelma vede tutto. Tranne il malus al 94°.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-10",
@@ -77,7 +122,12 @@
     "shortName": "SAL",
     "emoji": "🛟",
     "logo": "assets/teams/F.C._Salvezza.png",
-    "motto": "Obiettivo minimo: salvare almeno l’autostima."
+    "motto": "Obiettivo minimo: salvare almeno l’autostima.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-11",
@@ -85,7 +135,12 @@
     "shortName": "FFI",
     "emoji": "🥊",
     "logo": "assets/teams/Foreign_Fighters.png",
-    "motto": "Vichinghi in trasferta, bonus senza passaporto."
+    "motto": "Vichinghi in trasferta, bonus senza passaporto.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-12",
@@ -93,7 +148,12 @@
     "shortName": "BDM",
     "emoji": "🚜",
     "logo": "assets/teams/BULLDOZER_MK.png",
-    "motto": "Spiana tutti. Ogni tanto anche la propria formazione."
+    "motto": "Spiana tutti. Ogni tanto anche la propria formazione.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-13",
@@ -101,7 +161,12 @@
     "shortName": "HOG",
     "emoji": "😵",
     "logo": "assets/teams/Hogiaperso82.png",
-    "motto": "La speranza dura fino alle 14:59."
+    "motto": "La speranza dura fino alle 14:59.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   },
   {
     "id": "squadra-14",
@@ -109,6 +174,11 @@
     "shortName": "DKV",
     "emoji": "🛋️",
     "logo": "assets/teams/Divano_Kiev.png",
-    "motto": "Formazione dal divano, pressing solo sul telecomando."
+    "motto": "Formazione dal divano, pressing solo sul telecomando.",
+    "trophies": {
+      "campionato": 0,
+      "cintura": 0,
+      "reietto": 0
+    }
   }
 ]

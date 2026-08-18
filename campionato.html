@@ -31,7 +31,7 @@
       <span class="update-pill desktop-update" id="last-updated">Caricamento…</span>
     </header>
     <main>
-      <section class="page-hero competition-hero championship-page-hero"><span class="eyebrow">Competizione principale</span><h1>Campionato</h1><p>La classifica ufficiale della Lega, aggiornata automaticamente, giornata dopo giornata.</p></section>
+      <section class="page-hero competition-hero championship-page-hero"><span class="eyebrow">Competizione principale</span><h1>Campionato</h1><p>La classifica ufficiale della stagione, aggiornata automaticamente con gol e fantapunti caricati nel CSV.</p></section>
 
       <section class="status-grid two-cards" aria-label="Riepilogo Campionato">
         <article class="status-card"><div class="card-icon" aria-hidden="true">📅</div><div><span class="card-label">Aggiornamento classifica</span><h2 id="current-matchday">Campionato non iniziato</h2><p id="current-matchday-detail">In attesa dei risultati.</p></div></article>
@@ -40,13 +40,13 @@
 
       <section class="content-section compact-top" id="classifica">
         <div class="section-heading standings-heading single-column-heading"><div><span class="eyebrow">Campionato</span><h2>Classifica generale</h2></div></div>
-        <div class="leaderboard-card standings-card"><div class="table-wrap standings-table-wrap"><table class="standings-table"><thead><tr><th>Pos.</th><th>Squadra</th><th class="numeric">Pt</th><th class="numeric">PG</th><th class="numeric">V</th><th class="numeric">N</th><th class="numeric">P</th><th class="numeric">GF</th><th class="numeric">GS</th><th class="numeric">DR</th><th class="numeric">FP</th></tr></thead><tbody id="league-table-body"><tr class="empty-row"><td colspan="11">Caricamento classifica…</td></tr></tbody></table></div></div>
+        <div class="leaderboard-card standings-card"><div class="table-wrap standings-table-wrap"><table class="standings-table"><thead><tr><th>Pos.</th><th>Squadra</th><th class="numeric">Pt</th><th class="numeric">PG</th><th class="numeric">V</th><th class="numeric">N</th><th class="numeric">P</th><th class="numeric">GF</th><th class="numeric">GS</th><th class="numeric">DR</th><th class="numeric">FP</th><th>Forma</th></tr></thead><tbody id="league-table-body"><tr class="empty-row"><td colspan="12">Caricamento classifica…</td></tr></tbody></table></div></div>
         <p class="page-note"><strong>Numerazione:</strong> 1ª giornata di Lega = 3ª giornata Serie A · 2ª giornata di Lega = 4ª giornata Serie A · 3ª giornata di Lega = 5ª giornata Serie A · e così via.</p>
       </section>
     </main>
     <footer class="site-footer"><div><strong>I Reietti</strong><span>Campionato — stagione <span id="footer-season">2026/27</span></span></div><a href="index.html">Torna alla Home</a></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/campionato.js" defer></script>
+  <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/team-profile.js" defer></script><script src="assets/campionato.js" defer></script>
 </body>
 </html>

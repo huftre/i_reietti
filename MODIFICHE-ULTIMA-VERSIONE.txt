@@ -38,3 +38,15 @@ I REIETTI - MODIFICHE NUOVA STRUTTURA
 7) LOGHI
 - La regola esistente resta invariata: file PNG in assets/teams/ con il nome squadra
   e gli spazi sostituiti da underscore.
+
+
+NUOVE FUNZIONI: SCHEDA SQUADRA / FORMA / TROFEI
+-----------------------------------------------
+- Clic sul logo in Squadre o Campionato: apre la scheda popup, senza cambiare pagina.
+- Forma recente: V=vittoria, P=pareggio, S=sconfitta; ultimi 5 risultati.
+- Trofei mostrati: Campionato, Cintura, Reietto del Mese. Coppa Italia e Champions NON compaiono.
+- Se un trofeo manca, resta il calco grigiato.
+- Reietto del Mese mostra automaticamente x2, x3, ecc. se vinto più volte.
+- Per inserire trofei STORICI modifica data/teams.json, campo trophies:
+  "trophies": {"campionato": 0, "cintura": 0, "reietto": 0}
+- I trofei della stagione corrente vengono aggiunti automaticamente dai risultati CSV.

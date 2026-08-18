@@ -414,6 +414,101 @@
   }
 
   // =========================================================
+  // FORMA RECENTE + BACHECA TROFEI
+  // MODIFICA FACILE:
+  // - i trofei STORICI si impostano in data/teams.json nel campo "trophies";
+  // - i trofei della stagione corrente vengono aggiunti automaticamente
+  //   quando i risultati presenti nel CSV rendono la competizione conclusa.
+  // - Coppa Italia e Champions League sono volutamente escluse dalla bacheca.
+  // =========================================================
+  function calculateRecentForm(rows, teamId, config, limit = 5) {
+    const start = Number(config?.leagueStartSerieAMatchday ?? 3);
+    const end = Number(config?.leagueEndSerieAMatchday ?? config?.endMatchday ?? 38);
+    return rows
+      .filter(row =>
+        row.squadra === teamId &&
+        row.giornata >= start &&
+        row.giornata <= end &&
+        row.golFatti !== null &&
+        row.golSubiti !== null
+      )
+      .sort((a, b) => a.giornata - b.giornata)
+      .slice(-Math.max(1, Number(limit) || 5))
+      .map(row => ({
+        day: row.giornata,
+        opponent: row.avversario || '',
+        goalsFor: row.golFatti,
+        goalsAgainst: row.golSubiti,
+        result: row.golFatti > row.golSubiti ? 'V' : (row.golFatti === row.golSubiti ? 'P' : 'S')
+      }));
+  }
+
+  function calculateCurrentTrophies(results, teams, config) {
+    const counts = new Map(teams.map(team => [team.id, { campionato: 0, cintura: 0, reietto: 0 }]));
+
+    // Reietto del Mese: ogni periodo completo vinto vale un trofeo.
+    calculateMonthlyRankings(results, teams, config).forEach(period => {
+      monthlyPrizeWinners(period).forEach(winner => {
+        const item = counts.get(winner.teamId);
+        if (item) item.reietto += 1;
+      });
+    });
+
+    // Campionato: soltanto il 1° classificato a stagione conclusa.
+    const finalDay = Number(config.leagueEndSerieAMatchday ?? config.endMatchday ?? 38);
+    if (isCompleteDay(results, teams, finalDay, true)) {
+      const winner = calculateLeagueStandings(results, teams, config)[0];
+      if (winner && counts.has(winner.teamId)) counts.get(winner.teamId).campionato += 1;
+    }
+
+    // Cintura: conta il detentore finale, quando la competizione arriva all'ultima giornata.
+    const belt = calculateBelt(results, teams, config);
+    if (!belt.tie && belt.holder && belt.lastProcessedDay === Number(config.endMatchday) && counts.has(belt.holder)) {
+      counts.get(belt.holder).cintura += 1;
+    }
+
+    return counts;
+  }
+
+  function calculateTrophyCabinet(results, teams, config) {
+    const current = calculateCurrentTrophies(results, teams, config);
+    return new Map(teams.map(team => {
+      const historical = team.trophies || {};
+      const season = current.get(team.id) || { campionato: 0, cintura: 0, reietto: 0 };
+      return [team.id, {
+        campionato: Math.max(0, Number(historical.campionato || 0)) + season.campionato,
+        cintura: Math.max(0, Number(historical.cintura || 0)) + season.cintura,
+        reietto: Math.max(0, Number(historical.reietto || 0)) + season.reietto,
+        current: season
+      }];
+    }));
+  }
+
+  function trophyCabinetHtml(record = {}, extraClass = '') {
+    const trophies = [
+      { key: 'campionato', icon: '🏆', label: 'Campionato' },
+      { key: 'cintura', icon: '👑', label: 'Cintura' },
+      { key: 'reietto', icon: '🏅', label: 'Reietto del Mese' }
+    ];
+    return `
+      <div class="trophy-cabinet ${escapeHtml(extraClass)}" aria-label="Bacheca trofei">
+        ${trophies.map(trophy => {
+          const count = Math.max(0, Number(record[trophy.key] || 0));
+          const current = Math.max(0, Number(record.current?.[trophy.key] || 0));
+          const title = count
+            ? `${trophy.label}: ${count}${current ? ` · ${current} in questa stagione` : ''}`
+            : `${trophy.label}: non ancora conquistato`;
+          return `
+            <div class="trophy-slot ${count ? 'is-won' : 'is-empty'}" title="${escapeHtml(title)}">
+              <span class="trophy-icon" aria-hidden="true">${trophy.icon}</span>
+              ${count > 1 ? `<span class="trophy-multiplier">×${count}</span>` : ''}
+              <span class="trophy-label">${escapeHtml(trophy.label)}</span>
+            </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  // =========================================================
   // LOGHI DELLE SQUADRE
   // MODIFICA QUI solo se un giorno vuoi cambiare la regola dei nomi file.
   // Regola attuale: nome squadra + spazi trasformati in underscore.
@@ -481,6 +576,10 @@
     calculateBelt,
     monthlyPrizeWinners,
     calculatePrizeLedger,
+    calculateRecentForm,
+    calculateCurrentTrophies,
+    calculateTrophyCabinet,
+    trophyCabinetHtml,
     teamLogoHtml,
     activateLogoFallbacks,
     formatPoints,
