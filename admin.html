@@ -4,135 +4,90 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#08150e">
-  <meta name="description" content="Area aggiornamento dati della dashboard I Reietti.">
-  <title>I Reietti — Aggiorna dati</title>
+  <meta name="description" content="Area Admin della Lega I Reietti: risultati e pagamenti.">
+  <title>I Reietti — Admin</title>
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="assets/styles.css">
   <script>
-    // Blocca l'apertura diretta della pagina finché non è stato inserito il codice dalla home.
+    // Questa e' una protezione adatta a un sito statico: impedisce l'apertura casuale della pagina.
     try {
-      if (sessionStorage.getItem('i-reietti-admin-access') !== 'authorized-v1') {
-        window.location.replace('index.html?auth=required');
-      }
+      if (sessionStorage.getItem('i-reietti-admin-access') !== 'authorized-v1') window.location.replace('index.html?auth=required');
     } catch (error) {
       window.location.replace('index.html?auth=required');
     }
   </script>
 </head>
-<body class="admin-body">
+<body class="admin-body" data-page="admin">
   <div class="page-shell">
-    <header class="site-header">
-      <a class="brand" href="index.html">
-        <img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti">
-        <span><strong>I REIETTI</strong><small>Area aggiornamento</small></span>
-      </a>
-      <nav class="header-actions">
-        <a class="button button-ghost" href="index.html">Dashboard</a>
-        <button class="button button-secondary" id="admin-logout" type="button">Esci</button>
-      </nav>
+    <header class="site-header site-header-nav">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti"><span><strong>I REIETTI</strong><small>Area Admin</small></span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="main-nav admin-main-nav" id="main-nav"><a class="nav-link" href="index.html">HOME</a><div class="nav-dropdown"><button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button><div class="nav-submenu"><a href="cintura.html">La Cintura</a><a href="reietto.html">Reietto del Mese</a></div></div><a class="nav-link" href="pagamenti.html">PAGAMENTI</a><span class="nav-link active admin-static-link">ADMIN</span><button class="nav-link nav-logout" id="admin-logout" type="button">ESCI</button></nav>
     </header>
 
     <main class="admin-main">
       <section class="admin-hero admin-hero-with-logo">
-        <div>
-          <span class="eyebrow">Generatore CSV</span>
-          <h1>Aggiorna la giornata,<br>controlla e scarica.</h1>
-          <p>La pagina carica automaticamente il file <code>data/results.csv</code> già pubblicato. Tu aggiungi o correggi una giornata e, con un solo tasto, scarichi il nuovo archivio completo.</p>
-        </div>
-        <div class="admin-logo-panel">
-          <img src="assets/logo-i-reietti.png" alt="Logo ufficiale I Reietti">
-        </div>
+        <div><span class="eyebrow">Area riservata</span><h1>Risultati e contabilità,<br>separati e gestibili.</h1><p>Da qui generi i due file che alimentano il sito: <code>data/results.csv</code> per Campionato e competizioni, <code>data/payments.csv</code> per quote e premi.</p></div>
+        <div class="admin-logo-panel"><img src="assets/logo-i-reietti.png" alt="Logo ufficiale I Reietti"></div>
       </section>
 
-      <section class="admin-grid admin-grid-top">
-        <article class="admin-card">
-          <div class="card-heading-row">
-            <div><span class="eyebrow">Passaggio 1</span><h2>Scegli la giornata</h2></div>
-            <span class="badge" id="loaded-rows">0 righe online</span>
-          </div>
-          <label class="field-label" for="matchday">Giornata da inserire o correggere</label>
-          <div class="number-control">
-            <button type="button" id="matchday-minus" aria-label="Giornata precedente">−</button>
-            <!-- MODIFICA FACILE: min/value devono includere la giornata iniziale della Cintura. -->
-            <input id="matchday" type="number" min="3" max="38" value="3">
-            <button type="button" id="matchday-plus" aria-label="Giornata successiva">+</button>
-          </div>
-          <p class="field-help">Se la giornata è già presente, i suoi dati verranno caricati nei campi e sostituiti nel CSV finale.</p>
-        </article>
+      <div class="admin-tabs" role="tablist" aria-label="Sezione Admin">
+        <button class="admin-tab active" type="button" role="tab" data-admin-tab="risultati" aria-selected="true"><span>⚽</span> Risultati e fantapunti</button>
+        <button class="admin-tab" type="button" role="tab" data-admin-tab="pagamenti" aria-selected="false"><span>💰</span> Quote e pagamenti</button>
+      </div>
 
-        <article class="admin-card data-source-card">
-          <div class="card-heading-row">
-            <div><span class="eyebrow">Archivio di partenza</span><h2>File online</h2></div>
-            <span class="connection-dot" id="connection-dot" aria-hidden="true"></span>
-          </div>
-          <p>Il generatore conserva tutte le giornate già pubblicate e modifica soltanto quella selezionata.</p>
-          <div class="validation-box" id="base-status">Caricamento di results.csv…</div>
-          <button class="button button-ghost compact-button" id="load-online" type="button">Ricarica il file online</button>
-        </article>
-      </section>
+      <!-- =====================================================
+           ADMIN RISULTATI
+           Il CSV usa la giornata reale di Serie A: 3, 4, 5 ...
+           Il sito converte automaticamente 3 -> 1ª giornata di Lega.
+           ===================================================== -->
+      <div data-admin-panel="risultati">
+        <section class="admin-grid admin-grid-top">
+          <article class="admin-card">
+            <div class="card-heading-row"><div><span class="eyebrow">Passaggio 1</span><h2>Scegli la giornata</h2></div><span class="badge" id="loaded-rows">0 righe online</span></div>
+            <label class="field-label" for="matchday">Giornata di Serie A da inserire o correggere</label>
+            <div class="number-control"><button type="button" id="matchday-minus" aria-label="Giornata precedente">−</button><input id="matchday" type="number" min="3" max="38" value="3"><button type="button" id="matchday-plus" aria-label="Giornata successiva">+</button></div>
+            <div class="league-day-callout" id="matchday-league-label">1ª giornata di Lega (3ª giornata Serie A)</div>
+            <p class="field-help">Se la giornata è già presente, i suoi dati vengono caricati e sostituiti nel CSV finale.</p>
+          </article>
+          <article class="admin-card data-source-card"><div class="card-heading-row"><div><span class="eyebrow">Archivio risultati</span><h2>results.csv online</h2></div><span class="connection-dot" id="connection-dot" aria-hidden="true"></span></div><p>Conserva tutte le giornate già pubblicate e modifica soltanto quella selezionata.</p><div class="validation-box" id="base-status">Caricamento di results.csv…</div><button class="button button-ghost compact-button" id="load-online" type="button">Ricarica il file online</button></article>
+        </section>
 
-      <section class="admin-card match-editor-card">
-        <div class="card-heading-row">
-          <div><span class="eyebrow">Passaggio 2</span><h2>Inserisci le sette partite</h2></div>
-          <button class="button button-ghost" id="clear-matches" type="button">Svuota campi</button>
-        </div>
-        <div class="example-note">
-          <strong>Esempio:</strong> Corazzata2000 — <b>72,5 FP</b> e <b>2 gol</b> contro SS FEL LAZIO — <b>68 FP</b> e <b>1 gol</b>.
-          I fantapunti accettano sia la virgola sia il punto.
-        </div>
-        <div class="match-editor-head" aria-hidden="true">
-          <span>Squadra A</span><span>FP</span><span>Gol</span><span></span><span>Gol</span><span>FP</span><span>Squadra B</span>
-        </div>
-        <div id="match-editor" class="match-editor"></div>
-        <div class="validation-box" id="editor-validation">Seleziona tutte le 14 squadre una sola volta e completa i punteggi.</div>
-      </section>
+        <section class="admin-card match-editor-card"><div class="card-heading-row"><div><span class="eyebrow">Passaggio 2</span><h2>Inserisci le sette partite</h2></div><button class="button button-ghost" id="clear-matches" type="button">Svuota campi</button></div><div class="example-note"><strong>Esempio:</strong> 72,5 FP e 2 gol contro 68 FP e 1 gol. I fantapunti accettano virgola o punto.</div><div class="match-editor-head" aria-hidden="true"><span>Squadra A</span><span>FP</span><span>Gol</span><span></span><span>Gol</span><span>FP</span><span>Squadra B</span></div><div id="match-editor" class="match-editor"></div><div class="validation-box" id="editor-validation">Seleziona tutte le 14 squadre una sola volta e completa i punteggi.</div></section>
 
-      <section class="admin-card review-card">
-        <div class="card-heading-row">
-          <div><span class="eyebrow">Passaggio 3</span><h2>Controlla il riepilogo</h2></div>
-          <span class="badge" id="review-day-label">Giornata 3</span>
-        </div>
-        <div class="data-summary" id="data-summary">
-          <div><strong>0</strong><span>Giornate già online</span></div>
-          <div><strong>3ª</strong><span>Giornata selezionata</span></div>
-          <div><strong>0</strong><span>Righe nel CSV finale</span></div>
-        </div>
-        <div class="table-wrap review-table-wrap">
-          <table>
-            <thead>
-              <tr><th>Partita</th><th>Squadra A</th><th class="numeric">FP</th><th class="numeric">Risultato</th><th class="numeric">FP</th><th>Squadra B</th></tr>
-            </thead>
-            <tbody id="review-body">
-              <tr class="empty-row"><td colspan="6">Compila le partite per visualizzare il riepilogo.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <section class="admin-card review-card"><div class="card-heading-row"><div><span class="eyebrow">Passaggio 3</span><h2>Controlla il riepilogo</h2></div><span class="badge" id="review-day-label">1ª Lega · 3ª Serie A</span></div><div class="data-summary" id="data-summary"><div><strong>0</strong><span>Giornate già online</span></div><div><strong>1ª</strong><span>Giornata di Lega</span></div><div><strong>0</strong><span>Righe nel CSV finale</span></div></div><div class="table-wrap review-table-wrap"><table><thead><tr><th>Partita</th><th>Squadra A</th><th class="numeric">FP</th><th class="numeric">Risultato</th><th class="numeric">FP</th><th>Squadra B</th></tr></thead><tbody id="review-body"><tr class="empty-row"><td colspan="6">Compila le partite per visualizzare il riepilogo.</td></tr></tbody></table></div></section>
 
-      <section class="admin-card generate-card">
-        <div class="generate-copy">
-          <span class="eyebrow">Passaggio 4</span>
-          <h2>Genera il CSV aggiornato</h2>
-          <p>Il file scaricato contiene sia le giornate già online sia quella appena inserita. Su GitHub dovrai sostituire unicamente <code>data/results.csv</code>.</p>
-        </div>
-        <div class="generate-action">
-          <button class="button button-primary generate-button" id="generate-csv" type="button" disabled>Genera e scarica results.csv</button>
-          <small id="generate-help">Il tasto si attiva quando tutti i dati sono corretti.</small>
-        </div>
-      </section>
+        <section class="admin-card generate-card"><div class="generate-copy"><span class="eyebrow">Passaggio 4</span><h2>Genera results.csv</h2><p>Il file scaricato contiene tutte le giornate già online più quella appena inserita. Su GitHub sostituisci soltanto <code>data/results.csv</code>.</p></div><div class="generate-action"><button class="button button-primary generate-button" id="generate-csv" type="button" disabled>Genera e scarica results.csv</button><small id="generate-help">Il tasto si attiva quando tutti i dati sono corretti.</small></div></section>
+      </div>
 
-      <section class="publish-help">
-        <strong>Dopo il download:</strong>
-        apri il repository su GitHub, entra nella cartella <code>data</code>, apri <code>results.csv</code>, scegli la modifica del file, incolla o carica il nuovo contenuto e conferma il commit.
-      </section>
+      <!-- =====================================================
+           ADMIN PAGAMENTI
+           Qui NON si tocca la logica dei risultati. Questo blocco
+           genera esclusivamente data/payments.csv.
+           ===================================================== -->
+      <div data-admin-panel="pagamenti" hidden>
+        <section class="admin-grid admin-grid-top payments-admin-top">
+          <article class="admin-card data-source-card"><div class="card-heading-row"><div><span class="eyebrow">Archivio contabilità</span><h2>payments.csv online</h2></div><span class="card-icon mini" aria-hidden="true">💰</span></div><p>Contiene rate versate, vincitori di Champions/Coppa Italia e totale dei premi già materialmente pagati.</p><div class="validation-box" id="payments-base-status">Caricamento di payments.csv…</div><button class="button button-ghost compact-button" id="load-payments-online" type="button">Ricarica il file online</button></article>
+          <article class="admin-card"><span class="eyebrow">Riepilogo quote</span><h2>Situazione incassi</h2><div class="admin-payment-summary"><div><span>Incassato</span><strong id="admin-fees-collected">€0</strong></div><div><span>Da incassare</span><strong id="admin-fees-due">€1540</strong></div></div><p class="field-help">Quota squadra: €110, divisa in due rate da €55.</p></article>
+        </section>
+
+        <section class="admin-card prize-winners-card"><div class="card-heading-row"><div><span class="eyebrow">Premi manuali</span><h2>Champions e Coppa Italia</h2></div><span class="badge">€110 ciascuna</span></div><p class="field-help">Campionato, Reietto del Mese e Cintura vengono calcolati automaticamente dai risultati. Qui devi indicare soltanto i vincitori delle due coppe.</p><div class="winner-select-grid"><label><span class="field-label">Vincitore Champions League</span><select id="champions-winner"></select></label><label><span class="field-label">Vincitore Coppa Italia</span><select id="coppa-winner"></select></label></div></section>
+
+        <section class="admin-card payments-editor-card"><div class="card-heading-row"><div><span class="eyebrow">Quote e premi pagati</span><h2>Contabilità squadre</h2></div><span class="badge">14 squadre</span></div><div class="table-wrap admin-payments-table-wrap"><table class="admin-payments-table"><thead><tr><th>Squadra</th><th>1ª rata</th><th>2ª rata</th><th class="numeric">Totale quota</th><th>Premi pagati</th><th>Note</th></tr></thead><tbody id="payments-editor"></tbody></table></div><div class="validation-box" id="payments-validation">Controllo contabilità…</div></section>
+
+        <section class="admin-card generate-card"><div class="generate-copy"><span class="eyebrow">Salvataggio contabilità</span><h2>Genera payments.csv</h2><p>Questo file è completamente separato dai risultati. Su GitHub sostituisci soltanto <code>data/payments.csv</code>.</p></div><div class="generate-action"><button class="button button-primary generate-button" id="generate-payments-csv" type="button" disabled>Genera e scarica payments.csv</button><small>La pagina Pagamenti si aggiornerà con il nuovo file.</small></div></section>
+      </div>
+
+      <section class="publish-help"><strong>Dopo il download:</strong> entra nella cartella <code>data</code> del repository GitHub e sostituisci solamente il CSV che hai appena generato. I due archivi sono indipendenti.</section>
     </main>
 
-    <footer class="site-footer">
-      <div><strong>I Reietti</strong><span>Generatore CSV integrato nella dashboard</span></div>
-      <a href="README.md">Guida completa</a>
-    </footer>
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Area Admin — risultati e contabilità</span></div><a href="README.md">Guida completa</a></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/site.js" defer></script>
+  <script src="assets/league-core.js" defer></script>
   <script src="assets/admin.js" defer></script>
+  <script src="assets/admin-results.js" defer></script>
+  <script src="assets/admin-payments.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#08150e">
+  <meta name="description" content="Cintura dei Reietti — competizione speciale della Lega I Reietti.">
+  <title>I Reietti — Cintura</title><link rel="icon" href="assets/favicon.png" type="image/png"><link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="cintura">
+  <div class="page-shell">
+    <header class="site-header site-header-nav">
+      <a class="brand" href="index.html"><img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti"><span><strong id="league-name">I REIETTI</strong><small id="season-label">Stagione 2026/27</small></span></a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav"><a class="nav-link" href="index.html">HOME</a><div class="nav-dropdown"><button class="nav-link nav-dropdown-toggle active" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button><div class="nav-submenu"><a class="active" href="cintura.html">La Cintura</a><a href="reietto.html">Reietto del Mese</a></div></div><a class="nav-link" href="pagamenti.html">PAGAMENTI</a><button class="nav-link nav-admin js-admin-access" type="button">ADMIN</button></nav>
+      <span class="update-pill desktop-update" id="last-updated">Caricamento…</span>
+    </header>
+
+    <main>
+      <section class="page-hero competition-hero belt-page-hero"><span class="eyebrow">Competizione speciale</span><h1>Cintura dei Reietti</h1><p>La prima Cintura viene assegnata alla squadra con più fantapunti nella <strong id="belt-start-label">3ª giornata Serie A</strong>. Da lì passa di mano soltanto quando il detentore perde lo scontro diretto.</p></section>
+
+      <section class="status-grid two-cards"><article class="status-card status-card-belt"><div class="card-icon">🏆</div><div><span class="card-label">Detentore attuale</span><h2 id="belt-holder">In attesa</h2><p id="belt-detail">Caricamento situazione…</p></div></article><a class="status-card" href="reietto.html"><div class="card-icon">📈</div><div><span class="card-label">Altra competizione</span><h2>Reietto del Mese</h2><p>Vai ai blocchi da cinque giornate.</p></div></a></section>
+
+      <section class="content-section compact-top">
+        <div class="belt-layout">
+          <article class="feature-card belt-feature"><div class="feature-topline"><span class="live-dot"></span><span>Situazione attuale</span></div><div class="champion-lockup"><div class="belt-avatar-slot" id="belt-avatar"><span class="team-logo team-logo-hero"><span class="team-logo-fallback">🏆</span></span></div><div><span class="muted">Campione in carica</span><h3 id="belt-holder-large">Da assegnare</h3><p id="belt-streak">Nessuna difesa registrata</p></div></div><div class="mini-stats"><div><strong id="belt-won-day">—</strong><span>Conquistata</span></div><div><strong id="belt-defenses">0</strong><span>Difese riuscite</span></div><div><strong id="belt-holders-count">0</strong><span>Detentori totali</span></div></div></article>
+          <article class="feature-card"><div class="card-heading-row"><div><span class="eyebrow">Cronologia</span><h3>Passaggi della cintura</h3></div><span class="badge" id="belt-history-count">0 eventi</span></div><div class="timeline" id="belt-timeline"><div class="timeline-empty">Caricamento cronologia…</div></div></article>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>Cintura dei Reietti — <span id="footer-season">2026/27</span></span></div><a href="index.html">Torna alla Home</a></footer>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/site.js" defer></script><script src="assets/access.js" defer></script><script src="assets/league-core.js" defer></script><script src="assets/belt.js" defer></script>
+</body>
+</html>

@@ -1,13 +1,24 @@
 {
   "leagueName": "I REIETTI",
   "season": "2026/27",
-  "subtitle": "Dashboard competizioni speciali",
+  "subtitle": "Lega Fantacalcio",
+  "leagueStartSerieAMatchday": 3,
+  "leagueEndSerieAMatchday": 38,
   "startMatchday": 4,
   "beltStartMatchday": 3,
   "endMatchday": 38,
   "monthlyBlockSize": 5,
   "monthlyPrize": 20,
   "currency": "€",
+  "teamFee": 110,
+  "installmentAmount": 55,
+  "prizes": {
+    "championship": [450, 320, 200, 110],
+    "championsLeague": 110,
+    "coppaItalia": 110,
+    "belt": 35
+  },
+  "leagueTieBreakSeed": "i-reietti-2026-27",
   "lastUpdated": "",
-  "adminNote": "Accedi al pannello dalla dashboard e genera data/results.csv"
+  "adminNote": "Risultati in data/results.csv e contabilità in data/payments.csv"
 }
