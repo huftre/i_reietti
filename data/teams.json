@@ -33,7 +33,7 @@
     "logo": "assets/teams/TigerTeam.png",
     "motto": "Quando sbaglia formazione, controllate il calendario.",
     "trophies": {
-      "campionato": 0,
+      "campionato": 1,
       "cintura": 0,
       "reietto": 0
     }
@@ -46,7 +46,7 @@
     "logo": "assets/teams/Annusate_Milano.png",
     "motto": "Se ci siete dietro, sapete già dove guardare.",
     "trophies": {
-      "campionato": 0,
+      "campionato": 1,
       "cintura": 0,
       "reietto": 0
     }
@@ -137,7 +137,7 @@
     "logo": "assets/teams/Foreign_Fighters.png",
     "motto": "Vichinghi in trasferta, bonus senza passaporto.",
     "trophies": {
-      "campionato": 0,
+      "campionato": 1,
       "cintura": 0,
       "reietto": 0
     }
