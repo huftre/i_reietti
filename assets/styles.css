@@ -1003,6 +1003,9 @@ body.pdf-open {
 .payments-hero { background: radial-gradient(circle at 82% 20%, rgba(52,211,153,.16), transparent 30%), linear-gradient(135deg, rgba(12,58,39,.95), rgba(6,23,15,.97)); }
 
 .two-cards { grid-template-columns: repeat(2, minmax(0,1fr)); }
+/* LAYOUT: usa queste classi quando una sezione deve occupare tutta la larghezza con un solo contenuto. */
+.single-card-grid { grid-template-columns: 1fr; }
+.single-column-heading { grid-template-columns: 1fr; }
 .two-cards a.status-card { text-decoration: none; color: inherit; transition: transform .18s ease, border-color .18s ease; }
 .two-cards a.status-card:hover { transform: translateY(-2px); border-color: rgba(220,174,32,.35); }
 .compact-top { padding-top: 24px; }
