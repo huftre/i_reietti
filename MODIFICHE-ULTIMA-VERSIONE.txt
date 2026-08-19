@@ -51,12 +51,12 @@ NUOVE FUNZIONI: SCHEDA SQUADRA / FORMA / TROFEI
   "trophies": {"campionato": 0, "cintura": 0, "reietto": 0}
 - I trofei della stagione corrente vengono aggiunti automaticamente dai risultati CSV.
 
-SOS REIETTI - TOOL ASTA
------------------------
-- Aggiunto menu TOOL subito dopo HOME, con sottomenu SOS REIETTI.
-- Aggiunta pagina sos-reietti.html con ricerca giocatore e popup di valutazione.
-- Aggiunto algoritmo trasparente per Reietti Index e prezzo d'asta calibrato su 14 squadre, 800 crediti e rosa 3P/8D/8C/6A.
-- Aggiunto assets/sos-reietti-config.js: modifica qui URL del proxy e parametri della Lega.
-- Aggiunto assets/sos-reietti.js: logica ricerca, popup e algoritmo.
-- Aggiunto worker/sos-reietti-proxy.js: proxy sicuro per API-Football senza esporre la chiave sul sito.
-- Aggiunto SOS-REIETTI-SETUP.txt con istruzioni semplici di configurazione.
+--- SOS REIETTI v3 ---
+- Aggiunto TOOL > SOS REIETTI al menu principale.
+- Collegato Worker Cloudflare sos-reietti-api.huftre.workers.dev.
+- Motore dati: TheSportsDB + API-Football storico + football-data.org corrente.
+- Corretto il calcolo: la statistica API-Football 2024/25 e' ora la base principale dell'indice.
+- Aggiunti REIETTI INDEX 0-100, PREZZO SOS, fascia prudente, qualita', affidabilita', bonus e disciplina.
+- Prezzo calibrato per 14 squadre, 800 crediti e rose 3P/8D/8C/6A.
+- Aggiunti identikit del giocatore e contesto Serie A corrente/prossima partita.
+- Inseriti commenti nel codice nei punti in cui modificare pesi, tetti prezzo e budget.

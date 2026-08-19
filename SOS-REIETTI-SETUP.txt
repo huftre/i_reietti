@@ -1,100 +1,22 @@
-SOS REIETTI — COLLEGAMENTO API GRATUITA
-========================================
+SOS REIETTI - CONFIGURAZIONE ATTUALE
 
-Il sito è pubblicato su GitHub Pages: per sicurezza NON dobbiamo mettere la chiave API-Football dentro JavaScript pubblico.
-Per questo il progetto include un piccolo Cloudflare Worker gratuito che fa da tramite.
+Il tool e' gia collegato al Worker:
+https://sos-reietti-api.huftre.workers.dev
 
-COSA SERVE
-----------
-1) Un account gratuito API-Football / API-Sports.
-2) Un account gratuito Cloudflare.
-3) Circa 5 minuti per il collegamento iniziale.
+Fonti usate:
+1) TheSportsDB: nome, foto, ruolo e squadra attuale.
+2) API-Football: statistiche individuali storiche (Free: stagione 2024, fallback 2023).
+3) football-data.org: contesto Serie A corrente, classifica e calendario.
 
-PASSO 1 — CREA LA CHIAVE API-FOOTBALL
---------------------------------------
-- Crea un account gratuito su API-Football/API-Sports.
-- Nel pannello cerca la tua API key (Account > My Access).
-- Copiala, ma NON inserirla mai nei file pubblicati su GitHub.
+Parametri Lega:
+- 14 squadre
+- 800 crediti
+- 3 portieri, 8 difensori, 8 centrocampisti, 6 attaccanti
 
-PASSO 2 — CREA IL CLOUDFLARE WORKER
-------------------------------------
-- Nel pannello Cloudflare apri Workers & Pages e crea un nuovo Worker.
-- Sostituisci il codice del Worker con il contenuto di:
+FILE DA MODIFICARE SE VUOI CAMBIARE IL MODELLO:
+- assets/sos-reietti-config.js: budget, squadre, slot e ripartizione budget.
+- assets/sos-reietti.js: pesi del REIETTI INDEX e curva prezzo.
+- cloudflare/worker.js: collegamento alle fonti dati.
 
-  worker/sos-reietti-proxy.js
-
-- Salva/deploya.
-
-PASSO 3 — SALVA LA CHIAVE COME SECRET
---------------------------------------
-Nel Worker crea un Secret con questo nome ESATTO:
-
-  API_FOOTBALL_KEY
-
-Come valore incolla la tua chiave API-Football.
-
-NON creare una normale variabile pubblica: deve essere un Secret.
-
-PASSO 4 — VARIABILI OPZIONALI
-------------------------------
-Il Worker è già impostato per il sito attuale. Se un giorno cambia qualcosa puoi aggiungere:
-
-  ALLOWED_ORIGIN = https://huftre.github.io
-  SERIE_A_LEAGUE_ID = 135
-  CURRENT_SEASON = 2026
-
-Se non le aggiungi usa già questi valori come predefiniti.
-
-PASSO 5 — COPIA L'INDIRIZZO DEL WORKER
----------------------------------------
-Dopo il deploy Cloudflare mostrerà un indirizzo simile a:
-
-  https://sos-reietti-api.nome-account.workers.dev
-
-Copialo.
-
-PASSO 6 — COLLEGALO AL SITO
-----------------------------
-Apri:
-
-  assets/sos-reietti-config.js
-
-e cambia SOLO questa riga:
-
-  proxyUrl: '',
-
-in, per esempio:
-
-  proxyUrl: 'https://sos-reietti-api.nome-account.workers.dev',
-
-Salva e pubblica il sito su GitHub.
-
-FATTO.
-
-COME FUNZIONA
--------------
-- Il visitatore cerca un giocatore digitando almeno 3 lettere.
-- Il sito interroga il Worker.
-- Il Worker interroga API-Football senza mostrare la chiave segreta.
-- Le ricerche vengono messe in cache per ridurre il consumo della quota gratuita.
-- La scheda utilizza la stagione corrente per squadra/ruolo e la stagione precedente per la base statistica dell'asta.
-- Se la stagione precedente non ha minuti disponibili, il Worker prova automaticamente anche un anno più indietro.
-
-ALGORITMO PREZZO
-----------------
-I parametri principali sono in:
-
-  assets/sos-reietti.js
-
-cerca il commento:
-
-  ALGORITMO SOS REIETTI
-
-La configurazione della Lega (14 squadre, 800 crediti, rosa 3/8/8/6 e percentuale budget per reparto) è invece in:
-
-  assets/sos-reietti-config.js
-
-NOTA SULLA QUOTA GRATUITA
--------------------------
-API-Football limita il numero di richieste giornaliere del piano gratuito. Il Worker usa una cache per evitare di ripetere inutilmente la stessa richiesta.
-Se la quota viene esaurita, il sito mostrerà un messaggio e tornerà a funzionare quando la quota dell'API si rinnova.
+IMPORTANTE:
+Le chiavi API devono restare nei Secret di Cloudflare e NON vanno mai messe su GitHub.
