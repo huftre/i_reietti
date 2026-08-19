@@ -497,7 +497,7 @@
         </div>
 
         <div class="sos-player-identity">
-          <span class="eyebrow">SOS Reietti · Indice asta</span>
+          <span class="eyebrow">SOS Reietti · Informazioni per asta</span>
           <h2 id="sos-player-name">${escapeHtml(player.name || `${player.firstname || ''} ${player.lastname || ''}`.trim())}</h2>
           <p>${escapeHtml(currentTeam)}${player.age ? ` · ${player.age} anni` : ''}${player.nationality ? ` · ${escapeHtml(player.nationality)}` : ''}</p>
           ${player.injured ? '<div class="sos-injury-warning">⚠️ Segnalato come indisponibile/infortunato nei dati disponibili.</div>' : ''}
@@ -507,13 +507,13 @@
 
       <div class="sos-price-panel">
         <div class="sos-index-block">
-          <span>REIETTI INDEX</span>
+          <span>AFFIDABILITA' ACQUISTO</span>
           <strong>${evaluation.index}<small>/100</small></strong>
           <em>${escapeHtml(evaluation.verdict)}</em>
         </div>
 
         <div class="sos-price-block">
-          <span>PREZZO SOS</span>
+          <span>PREZZO CONSIGLIATO</span>
           <strong>${evaluation.price}<small> crediti</small></strong>
           <em>Fascia prudente ${evaluation.low}–${evaluation.high}</em>
         </div>
@@ -590,7 +590,6 @@
 
       <div class="sos-model-note">
         Il prezzo SOS è un riferimento per l'asta iniziale: non è una quotazione ufficiale e non garantisce rendimento futuro.
-        I pesi del modello sono commentati in <code>assets/sos-reietti.js</code> e possono essere modificati.
       </div>`;
   }
 
