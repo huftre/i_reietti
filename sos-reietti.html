@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08150e">
+  <meta name="description" content="SOS Reietti: motore di supporto all'asta Fantacalcio della Lega I Reietti.">
+  <title>I Reietti — SOS Reietti</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body data-page="sos-reietti">
+  <div class="page-shell">
+    <header class="site-header site-header-nav">
+      <a class="brand" href="index.html" aria-label="Home I Reietti">
+        <img class="brand-logo" src="assets/logo-i-reietti.png" alt="Logo I Reietti">
+        <span><strong id="league-name">I REIETTI</strong><small id="season-label">Stagione 2026/27</small></span>
+      </a>
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Apri menu" aria-controls="main-nav" aria-expanded="false"><span></span><span></span><span></span></button>
+      <nav class="main-nav" id="main-nav" aria-label="Navigazione principale">
+        <a class="nav-link" href="index.html">HOME</a>
+        <div class="nav-dropdown nav-tool-dropdown">
+          <button class="nav-link nav-dropdown-toggle active" type="button" aria-expanded="false">TOOL <span>⌄</span></button>
+          <div class="nav-submenu">
+            <a class="active" href="sos-reietti.html">SOS REIETTI</a>
+          </div>
+        </div>
+        <a class="nav-link" href="squadre.html">SQUADRE</a>
+        <div class="nav-dropdown">
+          <button class="nav-link nav-dropdown-toggle" type="button" aria-expanded="false">COMPETIZIONI <span>⌄</span></button>
+          <div class="nav-submenu">
+            <a href="campionato.html">Campionato</a>
+            <a href="cintura.html">La Cintura</a>
+            <a href="reietto.html">Reietto del Mese</a>
+          </div>
+        </div>
+        <a class="nav-link" href="pagamenti.html">PAGAMENTI</a>
+        <a class="nav-link" href="regolamento.html">REGOLAMENTO</a>
+        <button class="nav-link nav-admin js-admin-access" type="button">ADMIN</button>
+      </nav>
+      <span class="update-pill desktop-update">14 squadre · 800 crediti</span>
+    </header>
+
+    <main>
+      <section class="page-hero sos-page-hero">
+        <span class="eyebrow">Tool · Asta Fantacalcio</span>
+        <h1>SOS REIETTI</h1>
+        <p>Cerca un calciatore di Serie A e ottieni un'indicazione d'asta costruita per una lega da <strong>14 squadre</strong>, <strong>800 crediti</strong> e rose da <strong>3 P · 8 D · 8 C · 6 A</strong>.</p>
+      </section>
+
+      <section class="content-section compact-top sos-search-section">
+        <div class="sos-search-card">
+          <div class="sos-search-copy">
+            <span class="eyebrow">Ricerca giocatore</span>
+            <h2>Chi stai pensando di comprare?</h2>
+            <p>Scrivi almeno 3 lettere. Seleziona il giocatore dall'elenco e apri la sua scheda SOS.</p>
+          </div>
+
+          <div class="sos-search-box">
+            <label class="field-label" for="sos-player-search">Nome del giocatore</label>
+            <div class="sos-search-input-wrap">
+              <input id="sos-player-search" class="sos-player-search" type="search" placeholder="Es. Lautaro, Yildiz, Orsolini…" autocomplete="off" spellcheck="false">
+              <span class="sos-search-spinner" id="sos-search-spinner" aria-hidden="true"></span>
+            </div>
+            <div class="sos-search-help" id="sos-search-help">Digita almeno 3 caratteri.</div>
+            <div class="sos-search-results" id="sos-search-results" hidden></div>
+          </div>
+
+          <div class="sos-api-notice" id="sos-api-notice" hidden>
+            <strong>Collegamento dati non configurato.</strong>
+            <p>Il tool è pronto, ma va collegato una sola volta all'API gratuita. Nel progetto trovi <code>SOS-REIETTI-SETUP.txt</code> con i passaggi.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sos-method-grid" aria-label="Parametri del modello SOS Reietti">
+        <article class="sos-method-card"><span>👥</span><strong>14 squadre</strong><small>Scarsità maggiore rispetto alle leghe più piccole.</small></article>
+        <article class="sos-method-card"><span>💰</span><strong>800 crediti</strong><small>Il prezzo è calibrato sul budget iniziale della Lega.</small></article>
+        <article class="sos-method-card"><span>🧩</span><strong>25 giocatori</strong><small>3 portieri · 8 difensori · 8 centrocampisti · 6 attaccanti.</small></article>
+      </section>
+
+      <p class="page-note sos-disclaimer">Il prezzo SOS è una stima algoritmica basata sui dati disponibili e serve come riferimento d'asta: non garantisce rendimento, titolarità o bonus futuri.</p>
+    </main>
+
+    <footer class="site-footer"><div><strong>I Reietti</strong><span>SOS Reietti — stagione <span id="footer-season">2026/27</span></span></div><a href="index.html">Torna alla Home</a></footer>
+  </div>
+
+  <div class="sos-player-backdrop" id="sos-player-modal" hidden>
+    <section class="sos-player-modal" role="dialog" aria-modal="true" aria-labelledby="sos-player-name">
+      <button class="sos-player-close" id="sos-player-close" type="button" aria-label="Chiudi scheda giocatore">×</button>
+      <div id="sos-player-modal-content">
+        <div class="sos-modal-loading"><span class="pdf-spinner" aria-hidden="true"></span><strong>Elaborazione SOS…</strong></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="assets/site.js" defer></script>
+  <script src="assets/access.js" defer></script>
+  <script src="assets/sos-reietti-config.js" defer></script>
+  <script src="assets/sos-reietti.js" defer></script>
+</body>
+</html>
