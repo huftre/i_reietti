@@ -2,7 +2,16 @@
   'use strict';
 
   const cfg = window.SOS_REIETTI_CONFIG || {};
-  const state = { selectedSearchItem: null, requestId: 0, timer: null };
+  const state = {
+    selectedSearchItem: null,
+    requestId: 0,
+    timer: null,
+    lastCompletedQuery: '',
+    lastExtendedQuery: ''
+  };
+
+  // MODIFICA QUI: quanti risultati mostrare prima del pulsante "Mostra altri".
+  const SEARCH_RESULTS_PREVIEW = 6;
 
   document.addEventListener('DOMContentLoaded', init);
 
@@ -11,6 +20,7 @@
     const results = document.querySelector('#sos-search-results');
     const notice = document.querySelector('#sos-api-notice');
     const close = document.querySelector('#sos-player-close');
+    const extendedButton = document.querySelector('#sos-extended-search');
     const modal = document.querySelector('#sos-player-modal');
 
     if (!input || !results || !modal) return;
@@ -25,6 +35,10 @@
       window.clearTimeout(state.timer);
       const query = input.value.trim();
 
+      if (extendedButton) {
+        extendedButton.disabled = query.length < 3;
+      }
+
       if (query.length < 3) {
         results.hidden = true;
         results.innerHTML = '';
@@ -33,14 +47,47 @@
         return;
       }
 
-      state.timer = window.setTimeout(() => searchPlayers(query), 430);
+      /*
+       MODIFICA v4.1:
+       aspettiamo 1,1 secondi prima della ricerca.
+       Così non consumiamo una chiamata API-Football per ogni lettera.
+      */
+      state.timer = window.setTimeout(() => searchPlayers(query), 1100);
     });
 
     input.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
         results.hidden = true;
         input.blur();
+        return;
       }
+
+      /*
+         INVIO = nuovo tentativo immediato della ricerca normale.
+      */
+      if (event.key === 'Enter') {
+        const query = input.value.trim();
+
+        if (query.length >= 3) {
+          event.preventDefault();
+          window.clearTimeout(state.timer);
+          searchPlayers(query, true, false);
+        }
+      }
+    });
+
+    /*
+       MODIFICA v4.5:
+       Ricerca estesa manuale. Interroga API-Football anche quando
+       TheSportsDB ha già trovato qualche omonimo.
+    */
+    extendedButton?.addEventListener('click', () => {
+      const query = input.value.trim();
+
+      if (query.length < 3) return;
+
+      window.clearTimeout(state.timer);
+      searchPlayers(query, true, true);
     });
 
     close?.addEventListener('click', closeModal);
@@ -53,25 +100,86 @@
     });
   }
 
-  async function searchPlayers(query) {
+  async function searchPlayers(query, force = false, extended = false) {
     const requestId = ++state.requestId;
     const results = document.querySelector('#sos-search-results');
     if (!results) return;
+
+    // Evita richieste duplicate identiche generate dall'interfaccia.
+    const normalizedQuery = query.toLowerCase();
+
+    if (
+      !force &&
+      (
+        (!extended && state.lastCompletedQuery === normalizedQuery) ||
+        (extended && state.lastExtendedQuery === normalizedQuery)
+      )
+    ) {
+      return;
+    }
 
     setLoading(true);
     setHelp(`Cerco “${query}”…`);
 
     try {
-      const data = await apiFetch(`/search?q=${encodeURIComponent(query)}`);
+      const params = new URLSearchParams({
+        q: query
+      });
+
+      if (force) {
+        params.set('fresh', '1');
+      }
+
+      if (extended) {
+        params.set('extended', '1');
+      }
+
+      const data = await apiFetch(
+        `/search?${params.toString()}`
+      );
+
       if (requestId !== state.requestId) return;
 
-      const players = Array.isArray(data.players) ? data.players : [];
-      renderSearchResults(players);
-      setHelp(
-        players.length
-          ? `${players.length} risultato${players.length === 1 ? '' : 'i'} trovato${players.length === 1 ? '' : 'i'}.`
-          : 'Nessun giocatore trovato.'
+      const players = Array.isArray(data.players)
+        ? data.players
+        : [];
+
+      renderSearchResults(
+        players,
+        query,
+        Boolean(data.extendedSearch)
       );
+
+      if (!data.fallbackError) {
+        if (data.extendedSearch) {
+          state.lastExtendedQuery = normalizedQuery;
+        } else {
+          state.lastCompletedQuery = normalizedQuery;
+        }
+      }
+
+      const suffix = data.extendedSearch
+        ? ' · archivio esteso'
+        : '';
+
+      if (data.rateLimited) {
+        setHelp(
+          `API-Football ha raggiunto il limite momentaneo. ` +
+          `Attendi circa ${data.retryAfterSeconds || 65} secondi e riprova la ricerca estesa.`
+        );
+      } else if (players.length) {
+        setHelp(
+          data.extendedSearch
+            ? `${players.length} risultato${players.length === 1 ? '' : 'i'}${suffix}, ordinati per pertinenza.`
+            : `${players.length} risultato${players.length === 1 ? '' : 'i'}. Se non trovi quello giusto, usa “Ricerca estesa”.`
+        );
+      } else {
+        setHelp(
+          data.fallbackError
+            ? `Nessun giocatore trovato. ${data.fallbackError}`
+            : 'Nessun giocatore trovato. Prova la ricerca estesa.'
+        );
+      }
     } catch (error) {
       if (requestId !== state.requestId) return;
 
@@ -83,38 +191,108 @@
     }
   }
 
-  function renderSearchResults(players) {
+  function renderSearchResults(players, query = '', extended = false, showAll = false) {
     const container = document.querySelector('#sos-search-results');
     if (!container) return;
 
     if (!players.length) {
       container.hidden = false;
-      container.innerHTML = '<div class="sos-no-results">Nessun risultato.</div>';
+      container.innerHTML =
+        '<div class="sos-no-results">Nessun risultato. Se il nome è corretto, prova “Ricerca estesa”.</div>';
       return;
     }
 
-    container.innerHTML = players.map((item, index) => {
+    /*
+       MODIFICA v4.5:
+       riordino anche lato sito, così il risultato più pertinente
+       resta in alto anche se un provider cambia l'ordine della risposta.
+    */
+    const ranked = rankSearchResultsFrontend(
+      players,
+      query
+    );
+
+    const visible = showAll
+      ? ranked
+      : ranked.slice(0, SEARCH_RESULTS_PREVIEW);
+
+    const hiddenCount =
+      Math.max(0, ranked.length - visible.length);
+
+    const rowsHtml = visible.map((item, index) => {
       const player = item.player || {};
       const stat = pickCurrentStat(item.statistics || []);
-      const role = roleLabel(normalizeRole(stat?.games?.position));
-      const team = stat?.team?.name || '—';
+      const rawPosition = stat?.games?.position;
+
+      const role = rawPosition
+        ? roleLabel(normalizeRole(rawPosition))
+        : 'Ruolo da verificare';
+
+      const hintedTeam =
+        item?.currentTeamHint?.name ||
+        '';
+
+      const team = String(
+        hintedTeam ||
+        stat?.team?.name ||
+        ''
+      ).trim();
+
+      const verified =
+        Boolean(item?.currentTeamHint?.verified);
+
+      const meta = [
+        team && team !== '—'
+          ? team
+          : (
+              item.provider === 'api-football'
+                ? 'Archivio esteso'
+                : ''
+            ),
+        role
+      ].filter(Boolean).join(' · ');
+
+      const tags = [
+        verified
+          ? '<span class="sos-result-tag verified">Serie A verificata</span>'
+          : '',
+        item.provider === 'api-football'
+          ? '<span class="sos-result-tag extended">Archivio esteso</span>'
+          : ''
+      ].filter(Boolean).join('');
 
       return `
-        <button class="sos-search-result" type="button" data-player-index="${index}">
+        <button class="sos-search-result${verified ? ' verified' : ''}" type="button" data-player-index="${index}">
           <img src="${escapeAttr(player.photo || '')}" alt="" loading="lazy">
           <span class="sos-result-copy">
             <strong>${escapeHtml(player.name || `${player.firstname || ''} ${player.lastname || ''}`.trim())}</strong>
-            <small>${escapeHtml(team)} · ${escapeHtml(role)}</small>
+            <small>${escapeHtml(meta || 'Dati disponibili nella scheda')}</small>
+            ${tags ? `<span class="sos-result-tags">${tags}</span>` : ''}
           </span>
           <span class="sos-result-arrow" aria-hidden="true">→</span>
         </button>`;
     }).join('');
 
+    const footerHtml = hiddenCount
+      ? `
+        <button class="sos-show-more" type="button" data-sos-show-more>
+          Mostra altri ${hiddenCount} omonim${hiddenCount === 1 ? 'o' : 'i'}
+        </button>`
+      : (
+          extended
+            ? '<div class="sos-search-mode-note">Risultati dell’archivio esteso, ordinati per pertinenza.</div>'
+            : ''
+        );
+
+    container.innerHTML =
+      rowsHtml +
+      footerHtml;
+
     container.hidden = false;
 
     container.querySelectorAll('[data-player-index]').forEach(button => {
       button.addEventListener('click', () => {
-        const item = players[Number(button.dataset.playerIndex)];
+        const item = visible[Number(button.dataset.playerIndex)];
         if (!item) return;
 
         state.selectedSearchItem = item;
@@ -122,7 +300,81 @@
         openPlayer(item);
       });
     });
+
+    container.querySelector('[data-sos-show-more]')?.addEventListener('click', () => {
+      renderSearchResults(
+        ranked,
+        query,
+        extended,
+        true
+      );
+    });
   }
+
+
+  function rankSearchResultsFrontend(players, query) {
+    return [...players]
+      .map((item, index) => ({
+        item,
+        index,
+        score: frontendSearchScore(item, query)
+      }))
+      .sort((a, b) => {
+        if (b.score !== a.score) {
+          return b.score - a.score;
+        }
+
+        return a.index - b.index;
+      })
+      .map(row => row.item);
+  }
+
+
+  function frontendSearchScore(item, query) {
+    const player = item?.player || {};
+    const q = normalizeSearchText(query);
+    const full = normalizeSearchText(player?.name);
+    const first = normalizeSearchText(player?.firstname);
+    const last = normalizeSearchText(player?.lastname);
+
+    let score = 0;
+
+    // MODIFICA QUI se vuoi cambiare la priorità dell'autocomplete.
+    if (full === q) score += 120;
+    if (last === q) score += 90;
+    if (first === q) score += 55;
+
+    if (full.startsWith(q)) score += 42;
+    if (last.startsWith(q)) score += 38;
+    if (first.startsWith(q)) score += 24;
+
+    if (full.includes(q)) score += 25;
+    if (last.includes(q)) score += 22;
+
+    if (item?.currentTeamHint?.verified) {
+      score += 80;
+    }
+
+    if (
+      normalizeSearchText(player?.nationality) === 'italy'
+    ) {
+      score += 4;
+    }
+
+    return score;
+  }
+
+
+  function normalizeSearchText(value) {
+    return String(value || '')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[._'’\-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
 
   async function openPlayer(searchItem) {
     const modal = document.querySelector('#sos-player-modal');
@@ -144,7 +396,22 @@
       const id = Number(searchItem?.player?.id);
       if (!id) throw new Error('Giocatore non valido.');
 
-      const detail = await apiFetch(`/player?id=${id}`);
+      /*
+         MODIFICA v4:
+         diciamo al Worker da quale archivio arriva l'ID.
+         - thesportsdb     = ricerca normale
+         - api-football    = ricerca estesa/fallback
+      */
+      const provider = String(
+        searchItem?.provider ||
+        searchItem?.player?.provider ||
+        'thesportsdb'
+      );
+
+      const detail = await apiFetch(
+        `/player?id=${id}&source=${encodeURIComponent(provider)}`
+      );
+
       renderPlayerDetail(searchItem, detail);
     } catch (error) {
       content.innerHTML = `
@@ -214,6 +481,7 @@
     const currentTeam =
       context?.team?.shortName ||
       context?.team?.name ||
+      detail?.currentTeam?.name ||
       primaryAgg.teamName ||
       pickCurrentStat(searchItem.statistics || [])?.team?.name ||
       '—';
@@ -995,7 +1263,7 @@
     const msg = String(error?.message || error || 'Errore sconosciuto');
 
     if (/quota|limit|429/i.test(msg)) {
-      return 'La quota gratuita dell’API è temporaneamente esaurita. Riprova più tardi.';
+      return 'API-Football ha raggiunto il limite momentaneo. Attendi circa un minuto e riprova.';
     }
 
     if (/configurato|proxy/i.test(msg)) {

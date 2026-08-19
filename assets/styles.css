@@ -1994,3 +1994,127 @@ body.sos-modal-open { overflow: hidden; }
   .sos-current-card.wide { grid-column: auto; }
   .sos-profile-tags { justify-content: center; }
 }
+
+
+/* ============================================================
+   SOS REIETTI v4.5 - RICERCA MIGLIORATA
+   ============================================================ */
+
+.sos-search-actions {
+  min-height: 34px;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.sos-search-actions > span {
+  color: #8fa399;
+  font-size: .68rem;
+}
+
+.sos-extended-search {
+  min-height: 32px;
+  padding: 6px 11px;
+  border: 1px solid rgba(116,225,166,.26);
+  border-radius: 999px;
+  background: rgba(66,190,124,.07);
+  color: #a8e7c4;
+  font: inherit;
+  font-size: .7rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+
+.sos-extended-search:hover:not(:disabled),
+.sos-extended-search:focus-visible:not(:disabled) {
+  border-color: rgba(116,225,166,.58);
+  background: rgba(66,190,124,.13);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.sos-extended-search:disabled {
+  opacity: .38;
+  cursor: default;
+}
+
+.sos-search-result.verified {
+  background: linear-gradient(
+    90deg,
+    rgba(59,196,126,.075),
+    transparent 72%
+  );
+}
+
+.sos-result-tags {
+  margin-top: 5px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sos-result-tag {
+  padding: 3px 6px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: .57rem;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+
+.sos-result-tag.verified {
+  border: 1px solid rgba(78,211,143,.22);
+  background: rgba(78,211,143,.09);
+  color: #93e6bb;
+}
+
+.sos-result-tag.extended {
+  border: 1px solid rgba(232,189,57,.18);
+  background: rgba(232,189,57,.07);
+  color: #e7cb72;
+}
+
+.sos-show-more {
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px 12px;
+  border: 1px dashed rgba(220,174,32,.23);
+  border-radius: 10px;
+  background: rgba(255,255,255,.015);
+  color: #d8c276;
+  font: inherit;
+  font-size: .7rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sos-show-more:hover,
+.sos-show-more:focus-visible {
+  background: rgba(220,174,32,.07);
+  outline: none;
+}
+
+.sos-search-mode-note {
+  padding: 9px 11px 5px;
+  color: #81988a;
+  font-size: .65rem;
+  text-align: center;
+}
+
+@media (max-width: 620px) {
+  .sos-search-actions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .sos-extended-search {
+    width: 100%;
+  }
+}
