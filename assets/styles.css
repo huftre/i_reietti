@@ -1945,3 +1945,52 @@ body.sos-modal-open { overflow: hidden; }
   .sos-stat-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .sos-detail-title { align-items: flex-start; flex-direction: column; gap: 6px; }
 }
+
+/* =========================================================
+   SOS REIETTI - AGGIUNTE v3
+   MODIFICA FACILE: tag profilo e contesto Serie A attuale.
+   ========================================================= */
+.sos-profile-tags {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.sos-profile-tags span {
+  padding: 6px 9px;
+  border: 1px solid rgba(242,189,44,.22);
+  border-radius: 999px;
+  background: rgba(242,189,44,.07);
+  color: #ecd279;
+  font-size: .66rem;
+  font-weight: 800;
+}
+.sos-profile-summary { margin-top: 0; }
+.sos-current-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 8px;
+}
+.sos-current-card {
+  min-height: 84px;
+  padding: 12px 13px;
+  display: grid;
+  align-content: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(255,255,255,.02);
+}
+.sos-current-card.wide { grid-column: 1 / -1; }
+.sos-current-card span,
+.sos-current-card strong,
+.sos-current-card small { display: block; }
+.sos-current-card span { color: var(--muted); font-size: .63rem; }
+.sos-current-card strong { margin-top: 4px; font-size: .94rem; line-height: 1.25; }
+.sos-current-card small { margin-top: 4px; color: #9fb1a4; font-size: .68rem; }
+.sos-model-note code { color: #e8c660; }
+
+@media (max-width: 520px) {
+  .sos-current-grid { grid-template-columns: 1fr; }
+  .sos-current-card.wide { grid-column: auto; }
+  .sos-profile-tags { justify-content: center; }
+}

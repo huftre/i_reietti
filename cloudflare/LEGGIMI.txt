@@ -1,0 +1,19 @@
+SOS REIETTI - CLOUDFLARE WORKER
+
+Il sito usa questo Worker:
+https://sos-reietti-api.huftre.workers.dev
+
+SECRET da configurare in Cloudflare (NON inserirli nei file del sito):
+- FOOTBALL_DATA_KEY
+- API_FOOTBALL_KEY
+
+FACOLTATIVO:
+- THESPORTSDB_KEY (se assente viene usata la chiave free 123)
+
+TEST:
+/health
+/search?q=lautaro
+/player?id=34164252
+
+DOVE MODIFICARE IL CODICE:
+nel fondo di worker.js trovi la sezione CONFIGURAZIONE FACILE.
