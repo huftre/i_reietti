@@ -179,69 +179,10 @@
   }
 
   function calculateBelt() {
-    const start = state.config.beltStartMatchday ?? state.config.startMatchday;
-    const initialRows = rowsForDay(start).filter(row => row.fantapunti !== null);
-
-    if (new Set(initialRows.map(row => row.squadra)).size < state.teams.length) {
-      return { holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: null, lastProcessedDay: null, tie: false };
+    if (window.ReiettiCore?.calculateBelt) {
+      return window.ReiettiCore.calculateBelt(state.rows, state.teams, state.config);
     }
-
-    const maxPoints = Math.max(...initialRows.map(row => row.fantapunti));
-    const initialLeaders = initialRows.filter(row => row.fantapunti === maxPoints);
-    if (initialLeaders.length !== 1) {
-      return { holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: null, lastProcessedDay: start, tie: true, tiedTeams: initialLeaders.map(row => row.squadra), tiedPoints: maxPoints };
-    }
-
-    let holder = initialLeaders[0].squadra;
-    let acquiredDay = start;
-    let currentDefenses = 0;
-    let lastProcessedDay = start;
-    const holders = [holder];
-    const events = [{
-      day: start,
-      type: 'assignment',
-      holderAfter: holder,
-      points: maxPoints,
-      text: `${team(holder).name} conquista la prima Cintura con ${formatPoints(maxPoints)} fantapunti.`
-    }];
-
-    for (let day = start + 1; day <= state.config.endMatchday; day += 1) {
-      const holderRow = rowsForDay(day).find(row => row.squadra === holder);
-      if (!holderRow || holderRow.golFatti === null || holderRow.golSubiti === null || !holderRow.avversario) break;
-
-      const previousHolder = holder;
-      if (holderRow.golFatti < holderRow.golSubiti) {
-        holder = holderRow.avversario;
-        acquiredDay = day;
-        currentDefenses = 0;
-        if (!holders.includes(holder)) holders.push(holder);
-        events.push({
-          day,
-          type: 'transfer',
-          holderBefore: previousHolder,
-          holderAfter: holder,
-          score: `${holderRow.golFatti}-${holderRow.golSubiti}`,
-          text: `${team(holder).name} batte ${team(previousHolder).name} ${holderRow.golSubiti}-${holderRow.golFatti} e conquista la Cintura.`
-        });
-      } else {
-        currentDefenses += 1;
-        const resultWord = holderRow.golFatti === holderRow.golSubiti ? 'pareggia' : 'batte';
-        events.push({
-          day,
-          type: 'defense',
-          holderAfter: holder,
-          opponent: holderRow.avversario,
-          score: `${holderRow.golFatti}-${holderRow.golSubiti}`,
-          text: `${team(holder).name} ${resultWord} con ${team(holderRow.avversario).name} (${holderRow.golFatti}-${holderRow.golSubiti}) e conserva la Cintura.`
-        });
-      }
-      lastProcessedDay = day;
-    }
-
-    const nextDay = lastProcessedDay ? lastProcessedDay + 1 : start;
-    const nextFixture = state.rows.find(row => row.giornata === nextDay && row.squadra === holder && row.avversario);
-
-    return { holder, events, holders, currentDefenses, acquiredDay, lastProcessedDay, nextFixture, tie: false };
+    return { holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: null, lastProcessedDay: null, tie: false };
   }
 
   function renderBelt(belt) {

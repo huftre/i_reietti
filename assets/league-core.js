@@ -284,47 +284,52 @@
     });
   }
 
-  // Mantiene la stessa logica della Cintura presente nel progetto precedente.
+  // Calcola la Cintura e, a stagione completa, il vincitore secondo i criteri ufficiali.
   function calculateBelt(rows, teams, config) {
     const map = teamMap(teams);
     const team = id => getTeam(map, id);
     const start = Number(config.beltStartMatchday ?? config.startMatchday);
+    const end = Number(config.endMatchday);
     const initialRows = rowsForDay(rows, start).filter(row => row.fantapunti !== null);
 
     if (new Set(initialRows.map(row => row.squadra)).size < teams.length) {
-      return { holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: null, lastProcessedDay: null, tie: false };
+      return { holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: null, lastProcessedDay: null, tie: false, finalWinner: null, standings: [] };
     }
 
     const maxPoints = Math.max(...initialRows.map(row => row.fantapunti));
-    const initialLeaders = initialRows.filter(row => Math.abs(row.fantapunti - maxPoints) < EPSILON);
+    let initialLeaders = initialRows.filter(row => Math.abs(row.fantapunti - maxPoints) < EPSILON);
+    let initialWinner = null;
+
+    if (initialLeaders.length > 1) {
+      const maxGoals = Math.max(...initialLeaders.map(row => Number(row.golFatti ?? -Infinity)));
+      initialLeaders = initialLeaders.filter(row => Number(row.golFatti) === maxGoals);
+    }
+    if (initialLeaders.length > 1) {
+      const maxGoalDiff = Math.max(...initialLeaders.map(row => Number(row.golFatti ?? 0) - Number(row.golSubiti ?? 0)));
+      initialLeaders = initialLeaders.filter(row => (Number(row.golFatti ?? 0) - Number(row.golSubiti ?? 0)) === maxGoalDiff);
+    }
     if (initialLeaders.length !== 1) {
       return {
-        holder: null,
-        events: [],
-        holders: [],
-        currentDefenses: 0,
-        acquiredDay: null,
-        lastProcessedDay: start,
-        tie: true,
-        tiedTeams: initialLeaders.map(row => row.squadra),
-        tiedPoints: maxPoints
+        holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: start,
+        lastProcessedDay: start, tie: true,
+        tiedTeams: initialLeaders.map(row => row.squadra), tiedPoints: maxPoints,
+        finalWinner: null, standings: []
       };
     }
+    initialWinner = initialLeaders[0].squadra;
 
-    let holder = initialLeaders[0].squadra;
+    let holder = initialWinner;
     let acquiredDay = start;
     let currentDefenses = 0;
     let lastProcessedDay = start;
     const holders = [holder];
+    const stats = new Map(teams.map(t => [t.id, { teamId: t.id, defenses: 0, fantasyPoints: 0, goalsFor: 0, goalsAgainst: 0 }]));
     const events = [{
-      day: start,
-      type: 'assignment',
-      holderAfter: holder,
-      points: maxPoints,
+      day: start, type: 'assignment', holderAfter: holder, points: maxPoints,
       text: `${team(holder).name} conquista la prima Cintura con ${formatPoints(maxPoints)} fantapunti.`
     }];
 
-    for (let day = start + 1; day <= Number(config.endMatchday); day += 1) {
+    for (let day = start + 1; day <= end; day += 1) {
       const holderRow = rowsForDay(rows, day).find(row => row.squadra === holder);
       if (!holderRow || holderRow.golFatti === null || holderRow.golSubiti === null || !holderRow.avversario) break;
 
@@ -335,31 +340,43 @@
         currentDefenses = 0;
         if (!holders.includes(holder)) holders.push(holder);
         events.push({
-          day,
-          type: 'transfer',
-          holderBefore: previousHolder,
-          holderAfter: holder,
+          day, type: 'transfer', holderBefore: previousHolder, holderAfter: holder,
           score: `${holderRow.golFatti}-${holderRow.golSubiti}`,
           text: `${team(holder).name} batte ${team(previousHolder).name} ${holderRow.golSubiti}-${holderRow.golFatti} e conquista la Cintura.`
         });
       } else {
         currentDefenses += 1;
+        const s = stats.get(holder);
+        s.defenses += 1;
+        s.fantasyPoints += Number(holderRow.fantapunti ?? 0);
+        s.goalsFor += Number(holderRow.golFatti ?? 0);
+        s.goalsAgainst += Number(holderRow.golSubiti ?? 0);
         const resultWord = holderRow.golFatti === holderRow.golSubiti ? 'pareggia' : 'batte';
         events.push({
-          day,
-          type: 'defense',
-          holderAfter: holder,
-          opponent: holderRow.avversario,
+          day, type: 'defense', holderAfter: holder, opponent: holderRow.avversario,
           score: `${holderRow.golFatti}-${holderRow.golSubiti}`,
+          fantasyPoints: holderRow.fantapunti,
           text: `${team(holder).name} ${resultWord} con ${team(holderRow.avversario).name} (${holderRow.golFatti}-${holderRow.golSubiti}) e conserva la Cintura.`
         });
       }
       lastProcessedDay = day;
     }
 
+    const standings = [...stats.values()].map(s => ({
+      ...s,
+      goalDifference: s.goalsFor - s.goalsAgainst
+    })).sort((a, b) =>
+      b.defenses - a.defenses ||
+      b.fantasyPoints - a.fantasyPoints ||
+      b.goalDifference - a.goalDifference ||
+      b.goalsFor - a.goalsFor
+    );
+
+    const complete = lastProcessedDay === end;
+    const finalWinner = complete && standings.length ? standings[0].teamId : null;
     const nextDay = lastProcessedDay ? lastProcessedDay + 1 : start;
     const nextFixture = rows.find(row => row.giornata === nextDay && row.squadra === holder && row.avversario);
-    return { holder, events, holders, currentDefenses, acquiredDay, lastProcessedDay, nextFixture, tie: false };
+    return { holder, events, holders, currentDefenses, acquiredDay, lastProcessedDay, nextFixture, tie: false, finalWinner, standings };
   }
 
   function monthlyPrizeWinners(period) {
@@ -400,8 +417,8 @@
 
     // Cintura: premio assegnato solo quando la Cintura arriva regolarmente alla giornata finale.
     const belt = calculateBelt(results, teams, config);
-    if (!belt.tie && belt.holder && belt.lastProcessedDay === Number(config.endMatchday)) {
-      addPrize(belt.holder, Number(config.prizes?.belt || 0), 'Cintura dei Reietti');
+    if (!belt.tie && belt.finalWinner && belt.lastProcessedDay === Number(config.endMatchday)) {
+      addPrize(belt.finalWinner, Number(config.prizes?.belt || 0), 'Cintura dei Reietti');
     }
 
     // Champions e Coppa Italia: il vincitore viene scelto manualmente dall'Admin pagamenti.
@@ -463,8 +480,8 @@
 
     // Cintura: conta il detentore finale, quando la competizione arriva all'ultima giornata.
     const belt = calculateBelt(results, teams, config);
-    if (!belt.tie && belt.holder && belt.lastProcessedDay === Number(config.endMatchday) && counts.has(belt.holder)) {
-      counts.get(belt.holder).cintura += 1;
+    if (!belt.tie && belt.finalWinner && belt.lastProcessedDay === Number(config.endMatchday) && counts.has(belt.finalWinner)) {
+      counts.get(belt.finalWinner).cintura += 1;
     }
 
     return counts;
