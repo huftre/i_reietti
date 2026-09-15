@@ -284,99 +284,85 @@
     });
   }
 
-  // Calcola la Cintura e, a stagione completa, il vincitore secondo i criteri ufficiali.
+  // Calcola la Cintura usando esclusivamente i risultati della giornata appena conclusa.
+  // La cintura passa al miglior fantapunteggio; in caso di parità conta la differenza reti.
   function calculateBelt(rows, teams, config) {
     const map = teamMap(teams);
     const team = id => getTeam(map, id);
     const start = Number(config.beltStartMatchday ?? config.startMatchday);
     const end = Number(config.endMatchday);
-    const initialRows = rowsForDay(rows, start).filter(row => row.fantapunti !== null);
+    const completeDays = [];
+    for (let day = start; day <= end; day += 1) {
+      if (isCompleteDay(rows, teams, day, false)) completeDays.push(day);
+    }
 
-    if (new Set(initialRows.map(row => row.squadra)).size < teams.length) {
+    if (!completeDays.length) {
       return { holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: null, lastProcessedDay: null, tie: false, finalWinner: null, standings: [] };
     }
 
-    const maxPoints = Math.max(...initialRows.map(row => row.fantapunti));
-    let initialLeaders = initialRows.filter(row => Math.abs(row.fantapunti - maxPoints) < EPSILON);
-    let initialWinner = null;
-
-    if (initialLeaders.length > 1) {
-      const maxGoals = Math.max(...initialLeaders.map(row => Number(row.golFatti ?? -Infinity)));
-      initialLeaders = initialLeaders.filter(row => Number(row.golFatti) === maxGoals);
-    }
-    if (initialLeaders.length > 1) {
-      const maxGoalDiff = Math.max(...initialLeaders.map(row => Number(row.golFatti ?? 0) - Number(row.golSubiti ?? 0)));
-      initialLeaders = initialLeaders.filter(row => (Number(row.golFatti ?? 0) - Number(row.golSubiti ?? 0)) === maxGoalDiff);
-    }
-    if (initialLeaders.length !== 1) {
-      return {
-        holder: null, events: [], holders: [], currentDefenses: 0, acquiredDay: start,
-        lastProcessedDay: start, tie: true,
-        tiedTeams: initialLeaders.map(row => row.squadra), tiedPoints: maxPoints,
-        finalWinner: null, standings: []
-      };
-    }
-    initialWinner = initialLeaders[0].squadra;
-
-    let holder = initialWinner;
-    let acquiredDay = start;
+    let holder = null;
+    let acquiredDay = null;
     let currentDefenses = 0;
-    let lastProcessedDay = start;
-    const holders = [holder];
+    const holders = [];
+    const events = [];
     const stats = new Map(teams.map(t => [t.id, { teamId: t.id, defenses: 0, fantasyPoints: 0, goalsFor: 0, goalsAgainst: 0 }]));
-    const events = [{
-      day: start, type: 'assignment', holderAfter: holder, points: maxPoints,
-      text: `${team(holder).name} conquista la prima Cintura con ${formatPoints(maxPoints)} fantapunti.`
-    }];
 
-    for (let day = start + 1; day <= end; day += 1) {
-      const holderRow = rowsForDay(rows, day).find(row => row.squadra === holder);
-      if (!holderRow || holderRow.golFatti === null || holderRow.golSubiti === null || !holderRow.avversario) break;
+    for (const day of completeDays) {
+      const dayRows = rowsForDay(rows, day).filter(row => row.fantapunti !== null);
+      if (dayRows.length < teams.length) continue;
 
-      const previousHolder = holder;
-      if (holderRow.golFatti < holderRow.golSubiti) {
-        holder = holderRow.avversario;
+      const maxPoints = Math.max(...dayRows.map(row => Number(row.fantapunti)));
+      let leaders = dayRows.filter(row => Math.abs(Number(row.fantapunti) - maxPoints) < EPSILON);
+      const maxGoalDiff = Math.max(...leaders.map(row => Number(row.golFatti ?? 0) - Number(row.golSubiti ?? 0)));
+      leaders = leaders.filter(row => (Number(row.golFatti ?? 0) - Number(row.golSubiti ?? 0)) === maxGoalDiff);
+
+      // La prima assegnazione, se ancora necessaria, si risolve con sorteggio deterministico.
+      const winnerRow = holder && leaders.some(row => row.squadra === holder)
+        ? leaders.find(row => row.squadra === holder)
+        : leaders.slice().sort((a, b) => String(a.squadra).localeCompare(String(b.squadra)))[0];
+      const winner = winnerRow.squadra;
+
+      if (holder === null) {
+        holder = winner;
+        acquiredDay = day;
+        holders.push(holder);
+        events.push({
+          day, type: 'assignment', holderAfter: holder, points: maxPoints,
+          text: `${team(holder).name} conquista la Cintura con ${formatPoints(maxPoints)} fantapunti.`
+        });
+      } else if (winner === holder) {
+        currentDefenses += 1;
+        const st = stats.get(holder);
+        st.defenses += 1;
+        st.fantasyPoints += Number(winnerRow.fantapunti ?? 0);
+        st.goalsFor += Number(winnerRow.golFatti ?? 0);
+        st.goalsAgainst += Number(winnerRow.golSubiti ?? 0);
+        events.push({
+          day, type: 'defense', holderAfter: holder, fantasyPoints: winnerRow.fantapunti,
+          text: `${team(holder).name} mantiene la Cintura con ${formatPoints(maxPoints)} fantapunti e conquista una difesa.`
+        });
+      } else {
+        const previousHolder = holder;
+        holder = winner;
         acquiredDay = day;
         currentDefenses = 0;
         if (!holders.includes(holder)) holders.push(holder);
         events.push({
           day, type: 'transfer', holderBefore: previousHolder, holderAfter: holder,
-          score: `${holderRow.golFatti}-${holderRow.golSubiti}`,
-          text: `${team(holder).name} batte ${team(previousHolder).name} ${holderRow.golSubiti}-${holderRow.golFatti} e conquista la Cintura.`
-        });
-      } else {
-        currentDefenses += 1;
-        const s = stats.get(holder);
-        s.defenses += 1;
-        s.fantasyPoints += Number(holderRow.fantapunti ?? 0);
-        s.goalsFor += Number(holderRow.golFatti ?? 0);
-        s.goalsAgainst += Number(holderRow.golSubiti ?? 0);
-        const resultWord = holderRow.golFatti === holderRow.golSubiti ? 'pareggia' : 'batte';
-        events.push({
-          day, type: 'defense', holderAfter: holder, opponent: holderRow.avversario,
-          score: `${holderRow.golFatti}-${holderRow.golSubiti}`,
-          fantasyPoints: holderRow.fantapunti,
-          text: `${team(holder).name} ${resultWord} con ${team(holderRow.avversario).name} (${holderRow.golFatti}-${holderRow.golSubiti}) e conserva la Cintura.`
+          fantasyPoints: winnerRow.fantapunti,
+          text: `${team(holder).name} conquista la Cintura con ${formatPoints(maxPoints)} fantapunti.`
         });
       }
-      lastProcessedDay = day;
     }
 
-    const standings = [...stats.values()].map(s => ({
-      ...s,
-      goalDifference: s.goalsFor - s.goalsAgainst
-    })).sort((a, b) =>
-      b.defenses - a.defenses ||
-      b.fantasyPoints - a.fantasyPoints ||
-      b.goalDifference - a.goalDifference ||
-      b.goalsFor - a.goalsFor
-    );
+    const standings = [...stats.values()].map(s => ({ ...s, goalDifference: s.goalsFor - s.goalsAgainst }))
+      .sort((a, b) => b.defenses - a.defenses || b.fantasyPoints - a.fantasyPoints || b.goalDifference - a.goalDifference);
 
-    const complete = lastProcessedDay === end;
-    const finalWinner = complete && standings.length ? standings[0].teamId : null;
-    const nextDay = lastProcessedDay ? lastProcessedDay + 1 : start;
-    const nextFixture = rows.find(row => row.giornata === nextDay && row.squadra === holder && row.avversario);
-    return { holder, events, holders, currentDefenses, acquiredDay, lastProcessedDay, nextFixture, tie: false, finalWinner, standings };
+    return {
+      holder, events, holders, currentDefenses, acquiredDay,
+      lastProcessedDay: completeDays[completeDays.length - 1],
+      tie: false, finalWinner: null, standings
+    };
   }
 
   function monthlyPrizeWinners(period) {
