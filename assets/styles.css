@@ -2118,3 +2118,56 @@ body.sos-modal-open { overflow: hidden; }
     width: 100%;
   }
 }
+
+/* Classifica stagionale della Cintura */
+.belt-season-section { padding-top: 8px; }
+.belt-season-card { overflow: hidden; }
+.belt-season-table-wrap { overflow-x: auto; width: 100%; }
+.belt-season-table { min-width: 720px; width: 100%; }
+.belt-season-table th, .belt-season-table td { white-space: nowrap; }
+.belt-season-table th:first-child, .belt-season-table td:first-child { width: 54px; text-align: center; }
+.belt-season-table tbody tr:first-child { background: rgba(251, 191, 36, .08); }
+.belt-season-table tbody tr:nth-child(2) { background: rgba(148, 163, 184, .06); }
+.belt-season-table tbody tr:nth-child(3) { background: rgba(180, 83, 9, .06); }
+.belt-rank-medal { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; font-size: 1.05rem; }
+.belt-season-note { margin-top: 14px; }
+@media (max-width: 640px) {
+  .belt-season-card { padding-left: 14px; padding-right: 14px; }
+  .belt-season-table { min-width: 690px; }
+}
+
+/* Cintura: podio stagionale in primo piano e detentore compatto */
+.belt-season-first { padding-top: 8px; }
+.belt-podium { display:grid; grid-template-columns: 1fr 1.08fr 1fr; align-items:end; gap:14px; padding:12px 0 4px; }
+.podium-card { min-width:0; text-align:center; border:1px solid var(--border, rgba(212,175,55,.24)); border-radius:22px; padding:20px 14px 16px; background:linear-gradient(145deg, rgba(24,36,35,.96), rgba(9,20,18,.98)); box-shadow:0 12px 30px rgba(0,0,0,.16); }
+.podium-rank { font-weight:900; font-size:1.35rem; color:#f5cf62; display:flex; align-items:center; justify-content:center; gap:8px; }
+.podium-rank span { font-size:2rem; }
+.podium-logo { display:flex; justify-content:center; margin:12px auto 8px; }
+.podium-logo .team-logo { width:76px; height:76px; }
+.podium-card h4 { font-size:1.12rem; margin:8px 0 16px; overflow-wrap:anywhere; }
+.podium-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.podium-stats div { border:1px solid rgba(255,255,255,.09); border-radius:12px; padding:10px 5px; background:rgba(255,255,255,.035); }
+.podium-stats strong,.podium-stats span { display:block; }
+.podium-stats strong { font-size:1.1rem; }
+.podium-stats span { font-size:.75rem; color:var(--muted,#a9b7b1); margin-top:3px; }
+.podium-rank-1 { order:0; transform:translateY(-10px); padding-top:24px; border-color:#e7b83f; background:radial-gradient(ellipse at top, rgba(202,151,31,.23), transparent 65%),linear-gradient(145deg,#202016,#0c1715); box-shadow:0 0 0 1px rgba(231,184,63,.12),0 16px 35px rgba(0,0,0,.28); }
+.podium-rank-1 .podium-rank,.podium-rank-1 h4 { color:#ffda70; }
+.podium-rank-2 { order:-1; border-color:rgba(184,202,211,.34); }
+.podium-rank-2 .podium-rank { color:#c7d4da; }
+.podium-rank-3 { order:1; border-color:rgba(194,124,65,.38); }
+.podium-rank-3 .podium-rank { color:#d99a66; }
+.podium-empty { grid-column:1/-1; text-align:center; padding:36px 16px; color:var(--muted,#a9b7b1); }
+.belt-layout-updated { grid-template-columns:.85fr 1.15fr; align-items:stretch; }
+.current-holder-card { border-color:rgba(212,175,55,.34); }
+.current-holder-lockup { display:flex; align-items:center; gap:16px; margin:18px 0; }
+.current-holder-lockup .team-logo { width:70px; height:70px; }
+.current-holder-copy { min-width:0; }
+.current-holder-copy h2 { margin:0 0 7px; font-size:clamp(1.3rem,2.2vw,2rem); overflow-wrap:anywhere; }
+.current-holder-copy p { margin:0 0 8px; color:var(--muted,#a9b7b1); font-size:.9rem; }
+.holder-streak { display:inline-block; font-size:.8rem; color:#f2cc61; }
+.holder-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.holder-stats div { padding:12px 10px; border:1px solid rgba(255,255,255,.1); border-radius:12px; background:rgba(255,255,255,.035); }
+.holder-stats strong,.holder-stats span { display:block; }
+.holder-stats strong { font-size:1.05rem; }
+.holder-stats span { margin-top:4px; color:var(--muted,#a9b7b1); font-size:.73rem; }
+@media(max-width:760px) { .belt-podium { grid-template-columns:1fr; align-items:stretch; } .podium-card,.podium-rank-1 { order:initial; transform:none; } .podium-rank-1 { order:-1; } .belt-layout-updated { grid-template-columns:1fr; } .holder-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }

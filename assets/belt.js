@@ -17,7 +17,9 @@
       const rows = C.normalizeResults(C.parseCsv(csvText));
       const map = C.teamMap(teams);
       renderBranding(config, rows, teams, demoMode);
-      renderBelt(C.calculateBelt(rows, teams, config), config, map);
+      const belt = C.calculateBelt(rows, teams, config);
+      renderBelt(belt, config, map);
+      renderSeasonStandings(belt, config, map);
       C.activateLogoFallbacks();
     } catch (error) {
       console.error(error);
@@ -36,7 +38,7 @@
 
   function renderBelt(belt, config, map) {
     const beltStart = Number(config.beltStartMatchday ?? config.startMatchday);
-    $('#belt-start-label').textContent = C.matchdayLabel(beltStart, config, false);
+    $('#belt-start-label').textContent = 'giornata appena conclusa';
 
     if (belt.tie) {
       const names = belt.tiedTeams.map(id => C.getTeam(map, id).name).join(' e ');
@@ -74,6 +76,42 @@
     $('#belt-holders-count').textContent = String(belt.holders.length);
     $('#belt-history-count').textContent = `${belt.events.length} ${belt.events.length === 1 ? 'evento' : 'eventi'}`;
     renderTimeline(belt.events, config);
+  }
+
+  function renderSeasonStandings(belt, config, map) {
+    const body = $('#belt-season-top3');
+    const badge = $('#belt-season-updated');
+    if (!body) return;
+
+    if (!belt.standings || !belt.standings.length) {
+      body.innerHTML = '<div class="podium-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</div>'; 
+      if (badge) badge.textContent = 'In attesa dei risultati';
+      return;
+    }
+
+    const podium = belt.standings.slice(0, 3);
+    const medals = ['🥇', '🥈', '🥉'];
+    const ranks = ['1°', '2°', '3°'];
+    body.innerHTML = podium.map((item, index) => {
+      const squad = C.getTeam(map, item.teamId);
+      const logo = C.teamLogoHtml(squad, 'large');
+      return `<article class="podium-card podium-rank-${index + 1}">
+        <div class="podium-rank">${medals[index]} <span>${ranks[index]}</span></div>
+        <div class="podium-logo">${logo}</div>
+        <h4>${C.escapeHtml(squad.name)}</h4>
+        <div class="podium-stats">
+          <div><strong>${Number(item.defenses || 0)}</strong><span>Difese</span></div>
+          <div><strong>${Number(item.tenureDays || 0)}</strong><span>Giornate</span></div>
+          <div><strong>${Number(item.bestFantasyDays || 0)}</strong><span>Migliori FP</span></div>
+          <div><strong>${C.formatPoints(Number(item.fantasyPoints || 0))}</strong><span>Punti</span></div>
+        </div>
+      </article>`;
+    }).join('');
+
+    if (badge) {
+      const day = belt.lastProcessedDay;
+      badge.textContent = day ? `Aggiornata alla ${C.matchdayLabel(day, config, true)}` : 'In aggiornamento';
+    }
   }
 
   function renderTimeline(events, config) {
