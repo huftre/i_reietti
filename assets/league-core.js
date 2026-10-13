@@ -333,18 +333,10 @@
       const winner = winnerRow.squadra;
       const holderBeforeDay = holder;
 
-      // La detenzione e i punti vengono attribuiti alla squadra che possedeva la Cintura entrando nella giornata.
-      // Alla prima assegnazione, la squadra vincitrice inizia la propria detenzione da quella giornata.
-      if (holderBeforeDay) {
-        const heldRow = dayRows.find(row => row.squadra === holderBeforeDay);
-        if (heldRow) {
-          const heldStats = stats.get(holderBeforeDay);
-          heldStats.tenureDays += 1;
-          heldStats.fantasyPoints += Number(heldRow.fantapunti ?? 0);
-          heldStats.goalsFor += Number(heldRow.golFatti ?? 0);
-          heldStats.goalsAgainst += Number(heldRow.golSubiti ?? 0);
-        }
-      }
+      // La giornata di detenzione viene attribuita una sola volta al detentore
+      // risultante dopo aver applicato il fantapunteggio e gli spareggi di questa giornata.
+      // Così chi perde la Cintura oggi non riceve una giornata aggiuntiva solo perché
+      // era il detentore all'inizio della giornata.
 
       if (holder === null) {
         holder = winner;
@@ -378,6 +370,14 @@
           text: `${team(holder).name} conquista la Cintura con ${formatPoints(maxPoints)} fantapunti; ${team(previousHolder).name} perde il titolo.`
         });
       }
+      // Registra la giornata e il fantapunteggio una sola volta per il detentore
+      // che risulta vincitore al termine della giornata appena conclusa.
+      const winnerStats = stats.get(holder);
+      winnerStats.tenureDays += 1;
+      winnerStats.fantasyPoints += Number(winnerRow.fantapunti ?? 0);
+      winnerStats.goalsFor += Number(winnerRow.golFatti ?? 0);
+      winnerStats.goalsAgainst += Number(winnerRow.golSubiti ?? 0);
+
       lastProcessedDay = day;
     }
 

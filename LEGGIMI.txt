@@ -1,17 +1,3 @@
-I REIETTI — VERSIONE MULTIPAGINA
+Sostituire assets/league-core.js nel repository GitHub.
 
-Parti sempre da questa cartella completa quando pubblichi il sito.
-
-Pagine principali:
-- index.html = Home / classifica Campionato
-- cintura.html = Cintura dei Reietti
-- reietto.html = Reietto del Mese
-- pagamenti.html = quote e premi
-- admin.html = generatore results.csv + payments.csv
-
-IMPORTANTE:
-La 3ª giornata di Serie A corrisponde alla 1ª giornata di Lega.
-Nel CSV risultati devi continuare a inserire la giornata reale di Serie A.
-
-Per i loghi delle squadre leggi assets/teams/LEGGIMI.txt.
-Per i dettagli completi leggi README.md.
+Correzione: le giornate da detentore e il fantapunteggio nelle giornate da detentore vengono registrati una sola volta, dopo aver determinato chi mantiene/conquista la Cintura al termine di ciascuna giornata completa. Chi perde la Cintura in quella giornata non riceve una giornata aggiuntiva.
