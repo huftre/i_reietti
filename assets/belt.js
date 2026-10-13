@@ -84,18 +84,14 @@
     if (!body) return;
 
     if (!belt.standings || !belt.standings.length) {
-          body.innerHTML = '<div class="podium-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</div>'; 
->>>>>>>+main
-.innerHTML = '<tr><td colspan="6" class="table-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</td></tr>';
->>>>>>> origin/main
+      body.innerHTML = '<div class="podium-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</div>'; 
       if (badge) badge.textContent = 'In attesa dei risultati';
       return;
     }
 
     const podium = belt.standings.slice(0, 3);
     const medals = ['🥇', '🥈', '🥉'];
-<<<<<<< main
-    const ra    const ranks = ['1°', '2°', '3°'];
+    const ranks = ['1°', '2°', '3°'];
     body.innerHTML = podium.map((item, index) => {
       const squad = C.getTeam(map, item.teamId);
       const logo = C.teamLogoHtml(squad, 'large');
@@ -110,170 +106,6 @@
           <div><strong>${C.formatPoints(Number(item.fantasyPoints || 0))}</strong><span>Punti</span></div>
         </div>
       </article>`;
->>>>>>>+main
- podium.map((item, index) => {
-      const squad = C.getTeam(map, item.teamId);
-      return `<tr class="belt-season-rank-${index + 1}">
-        <td><span class="belt-rank-medal">${medals[index] || index + 1}</span></td>
-        <td><strong>${C.escapeHtml(squad.name)}</strong></td>
-        <td>${Number(item.defenses || 0)}</td>
-        <td>${Number(item.tenureDays || 0)}</td>
-        <td>${Number(item.bestFantasyDays || 0)}</td>
-        <td>${C.formatPoints(Number(item.fantasyPoints || 0))}</td>
-      </tr>`;
->>>>>>> origin/main
-    }).join('');
-
-    if (badge) {
-      const day = belt.lastProcessedDay;
-      badge.textContent = day ? `Aggiornata alla ${C.matchdayLabel(day, config, true)}` : 'In aggiornamento';
-    }
-  }
-
-  function renderTimeline(events, config) {
-    const container = $('#belt-timeline');
-    if (!events.length) {
-      container.innerHTML = `<div class="timeline-empty">La cronologia comparirà dopo la ${config.beltStartMatchday}ª giornata di Serie A.</div>`;
-      return;
-    }
-    container.innerHTML = [...events].reverse().map(event => {
-      const icon = event.type === 'assignment' ? '🏆' : event.type === 'transfer' ? '🔄' : '🛡️';
-      return `
-        <div class="timeline-item">
-          <div class="timeline-node" aria-hidden="true">${icon}</div>
-          <div class="timeline-content">
-            <strong class="${event.type === 'transfer' ? 'transfer' : ''}">${C.escapeHtml(C.matchdayLabel(event.day, config, true))}</strong>
-            <p>${C.escapeHtml(event.text)}</p>
-          </div>
-        </div>`;
-    }).join('');
-  }
-})();
-(() => {
-  'use strict';
-
-  const C = window.ReiettiCore;
-  const $ = selector => document.querySelector(selector);
-
-  document.addEventListener('DOMContentLoaded', init);
-
-  async function init() {
-    try {
-      const demoMode = new URLSearchParams(window.location.search).get('demo') === '1';
-      const [config, teams, csvText] = await Promise.all([
-        C.fetchJson('data/config.json'),
-        C.fetchJson('data/teams.json'),
-        C.fetchText(demoMode ? 'data/results.demo.csv' : 'data/results.csv', '')
-      ]);
-      const rows = C.normalizeResults(C.parseCsv(csvText));
-      const map = C.teamMap(teams);
-      renderBranding(config, rows, teams, demoMode);
-      const belt = C.calculateBelt(rows, teams, config);
-      renderBelt(belt, config, map);
-      renderSeasonStandings(belt, config, map);
-      C.activateLogoFallbacks();
-    } catch (error) {
-      console.error(error);
-      $('#belt-timeline').innerHTML = '<div class="timeline-empty">Impossibile caricare i dati della Cintura.</div>';
-    }
-  }
-
-  function renderBranding(config, rows, teams, demoMode) {
-    $('#league-name').textContent = config.leagueName;
-    $('#season-label').textContent = `Stagione ${config.season}`;
-    $('#footer-season').textContent = config.season;
-    document.title = `${config.leagueName} — Cintura dei Reietti`;
-    const latest = C.latestCompleteDay(rows, teams, config, false);
-    $('#last-updated').textContent = demoMode ? 'Modalità demo' : latest ? C.matchdayLabel(latest, config, true) : 'Cintura in attesa';
-  }
-
-  function renderBelt(belt, config, map) {
-    const beltStart = Number(config.beltStartMatchday ?? config.startMatchday);
-    $('#belt-start-label').textContent = 'giornata appena conclusa';
-
-    if (belt.tie) {
-      const names = belt.tiedTeams.map(id => C.getTeam(map, id).name).join(' e ');
-      $('#belt-holder').textContent = 'Parità da risolvere';
-      $('#belt-detail').textContent = `${names} hanno chiuso la ${beltStart}ª giornata Serie A a ${C.formatPoints(belt.tiedPoints)} FP.`;
-      $('#belt-holder-large').textContent = 'Assegnazione sospesa';
-      $('#belt-streak').textContent = 'Serve applicare il criterio di spareggio previsto dal regolamento.';
-      $('#belt-avatar').innerHTML = '<span class="team-logo team-logo-hero"><span class="team-logo-fallback">⚖️</span></span>';
-      return;
-    }
-
-    if (!belt.holder) {
-      $('#belt-holder').textContent = `In attesa della ${beltStart}ª giornata Serie A`;
-      $('#belt-detail').textContent = 'La Cintura sarà assegnata quando saranno presenti i fantapunti di tutte le 14 squadre.';
-      $('#belt-holder-large').textContent = 'Da assegnare';
-      $('#belt-streak').textContent = 'Nessuna difesa registrata';
-      $('#belt-avatar').innerHTML = '<span class="team-logo team-logo-hero"><span class="team-logo-fallback">🏆</span></span>';
-      $('#belt-won-day').textContent = '—';
-      $('#belt-defenses').textContent = '0';
-      $('#belt-holders-count').textContent = '0';
-      $('#belt-history-count').textContent = '0 eventi';
-      renderTimeline([], config);
-      return;
-    }
-
-    const holderTeam = C.getTeam(map, belt.holder);
-    const defenseLabel = belt.currentDefenses === 1 ? '1 difesa consecutiva' : `${belt.currentDefenses} difese consecutive`;
-    $('#belt-holder').textContent = holderTeam.name;
-    $('#belt-detail').textContent = `Cintura conquistata: ${C.matchdayLabel(belt.acquiredDay, config, false)} · ${defenseLabel}.`;
-    $('#belt-holder-large').textContent = holderTeam.name;
-    $('#belt-streak').textContent = defenseLabel;
-    $('#belt-avatar').innerHTML = C.teamLogoHtml(holderTeam, 'large');
-    $('#belt-won-day').textContent = `${belt.acquiredDay}ª Serie A`;
-    $('#belt-defenses').textContent = String(belt.currentDefenses);
-    $('#belt-holders-count').textContent = String(belt.holders.length);
-    $('#belt-history-count').textContent = `${belt.events.length} ${belt.events.length === 1 ? 'evento' : 'eventi'}`;
-    renderTimeline(belt.events, config);
-  }
-
-  function renderSeasonStandings(belt, config, map) {
-    const body = $('#belt-season-top3');
-    const badge = $('#belt-season-updated');
-    if (!body) return;
-
-    if (!belt.standings || !belt.standings.length) {
-<<<<<<< main
-          body.innerHTML = '<div class="podium-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</div>'; 
->>>>>>>+main
-.innerHTML = '<tr><td colspan="6" class="table-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</td></tr>';
->>>>>>> origin/main
-      if (badge) badge.textContent = 'In attesa dei risultati';
-      return;
-    }
-
-    const podium = belt.standings.slice(0, 3);
-    const medals = ['🥇', '🥈', '🥉'];
-<<<<<<< main
-    const ra    const ranks = ['1°', '2°', '3°'];
-    body.innerHTML = podium.map((item, index) => {
-      const squad = C.getTeam(map, item.teamId);
-      const logo = C.teamLogoHtml(squad, 'large');
-      return `<article class="podium-card podium-rank-${index + 1}">
-        <div class="podium-rank">${medals[index]} <span>${ranks[index]}</span></div>
-        <div class="podium-logo">${logo}</div>
-        <h4>${C.escapeHtml(squad.name)}</h4>
-        <div class="podium-stats">
-          <div><strong>${Number(item.defenses || 0)}</strong><span>Difese</span></div>
-          <div><strong>${Number(item.tenureDays || 0)}</strong><span>Giornate</span></div>
-          <div><strong>${Number(item.bestFantasyDays || 0)}</strong><span>Migliori FP</span></div>
-          <div><strong>${C.formatPoints(Number(item.fantasyPoints || 0))}</strong><span>Punti</span></div>
-        </div>
-      </article>`;
->>>>>>>+main
- podium.map((item, index) => {
-      const squad = C.getTeam(map, item.teamId);
-      return `<tr class="belt-season-rank-${index + 1}">
-        <td><span class="belt-rank-medal">${medals[index] || index + 1}</span></td>
-        <td><strong>${C.escapeHtml(squad.name)}</strong></td>
-        <td>${Number(item.defenses || 0)}</td>
-        <td>${Number(item.tenureDays || 0)}</td>
-        <td>${Number(item.bestFantasyDays || 0)}</td>
-        <td>${C.formatPoints(Number(item.fantasyPoints || 0))}</td>
-      </tr>`;
->>>>>>> origin/main
     }).join('');
 
     if (badge) {

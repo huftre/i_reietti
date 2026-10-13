@@ -2135,7 +2135,7 @@ body.sos-modal-open { overflow: hidden; }
   .belt-season-card { padding-left: 14px; padding-right: 14px; }
   .belt-season-table { min-width: 690px; }
 }
-<<<<
+
 /* Cintura: podio stagionale in primo piano e detentore compatto */
 .belt-season-first { padding-top: 8px; }
 .belt-podium { display:grid; grid-template-columns: 1fr 1.08fr 1fr; align-items:end; gap:14px; padding:12px 0 4px; }
@@ -2171,6 +2171,3 @@ body.sos-modal-open { overflow: hidden; }
 .holder-stats strong { font-size:1.05rem; }
 .holder-stats span { margin-top:4px; color:var(--muted,#a9b7b1); font-size:.73rem; }
 @media(max-width:760px) { .belt-podium { grid-template-columns:1fr; align-items:stretch; } .podium-card,.podium-rank-1 { order:initial; transform:none; } .podium-rank-1 { order:-1; } .belt-layout-updated { grid-template-columns:1fr; } .holder-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
->>>>>>>+main
-===
->>>>>>> origin/main
