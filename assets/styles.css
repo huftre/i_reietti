@@ -2118,3 +2118,20 @@ body.sos-modal-open { overflow: hidden; }
     width: 100%;
   }
 }
+
+/* Classifica stagionale della Cintura */
+.belt-season-section { padding-top: 8px; }
+.belt-season-card { overflow: hidden; }
+.belt-season-table-wrap { overflow-x: auto; width: 100%; }
+.belt-season-table { min-width: 720px; width: 100%; }
+.belt-season-table th, .belt-season-table td { white-space: nowrap; }
+.belt-season-table th:first-child, .belt-season-table td:first-child { width: 54px; text-align: center; }
+.belt-season-table tbody tr:first-child { background: rgba(251, 191, 36, .08); }
+.belt-season-table tbody tr:nth-child(2) { background: rgba(148, 163, 184, .06); }
+.belt-season-table tbody tr:nth-child(3) { background: rgba(180, 83, 9, .06); }
+.belt-rank-medal { display: inline-flex; align-items: center; justify-content: center; min-width: 28px; font-size: 1.05rem; }
+.belt-season-note { margin-top: 14px; }
+@media (max-width: 640px) {
+  .belt-season-card { padding-left: 14px; padding-right: 14px; }
+  .belt-season-table { min-width: 690px; }
+}

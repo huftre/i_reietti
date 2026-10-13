@@ -17,7 +17,9 @@
       const rows = C.normalizeResults(C.parseCsv(csvText));
       const map = C.teamMap(teams);
       renderBranding(config, rows, teams, demoMode);
-      renderBelt(C.calculateBelt(rows, teams, config), config, map);
+      const belt = C.calculateBelt(rows, teams, config);
+      renderBelt(belt, config, map);
+      renderSeasonStandings(belt, config, map);
       C.activateLogoFallbacks();
     } catch (error) {
       console.error(error);
@@ -36,7 +38,7 @@
 
   function renderBelt(belt, config, map) {
     const beltStart = Number(config.beltStartMatchday ?? config.startMatchday);
-    $('#belt-start-label').textContent = C.matchdayLabel(beltStart, config, false);
+    $('#belt-start-label').textContent = 'giornata appena conclusa';
 
     if (belt.tie) {
       const names = belt.tiedTeams.map(id => C.getTeam(map, id).name).join(' e ');
@@ -74,6 +76,37 @@
     $('#belt-holders-count').textContent = String(belt.holders.length);
     $('#belt-history-count').textContent = `${belt.events.length} ${belt.events.length === 1 ? 'evento' : 'eventi'}`;
     renderTimeline(belt.events, config);
+  }
+
+  function renderSeasonStandings(belt, config, map) {
+    const body = $('#belt-season-top3');
+    const badge = $('#belt-season-updated');
+    if (!body) return;
+
+    if (!belt.standings || !belt.standings.length) {
+      body.innerHTML = '<tr><td colspan="6" class="table-empty">La classifica comparirà dopo la prima giornata completa della Cintura.</td></tr>';
+      if (badge) badge.textContent = 'In attesa dei risultati';
+      return;
+    }
+
+    const podium = belt.standings.slice(0, 3);
+    const medals = ['🥇', '🥈', '🥉'];
+    body.innerHTML = podium.map((item, index) => {
+      const squad = C.getTeam(map, item.teamId);
+      return `<tr class="belt-season-rank-${index + 1}">
+        <td><span class="belt-rank-medal">${medals[index] || index + 1}</span></td>
+        <td><strong>${C.escapeHtml(squad.name)}</strong></td>
+        <td>${Number(item.defenses || 0)}</td>
+        <td>${Number(item.tenureDays || 0)}</td>
+        <td>${Number(item.bestFantasyDays || 0)}</td>
+        <td>${C.formatPoints(Number(item.fantasyPoints || 0))}</td>
+      </tr>`;
+    }).join('');
+
+    if (badge) {
+      const day = belt.lastProcessedDay;
+      badge.textContent = day ? `Aggiornata alla ${C.matchdayLabel(day, config, true)}` : 'In aggiornamento';
+    }
   }
 
   function renderTimeline(events, config) {
