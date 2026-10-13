@@ -2171,3 +2171,75 @@ body.sos-modal-open { overflow: hidden; }
 .holder-stats strong { font-size:1.05rem; }
 .holder-stats span { margin-top:4px; color:var(--muted,#a9b7b1); font-size:.73rem; }
 @media(max-width:760px) { .belt-podium { grid-template-columns:1fr; align-items:stretch; } .podium-card,.podium-rank-1 { order:initial; transform:none; } .podium-rank-1 { order:-1; } .belt-layout-updated { grid-template-columns:1fr; } .holder-stats { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+
+/* CINTURA V2 — layout rifinito desktop e mobile */
+.belt-season-section { max-width: 1240px; margin-inline: auto; }
+.belt-season-card { padding: clamp(16px, 2.4vw, 30px); border-color: rgba(226,183,67,.32); background: radial-gradient(ellipse at 50% 0%, rgba(193,143,28,.10), transparent 55%), var(--card, #0c1b14); }
+.belt-season-card .card-heading-row { align-items: center; gap: 12px; }
+.belt-season-card .card-heading-row h3 { margin: 5px 0 0; font-size: clamp(1.25rem, 2.2vw, 1.7rem); }
+.belt-season-updated, #belt-season-updated { max-width: 100%; white-space: normal; text-align: center; }
+.belt-podium { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr) minmax(0,1fr); align-items:end; gap:clamp(8px,1.4vw,18px); padding:26px 0 12px; }
+.podium-card { min-width:0; text-align:center; border:1px solid var(--border, rgba(212,175,55,.24)); border-radius:20px; padding:clamp(12px,1.7vw,22px) clamp(9px,1.3vw,16px) 16px; background:linear-gradient(145deg,rgba(24,36,35,.96),rgba(9,20,18,.98)); box-shadow:0 12px 30px rgba(0,0,0,.16); }
+.podium-rank { font-weight:900; font-size:1.15rem; color:#f5cf62; display:flex; align-items:center; justify-content:center; gap:7px; }
+.podium-rank span { font-size:clamp(1.45rem,2.5vw,2.1rem); }
+.podium-logo { display:flex; justify-content:center; margin:12px auto 8px; }
+.podium-logo .team-logo { width:clamp(54px,6.5vw,82px); height:clamp(54px,6.5vw,82px); }
+.podium-card h4 { font-size:clamp(.95rem,1.4vw,1.18rem); line-height:1.25; margin:9px 0 14px; overflow-wrap:anywhere; }
+.podium-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+.podium-stats div { min-width:0; border:1px solid rgba(255,255,255,.09); border-radius:11px; padding:9px 4px; background:rgba(255,255,255,.035); }
+.podium-stats strong,.podium-stats span { display:block; overflow-wrap:anywhere; }
+.podium-stats strong { font-size:clamp(1rem,1.5vw,1.2rem); line-height:1.2; }
+.podium-stats span { font-size:.72rem; line-height:1.25; color:var(--muted,#a9b7b1); margin-top:4px; }
+.podium-rank-1 { transform:translateY(-8px); padding-top:24px; border-color:#e7b83f; background:radial-gradient(ellipse at top,rgba(202,151,31,.23),transparent 65%),linear-gradient(145deg,#202016,#0c1715); box-shadow:0 0 0 1px rgba(231,184,63,.12),0 16px 35px rgba(0,0,0,.28); }
+.podium-rank-1 .podium-rank,.podium-rank-1 h4 { color:#ffda70; }
+.podium-rank-2 { border-color:rgba(184,202,211,.34); }
+.podium-rank-2 .podium-rank { color:#c7d4da; }
+.podium-rank-3 { border-color:rgba(194,124,65,.38); }
+.podium-rank-3 .podium-rank { color:#d99a66; }
+.belt-season-note { max-width: 900px; margin:16px auto 0; font-size:.84rem; line-height:1.65; }
+.belt-layout-updated { grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr); align-items:stretch; gap:18px; }
+.current-holder-card { border-color:rgba(212,175,55,.42); background:radial-gradient(ellipse at top left,rgba(202,151,31,.10),transparent 55%),var(--card,#0c1b14); }
+.current-holder-lockup { display:flex; align-items:center; gap:16px; margin:18px 0; }
+.current-holder-lockup .team-logo { width:clamp(58px,6vw,76px); height:clamp(58px,6vw,76px); }
+.current-holder-copy { min-width:0; }
+.current-holder-copy h2 { margin:0 0 7px; font-size:clamp(1.25rem,2vw,1.8rem); line-height:1.15; overflow-wrap:anywhere; }
+.current-holder-copy p { margin:0 0 8px; color:var(--muted,#a9b7b1); font-size:.9rem; line-height:1.5; }
+.holder-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.holder-stats div { min-width:0; padding:12px 9px; border:1px solid rgba(255,255,255,.1); border-radius:12px; background:rgba(255,255,255,.035); }
+.holder-stats strong,.holder-stats span { display:block; overflow-wrap:anywhere; }
+.holder-stats strong { font-size:1.05rem; line-height:1.2; }
+.holder-stats span { margin-top:5px; color:var(--muted,#a9b7b1); font-size:.72rem; line-height:1.35; }
+@media(max-width:760px) {
+  .belt-season-section { padding-inline:0; }
+  .belt-season-card { padding:16px 13px; border-radius:18px; }
+  .belt-season-card .card-heading-row { align-items:flex-start; flex-direction:column; }
+  .belt-podium { grid-template-columns:minmax(0,1fr); align-items:stretch; gap:12px; padding-top:18px; }
+  .podium-card,.podium-rank-1 { order:initial; transform:none; }
+  .podium-rank-1 { order:-1; }
+  .podium-card { display:grid; grid-template-columns:54px 58px minmax(0,1fr); grid-template-rows:auto auto; align-items:center; column-gap:10px; text-align:left; padding:12px; border-radius:15px; }
+  .podium-rank { grid-column:1; grid-row:1 / span 2; flex-direction:column; gap:0; font-size:.8rem; }
+  .podium-rank span { font-size:1.35rem; }
+  .podium-logo { grid-column:2; grid-row:1 / span 2; margin:0; }
+  .podium-logo .team-logo { width:48px; height:48px; }
+  .podium-card h4 { grid-column:3; grid-row:1; margin:0 0 7px; font-size:1rem; }
+  .podium-stats { grid-column:3; grid-row:2; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; }
+  .podium-stats div { padding:5px 3px; border-radius:7px; text-align:center; }
+  .podium-stats strong { font-size:.88rem; }
+  .podium-stats span { font-size:.58rem; line-height:1.15; margin-top:2px; }
+  .belt-season-note { font-size:.78rem; line-height:1.55; }
+  .belt-layout-updated { grid-template-columns:minmax(0,1fr); }
+  .current-holder-lockup { gap:12px; align-items:center; }
+  .current-holder-lockup .team-logo { width:60px; height:60px; }
+  .holder-stats { grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+  .holder-stats div { padding:10px 7px; }
+  .holder-stats span { font-size:.66rem; }
+}
+@media(max-width:380px) {
+  .podium-card { grid-template-columns:42px 46px minmax(0,1fr); column-gap:7px; padding:9px; }
+  .podium-logo .team-logo { width:42px; height:42px; }
+  .podium-rank span { font-size:1.15rem; }
+  .podium-stats span { font-size:.52rem; }
+  .holder-stats { grid-template-columns:1fr; }
+  .holder-stats div { display:flex; align-items:center; gap:10px; }
+  .holder-stats span { margin-top:0; }
+}
