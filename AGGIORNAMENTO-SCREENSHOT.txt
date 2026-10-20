@@ -1,0 +1,47 @@
+IMPORTAZIONE SCREENSHOT E CONFERMA RISULTATI
+
+INSTALLAZIONE SU GITHUB
+Estrarre lo ZIP. Nel repository esistente aggiornare:
+- admin.html
+- assets/admin-results.js
+- assets/styles.css
+- aggiungere assets/results-ocr.js
+- aggiungere l'intera cartella assets/vendor (lettore OCR, motore e lingua).
+Non serve sostituire data/results.csv o data/payments.csv per installare la funzione.
+Usare il sito pubblicato su GitHub Pages, non aprire admin.html con un doppio clic.
+
+USO
+1. Admin > Risultati e fantapunti.
+2. Caricare lo screenshot completo del calendario con le sette partite, a sfondo chiaro.
+3. Premere Analizza screenshot e attendere. Nessun download automatico.
+4. Confrontare TUTTI i dati con l'immagine originale. Correggere i campi evidenziati
+   e qualsiasi altro valore letto male. Anche un valore riconosciuto può essere errato.
+5. Controllare la giornata reale di Serie A: nello screenshot di esempio 5a Lega = 7a Serie A.
+   Se non viene riconosciuta, selezionarla manualmente.
+6. Spuntare «Ho controllato giornata, squadre, fantapunti e gol nel riepilogo».
+7. Premere «Conferma e scarica results.csv».
+8. Su GitHub sostituire solo data/results.csv con il CSV appena scaricato.
+
+La conferma si annulla a ogni variazione dei dati. Il CSV contiene tutte le giornate
+caricate dall'archivio online e sostituisce solo quella selezionata. Se l'archivio
+non è raggiungibile, il download resta bloccato per evitare di perdere lo storico.
+I dati già online non vengono modificati dall'analisi o dal download.
+
+REQUISITI E LIMITI
+Nessun account ChatGPT, chiave API o abbonamento. L'immagine è elaborata nel browser.
+Il motore e il modello sono inclusi e caricati dallo stesso sito: la prima analisi
+richiede il download di circa 15 MB e può essere più lenta sul telefono.
+Il riconoscimento è adattato al calendario chiaro con i risultati in riquadri azzurri
+centrali, come lo screenshot fornito. Altri layout, ritagli, tema scuro o immagini
+incomplete richiedono l'inserimento manuale. PNG/JPG/WebP, massimo 12 MB e 24 megapixel.
+L'inserimento manuale e la gestione pagamenti rimangono disponibili.
+
+Componenti: Tesseract.js 7.0.0, tesseract.js-core 7.0.0 e dati lingua eng 4.0.0.
+Licenze e riferimenti nella cartella assets/vendor.
+
+VERIFICHE ESEGUITE
+Riconoscimento con Tesseract.js 7 sullo screenshot fornito: 14 squadre, 28 valori
+numerici e giornata Serie A 7 corretti. Test della conferma, invalidazione dopo
+modifica, sostituzione/aggiunta giornata, conservazione dello storico e blocco
+con archivio non disponibile. Non eseguita una prova visiva nel browser: verificare
+il flusso sul sito pubblicato prima del primo aggiornamento dei risultati.

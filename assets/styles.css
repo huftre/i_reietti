@@ -2243,3 +2243,22 @@ body.sos-modal-open { overflow: hidden; }
   .holder-stats div { display:flex; align-items:center; gap:10px; }
   .holder-stats span { margin-top:0; }
 }
+
+/* Screenshot import and mandatory review */
+.screenshot-card { margin-bottom: 22px; }
+.screenshot-card input[type=file] { display:block; max-width:100%; margin:14px 0; }
+.screenshot-check-layout:has(.screenshot-preview:not([hidden])) { display:grid; grid-template-columns:minmax(200px, .65fr) minmax(0, 1.8fr); gap:20px; align-items:start; }
+.screenshot-preview { position:sticky; top:16px; }
+.screenshot-preview img { display:block; width:100%; height:auto; border-radius:12px; }
+.screenshot-check-layout .match-editor-card { min-width:0; }
+.review-confirmation { display:flex; align-items:flex-start; gap:10px; margin-bottom:16px; line-height:1.5; }
+.review-confirmation input { width:20px; height:20px; flex-shrink:0; margin-top:3px; accent-color:#64dd99; }
+.match-row .ocr-missing { outline:2px solid #e5a847; outline-offset:1px; }
+.screenshot-card [hidden], .screenshot-check-layout [hidden] { display:none; }
+@media (max-width:1100px) { .screenshot-check-layout:has(.screenshot-preview:not([hidden])) { grid-template-columns:1fr; } .screenshot-preview {position:static;} .screenshot-preview img {max-width:440px; margin:auto;} }
+@media (min-width:1101px) {
+ .screenshot-check-layout:has(.screenshot-preview:not([hidden])) .match-editor-head,
+ .screenshot-check-layout:has(.screenshot-preview:not([hidden])) .match-row {
+   grid-template-columns:minmax(115px,1fr) 68px 50px 24px 50px 68px minmax(115px,1fr);
+ }
+}

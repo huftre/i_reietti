@@ -11,6 +11,11 @@
     teamMap: new Map(),
     rows: [],
     onlineLoaded: false,
+    confirmedSnapshot: null,
+    busy: false,
+    image: null,
+    worker: null,
+    job: 0,
     minMatchday: 3,
     maxMatchday: 38
   };
@@ -35,6 +40,7 @@
       $('#matchday').value = String(state.minMatchday);
 
       renderMatchEditor();
+      bindScreenshot();
       bindEvents();
       updateMatchdayLabels();
       await loadOnlineData();
@@ -47,6 +53,10 @@
   }
 
   function bindEvents() {
+    $('#confirm-results').addEventListener('change', () => {
+      state.confirmedSnapshot = $('#confirm-results').checked ? editorSnapshot() : null;
+      validateAndRefresh();
+    });
     $('#load-online').addEventListener('click', loadOnlineData);
     $('#matchday-minus').addEventListener('click', () => shiftMatchday(-1));
     $('#matchday-plus').addEventListener('click', () => shiftMatchday(1));
@@ -66,12 +76,18 @@
   }
 
   async function loadOnlineData() {
+    state.confirmedSnapshot = null;
+    state.onlineLoaded = false;
+    validateAndRefresh();
     setStatus($('#base-status'), 'Caricamento del file online…');
     setConnection(false, true);
     $('#load-online').disabled = true;
 
     try {
-      const csvText = await C.fetchText('data/results.csv', 'giornata,squadra,avversario,fantapunti,gol_fatti,gol_subiti\n');
+      const response = await fetch('data/results.csv', { cache: 'no-store' });
+      if (!response.ok) throw new Error('Archivio non disponibile');
+      const csvText = await response.text();
+      if (!csvText.startsWith('giornata,squadra,avversario,fantapunti,gol_fatti,gol_subiti')) throw new Error('Formato archivio non valido');
       state.rows = C.normalizeResults(C.parseCsv(csvText));
       state.onlineLoaded = true;
       setStatus(
@@ -93,6 +109,128 @@
       validateAndRefresh();
     } finally {
       $('#load-online').disabled = false;
+    }
+  }
+
+
+  function setBusy(busy) {
+    state.busy = busy;
+    document.querySelectorAll('#match-editor input, #match-editor select, #matchday, #matchday-minus, #matchday-plus, #clear-matches, #load-online, #screenshot-file').forEach(el => { el.disabled = busy; });
+    $('#analyze-screenshot').disabled = busy || !state.image;
+    $('#cancel-screenshot').hidden = !busy;
+    validateAndRefresh();
+  }
+
+  function bindScreenshot() {
+    $('#screenshot-file').addEventListener('change', async event => {
+      const job = ++state.job;
+      const file = event.target.files[0];
+      state.confirmedSnapshot = null;
+      state.image = null;
+      $('#screenshot-preview-wrap').hidden = true;
+      $('#screenshot-preview').removeAttribute('src');
+      $('#analyze-screenshot').disabled = true;
+      validateAndRefresh();
+      if (!file) return;
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 12 * 1024 * 1024) {
+        setStatus($('#screenshot-status'), 'Scegli un PNG, JPG o WebP di massimo 12 MB.', 'error'); return;
+      }
+      const url = URL.createObjectURL(file), image = new Image();
+      try {
+        image.src = url;
+        await image.decode();
+        if (job !== state.job) return;
+        if (image.naturalWidth * image.naturalHeight > 24000000) throw new Error('Immagine troppo grande: usa uno screenshot di massimo 24 megapixel.');
+        state.image = image;
+        $('#screenshot-preview').src = image.src;
+        await $('#screenshot-preview').decode();
+        $('#screenshot-preview-wrap').hidden = false;
+        $('#analyze-screenshot').disabled = false;
+        setStatus($('#screenshot-status'), 'Immagine pronta. L’analisi sostituirà i campi delle sette partite; nessun CSV verrà scaricato automaticamente.');
+      } catch (error) {
+        setStatus($('#screenshot-status'), error.message || 'Immagine non leggibile.', 'error');
+      } finally { URL.revokeObjectURL(url); }
+    });
+    $('#match-editor').addEventListener('input', event => event.target.classList.remove('ocr-missing'));
+    $('#match-editor').addEventListener('change', event => event.target.classList.remove('ocr-missing'));
+    $('#analyze-screenshot').addEventListener('click', analyzeScreenshot);
+    $('#cancel-screenshot').addEventListener('click', () => {
+      state.job++;
+      if (state.worker) { state.worker.terminate(); state.worker = null; }
+      setBusy(false);
+      setStatus($('#screenshot-status'), 'Analisi annullata. I dati precedenti sono rimasti nei campi.');
+    });
+  }
+
+  let ocrScript;
+  function loadOCR() {
+    if (window.Tesseract) return Promise.resolve();
+    if (!ocrScript) ocrScript = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => { script.remove(); ocrScript = null; reject(new Error('Caricamento del lettore scaduto. Riprova.')); }, 30000);
+      script.src = 'assets/vendor/tesseract.min.js';
+      script.onload = () => { clearTimeout(timeout); resolve(); };
+      script.onerror = () => { clearTimeout(timeout); script.remove(); ocrScript = null; reject(new Error('Lettore non disponibile. Verifica di avere caricato anche la cartella assets/vendor.')); };
+      document.head.appendChild(script);
+    });
+    return ocrScript;
+  }
+
+  async function analyzeScreenshot() {
+    if (!state.image || state.busy) return;
+    const job = ++state.job;
+    let worker, timeout;
+    setBusy(true);
+    setStatus($('#screenshot-status'), 'Preparazione del lettore sul dispositivo…');
+    try {
+      await loadOCR();
+      if (job !== state.job) return;
+      const base = new URL('assets/vendor/', window.location.href).href;
+      // The Worker, WebAssembly engine and language model are hosted with the site.
+      const work = async () => {
+        worker = await window.Tesseract.createWorker('eng', 1, {
+          workerPath: base + 'worker.min.js', corePath: base + 'tesseract-core-lstm.wasm.js', langPath: base,
+          errorHandler: error => console.error('OCR:', error)
+        });
+        if (job !== state.job) { await worker.terminate(); return null; }
+        state.worker = worker;
+        const source = document.createElement('canvas');
+        const scale = Math.min(1, 900 / state.image.naturalWidth);
+        source.width = Math.round(state.image.naturalWidth * scale);
+        source.height = Math.round(state.image.naturalHeight * scale);
+        const ctx = source.getContext('2d', { willReadFrequently: true });
+        ctx.drawImage(state.image, 0, 0, source.width, source.height);
+        return window.ReiettiOCR.recognize(worker, ctx.getImageData(0, 0, source.width, source.height).data,
+          source.width, source.height, state.teams, (box, threshold) => window.ReiettiOCR.cropCanvas(source, box, threshold),
+          message => { if (job === state.job) setStatus($('#screenshot-status'), message); });
+      };
+      const result = await Promise.race([work(), new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(new Error('L’analisi ha impiegato troppo tempo. Riprova oppure inserisci i dati manualmente.')), 180000);
+      })]);
+      if (job !== state.job || !result) return;
+      clearEditor();
+      const detectedDay = Number.isInteger(result.day) && result.day >= state.minMatchday && result.day <= state.maxMatchday;
+      $('#matchday').value = detectedDay ? String(result.day) : '';
+      $('#matchday').classList.toggle('ocr-missing', !detectedDay);
+      let missing = 0;
+      const selectors = {teamA:'.team-a',teamB:'.team-b',fpA:'.fp-a',fpB:'.fp-b',goalsA:'.goals-a',goalsB:'.goals-b'};
+      result.matches.forEach((match, index) => {
+        const row = $$('.match-row')[index];
+        Object.entries(selectors).forEach(([key, selector]) => {
+          const field = row.querySelector(selector); field.value = match[key];
+          field.classList.toggle('ocr-missing', match[key] === '');
+          if (match[key] === '') missing++;
+        });
+      });
+      state.confirmedSnapshot = null;
+      setStatus($('#screenshot-status'), `Lettura completata. ${detectedDay ? 'Rilevata la ' + result.day + 'ª giornata di Serie A.' : 'Giornata non riconosciuta: selezionala manualmente in alto.'} ${missing ? missing + ' campi da completare sono evidenziati.' : 'Tutti i campi sono compilati.'} Controlla TUTTI i dati confrontandoli con lo screenshot, poi spunta la conferma nel passaggio 4.`, missing || !detectedDay ? 'error' : 'success');
+      $('#screenshot-preview-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+    } catch (error) {
+      if (job === state.job) setStatus($('#screenshot-status'), error.message || 'Lettura non riuscita. Puoi compilare i risultati manualmente.', 'error');
+    } finally {
+      clearTimeout(timeout);
+      if (worker) { try { await worker.terminate(); } catch {} }
+      if (job === state.job) { state.worker = null; state.job++; setBusy(false); }
     }
   }
 
@@ -142,6 +280,7 @@
 
   function clearEditor() {
     $$('.match-row').forEach(row => {
+      row.querySelectorAll('.ocr-missing').forEach(el => el.classList.remove('ocr-missing'));
       row.querySelectorAll('select').forEach(select => { select.value = ''; });
       row.querySelectorAll('input').forEach(input => { input.value = ''; });
     });
@@ -183,21 +322,28 @@
     });
   }
 
+  function editorSnapshot() { return JSON.stringify([currentDay(), readEditor()]); }
+
   function validateAndRefresh() {
     const validation = validateEditor();
     renderReview(validation.matches);
     renderDataSummary(validation.matches, validation.valid);
-    $('#generate-csv').disabled = !validation.valid || !state.onlineLoaded;
+    if (state.confirmedSnapshot !== editorSnapshot() || !validation.valid || state.busy) state.confirmedSnapshot = null;
+    $('#confirm-results').checked = state.confirmedSnapshot !== null;
+    $('#confirm-results').disabled = !validation.valid || !state.onlineLoaded || state.busy;
+    $('#generate-csv').disabled = !validation.valid || !state.onlineLoaded || state.busy || !state.confirmedSnapshot;
     $('#generate-help').textContent = !state.onlineLoaded
       ? 'Prima deve essere caricato il file results.csv già online.'
       : validation.valid
-        ? 'Tutto pronto: verrà scaricato l’archivio completo.'
+        ? (state.confirmedSnapshot ? 'Confermato: puoi scaricare l’archivio completo.' : 'Controlla il riepilogo e spunta la conferma prima di scaricare.')
         : 'Il tasto si attiva quando tutte le 14 squadre e i punteggi sono corretti.';
   }
 
   function validateEditor() {
     const matches = readEditor();
     const errors = [];
+    const dayValue = Number($('#matchday').value);
+    if (!Number.isInteger(dayValue) || dayValue < state.minMatchday || dayValue > state.maxMatchday) errors.push('Seleziona la giornata di Serie A da confermare.');
     const selectedTeams = matches.flatMap(match => [match.teamA, match.teamB]).filter(Boolean);
     const duplicates = selectedTeams.filter((id, index) => selectedTeams.indexOf(id) !== index);
 
@@ -277,7 +423,7 @@
 
   function generateCsv() {
     const validation = validateEditor();
-    if (!validation.valid || !state.onlineLoaded) {
+    if (!validation.valid || !state.onlineLoaded || state.busy || !state.confirmedSnapshot || state.confirmedSnapshot !== editorSnapshot()) {
       validateAndRefresh();
       return;
     }
@@ -288,6 +434,8 @@
       .concat(newRows)
       .sort((a, b) => a.giornata - b.giornata || teamName(a.squadra).localeCompare(teamName(b.squadra), 'it'));
     state.rows = mergedRows;
+    state.confirmedSnapshot = null;
+    validateAndRefresh();
     downloadText('results.csv', serializeCsv(mergedRows), 'text/csv;charset=utf-8');
     setStatus($('#base-status'), `${C.matchdayLabel(day, state.config, false)} inserita e results.csv scaricato.`, 'success');
     renderDataSummary(validation.matches, true);
