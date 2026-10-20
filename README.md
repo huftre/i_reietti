@@ -107,3 +107,7 @@ Il sito è statico e l'accesso Admin usa `sessionStorage` più l'impronta SHA-25
 - `reietto.html`: Reietto del Mese.
 - `pagamenti.html`: sezione protetta dal codice 2023 (modificabile in `assets/payments-access.js`).
 - `regolamento.html`: regolamento integrato, anche mobile, tramite immagini in `assets/regolamento-pages/`.
+
+## Importazione da screenshot
+
+Vedi `AGGIORNAMENTO-SCREENSHOT.txt` per installazione e utilizzo. Ogni CSV richiede la conferma esplicita dopo il controllo del riepilogo.
