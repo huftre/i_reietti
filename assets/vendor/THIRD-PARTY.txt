@@ -1,0 +1,7 @@
+Tesseract.js 7.0.0 — https://github.com/naptha/tesseract.js — Apache-2.0
+Tesseract.js-core 7.0.0 — https://github.com/naptha/tesseract.js-core — Apache-2.0
+English traineddata 4.0.0 — https://github.com/tesseract-ocr/tessdata — Apache-2.0
+Downloaded from jsDelivr and tessdata.projectnaptha.com.
+The included Apache license applies to the traineddata as well.
+Tesseract OCR engine — https://github.com/tesseract-ocr/tesseract
+Leptonica — http://www.leptonica.org/ (BSD-2-Clause); built into the WebAssembly core.
