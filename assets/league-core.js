@@ -331,7 +331,6 @@
         ? leaders.find(row => row.squadra === holder)
         : leaders.slice().sort((a, b) => String(a.squadra).localeCompare(String(b.squadra)))[0];
       const winner = winnerRow.squadra;
-      const holderBeforeDay = holder;
 
       // La giornata di detenzione viene attribuita una sola volta al detentore
       // risultante dopo aver applicato il fantapunteggio e gli spareggi di questa giornata.
@@ -342,11 +341,6 @@
         holder = winner;
         acquiredDay = day;
         holders.push(holder);
-        const st = stats.get(holder);
-        st.tenureDays += 1;
-        st.fantasyPoints += Number(winnerRow.fantapunti ?? 0);
-        st.goalsFor += Number(winnerRow.golFatti ?? 0);
-        st.goalsAgainst += Number(winnerRow.golSubiti ?? 0);
         events.push({
           day, type: 'assignment', holderAfter: holder, points: maxPoints,
           text: `${team(holder).name} conquista la Cintura con ${formatPoints(maxPoints)} fantapunti.`
